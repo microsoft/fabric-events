@@ -1,0 +1,79 @@
+site_name: Fabric Events
+site_description: Practical resources for building event-driven solutions with Microsoft Fabric
+site_url: https://fabric-events.github.io/fabric-events/
+repo_url: https://github.com/microsoft/fabric-events
+repo_name: microsoft/fabric-events
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - tables
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Business Events:
+    - Introduction:
+      - What are Business Events?: 01-introduction/what-are-business-events.md
+      - Architecture Overview: 01-introduction/architecture-overview.md
+      - Event Schema: 01-introduction/event-schema.md
+      - Decision Guide: 01-introduction/decision-guide.md
+    - Scenarios:
+      - Overview: 02-scenarios/index.md
+      - "Scenario 1: Sales Volume Alert": 02-scenarios/scenario-01-sales-volume-alert/README.md
+      - "Scenario 2: Low Stock Threshold": 02-scenarios/scenario-02-low-stock-threshold/README.md
+      - "Scenario 3: Real-Time Stream Alert": 02-scenarios/scenario-03-high-value-transaction/README.md
+      - "Scenario 4: Data Lineage Audit": 02-scenarios/scenario-04-pipeline-audit/README.md
+      - "Scenario 5: Business Automation Loop": 02-scenarios/scenario-05-loyalty-milestone/README.md
+  - Fabric Events: fabric-events/index.md
+  - Azure Events: azure-events/index.md
