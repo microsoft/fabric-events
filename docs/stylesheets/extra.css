@@ -1,0 +1,22 @@
+.md-header__button.md-logo {
+  display: none;
+}
+
+/* Full-width layout */
+.md-grid {
+  max-width: 100%;
+  padding: 0 2rem;
+}
+
+.md-content {
+  max-width: 100%;
+}
+
+.md-sidebar--primary {
+  width: 14rem;
+}
+
+.md-sidebar--secondary {
+  width: 14rem;
+}
+
