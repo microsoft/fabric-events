@@ -10,13 +10,13 @@ Each scenario is a complete, end-to-end walkthrough of a real business problem s
 
 ## Available scenarios
 
-| # | Scenario | Publisher | Consumer | Status |
-|---|----------|-----------|----------|--------|
-| 1 | [Sales Volume Alert](scenario-01-sales-volume-alert/README.md) | Notebook | Activator | ✅ Available |
-| 2 | [Low Stock Threshold](scenario-02-low-stock-threshold/README.md) | User Data Function | Eventhouse | ✅ Available |
-| 3 | [Real-Time Stream Alert](scenario-03-high-value-transaction/README.md) | Eventstream | Activator | ✅ Available |
-| 4 | [Data Lineage Audit](scenario-04-pipeline-audit/README.md) | Notebook | Eventhouse | ✅ Available |
-| 5 | [Business Automation Loop](scenario-05-loyalty-milestone/README.md) | Activator | Activator | ✅ Available |
+| # | Scenario | Publisher | Consumer |
+|---|----------|-----------|----------|
+| 1 | [Sales Volume Alert](scenario-01-sales-volume-alert/README.md) | Notebook | Activator |
+| 2 | [Low Stock Threshold](scenario-02-low-stock-threshold/README.md) | User Data Function | Eventhouse |
+| 3 | [Real-Time Stream Alert](scenario-03-high-value-transaction/README.md) | Eventstream | Activator |
+| 4 | [Data Lineage Audit](scenario-04-pipeline-audit/README.md) | Notebook | Eventhouse |
+| 5 | [Business Automation Loop](scenario-05-loyalty-milestone/README.md) | Activator | Activator |
 
 ## How to read a scenario
 
