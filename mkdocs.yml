@@ -1,12 +1,13 @@
 site_name: Fabric Events
 site_description: Practical resources for building event-driven solutions with Microsoft Fabric
-site_url: https://fabric-events.github.io/fabric-events/
+site_url: https://microsoft.github.io/fabric-events/
 repo_url: https://github.com/microsoft/fabric-events
 repo_name: microsoft/fabric-events
 edit_uri: edit/main/docs/
 
 theme:
   name: material
+  custom_dir: overrides
   palette:
     - scheme: default
       primary: indigo
@@ -32,6 +33,7 @@ theme:
     - search.suggest
     - content.code.copy
     - content.code.annotate
+    - announce.dismiss
   icon:
     repo: fontawesome/brands/github
 
@@ -53,6 +55,12 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - tables
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/microsoft/fabric-events/discussions
+      name: Join the discussion on GitHub
 
 extra_css:
   - stylesheets/extra.css
