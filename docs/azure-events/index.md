@@ -10,4 +10,4 @@
 - Service Bus patterns for Fabric workloads
 - End-to-end event-driven architectures across Azure and Fabric
 
-[Back to Home](../index.md)
+[Back to Home](../home/index.md)

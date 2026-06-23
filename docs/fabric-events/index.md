@@ -10,4 +10,4 @@
 - Integration with Azure Event Grid
 - Reactive architectures across the Fabric ecosystem
 
-[Back to Home](../index.md)
+[Back to Home](../home/index.md)

@@ -33,7 +33,6 @@ theme:
     - search.suggest
     - content.code.copy
     - content.code.annotate
-    - announce.dismiss
   icon:
     repo: fontawesome/brands/github
 
@@ -57,10 +56,13 @@ markdown_extensions:
   - tables
 
 extra:
+  generator: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/microsoft/fabric-events/discussions
       name: Join the discussion on GitHub
+
+copyright: 'Made with <span class="heart">&#10084;</span> from the Fabric Events team'
 
 extra_css:
   - stylesheets/extra.css
@@ -69,19 +71,31 @@ plugins:
   - search
 
 nav:
-  - Home: index.md
+  - Home: home/index.md
   - Business Events:
     - Introduction:
-      - What are Business Events?: 01-introduction/what-are-business-events.md
-      - Architecture Overview: 01-introduction/architecture-overview.md
-      - Event Schema: 01-introduction/event-schema.md
-      - Decision Guide: 01-introduction/decision-guide.md
+      - What are Business Events?: business-events/introduction/what-are-business-events.md
+      - Architecture Overview: business-events/introduction/architecture-overview.md
+      - Event Schema: business-events/introduction/event-schema.md
+      - Decision Guide: business-events/introduction/decision-guide.md
     - Scenarios:
-      - Overview: 02-scenarios/index.md
-      - "Scenario 1: Sales Volume Alert": 02-scenarios/scenario-01-sales-volume-alert/README.md
-      - "Scenario 2: Low Stock Threshold": 02-scenarios/scenario-02-low-stock-threshold/README.md
-      - "Scenario 3: Real-Time Stream Alert": 02-scenarios/scenario-03-high-value-transaction/README.md
-      - "Scenario 4: Data Lineage Audit": 02-scenarios/scenario-04-pipeline-audit/README.md
-      - "Scenario 5: Business Automation Loop": 02-scenarios/scenario-05-loyalty-milestone/README.md
+      - Overview: business-events/scenarios/index.md
+      - "Scenario 1: Sales Volume Alert": business-events/scenarios/scenario-01-sales-volume-alert/README.md
+      - "Scenario 2: Low Stock Threshold": business-events/scenarios/scenario-02-low-stock-threshold/README.md
+      - "Scenario 3: Real-Time Stream Alert": business-events/scenarios/scenario-03-high-value-transaction/README.md
+      - "Scenario 4: Data Lineage Audit": business-events/scenarios/scenario-04-pipeline-audit/README.md
+      - "Scenario 5: Business Automation Loop": business-events/scenarios/scenario-05-loyalty-milestone/README.md
+    - Patterns:
+      - Overview: business-events/patterns/index.md
+      - Structuring Payloads: business-events/patterns/structuring-payloads.md
+      - Handling Retries: business-events/patterns/handling-retries.md
+      - Schema Versioning: business-events/patterns/schema-versioning.md
+      - Multi-Consumer Fanout: business-events/patterns/multi-consumer-fanout.md
+    - Recipes:
+      - Overview: business-events/recipes/index.md
+      - Filter Events by Field Value: business-events/recipes/filter-events-by-field-value.md
+      - Chain Two Business Events: business-events/recipes/chain-two-business-events.md
+      - Batch Publish from a Notebook: business-events/recipes/batch-publish-notebook.md
+      - Batch Publish from a User Data Function: business-events/recipes/batch-publish-udf.md
   - Fabric Events: fabric-events/index.md
   - Azure Events: azure-events/index.md

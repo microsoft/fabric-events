@@ -8,7 +8,9 @@ hide:
 
 **Event-driven resources for Microsoft Fabric and Azure.**
 
-Fabric Events is a resource repository for developers building event-driven solutions on Microsoft Fabric and Azure. It covers three event pillars, each targeting a different layer of the stack: from business signals inside Fabric workloads, to platform-level events across Fabric services, to cloud-scale events in Azure.
+Microsoft Fabric offers three event pillars for building event-driven solutions — from business signals inside Fabric workloads, to platform-level events across Fabric services, to cloud-scale events in Azure. This site is your developer resource for all three.
+
+This site complements the [official documentation](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-overview) with end-to-end scenarios, real code, and community-driven content.
 
 ## Event-driven architecture in Microsoft Fabric
 
@@ -116,7 +118,7 @@ Event-driven workloads in Fabric consume resources **proportionally to actual ac
 
     Structured, schema-defined signals published by Fabric workloads (notebooks, user data functions, eventstreams, and activator) and consumed by Activator and Eventhouse in real time.
 
-    [:material-arrow-right: Explore Business Events](01-introduction/what-are-business-events.md)
+    [:material-arrow-right: Explore Business Events](../business-events/introduction/what-are-business-events.md)
 
 - **Fabric Events**
 
@@ -136,5 +138,5 @@ Event-driven workloads in Fabric consume resources **proportionally to actual ac
 
 If you are new to event-driven patterns in Microsoft Fabric, start with **Business Events**. It is the most accessible entry point and covers the most common scenarios for data engineers and developers working inside Fabric.
 
-[:material-arrow-right: What are Business Events?](01-introduction/what-are-business-events.md){ .md-button .md-button--primary }
-[:material-arrow-right: Browse Scenarios](02-scenarios/index.md){ .md-button }
+[:material-arrow-right: What are Business Events?](../business-events/introduction/what-are-business-events.md){ .md-button .md-button--primary }
+[:material-arrow-right: Browse Scenarios](../business-events/scenarios/index.md){ .md-button }
