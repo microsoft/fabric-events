@@ -1,11 +1,12 @@
-# Patterns
+# Design Guides
 
-Patterns are reusable building blocks for working with Business Events. Unlike scenarios — which walk through a complete solution end to end — patterns focus on a single concept you can apply across any project.
+Design guides cover design decisions, platform behavior, and architectural considerations for working with Business Events. Unlike scenarios, which walk through a complete solution end to end, design guides focus on a single concept you can apply across any project.
 
-## Available patterns
+## Available guides
 
-| Pattern | Description |
+| Guide | Description |
 |---------|-------------|
+| [Decision Guide](../introduction/decision-guide.md) | When to use Business Events vs. other Fabric capabilities |
 | [Structuring Payloads](structuring-payloads.md) | How to design clean, meaningful event payloads and how CloudEvents works under the hood |
 | [Handling Retries](handling-retries.md) | Built-in retry behavior and how to design idempotent consumers |
 | [Schema Versioning](schema-versioning.md) | How to evolve a schema and what changes publishers and consumers need to make |
