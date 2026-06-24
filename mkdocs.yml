@@ -86,7 +86,6 @@ nav:
       - Multi-Consumer Fanout: business-events/design-guides/multi-consumer-fanout.md
     - Recipes:
       - Overview: business-events/recipes/index.md
-      - Filter Events by Field Value: business-events/recipes/filter-events-by-field-value.md
       - Chain Two Business Events: business-events/recipes/chain-two-business-events.md
       - Batch Publish from a Notebook: business-events/recipes/batch-publish-notebook.md
       - Batch Publish from a User Data Function: business-events/recipes/batch-publish-udf.md
