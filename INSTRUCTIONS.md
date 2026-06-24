@@ -7,20 +7,18 @@ resource site. Read it fully before making any changes.
 
 ## 1. Project Overview
 
-This is a MkDocs + Material theme static site that serves as the official public resource
-center for Microsoft Fabric Business Events. The goal is to accelerate developer adoption
-through practical, code-first content — real API signatures, JSON schemas, and Mermaid
-diagrams instead of screenshots.
+This is a MkDocs + Material theme static site that serves as the community developer resource
+for Microsoft Fabric Events. The goal is to accelerate developer adoption through practical,
+code-first content — real API signatures, JSON schemas, and Mermaid diagrams instead of screenshots.
 
 **Live site:** https://microsoft.github.io/fabric-events/  
 **Source repo:** https://github.com/microsoft/fabric-events  
-**Local project path:** `C:\Workspace\projects\fabric-events`
 
-The site covers three pillars, only the first is active:
+The site covers three pillars:
 
 | Pillar | Status |
 |--------|--------|
-| Business Events | Active — has Introduction + 5 Scenarios |
+| Business Events | Active — Introduction, Design Guides, Recipes, 5 Scenarios |
 | Fabric Events | Coming Soon placeholder |
 | Azure Events | Coming Soon placeholder |
 
@@ -32,16 +30,7 @@ The site covers three pillars, only the first is active:
 
 ```
 origin  → https://github.com/microsoft/fabric-events.git   (production)
-fork    → https://github.com/robece/fabric-events.git       (personal fork for PRs)
-```
-
-### Git identity
-
-Configure your git identity before committing:
-
-```bash
-git config user.name "your-github-username"
-git config user.email "your-email"
+fork    → https://github.com/<your-username>/fabric-events.git  (personal fork for PRs)
 ```
 
 ### Branches
@@ -53,36 +42,37 @@ git config user.email "your-email"
 
 ### Workflow for every change
 
-1. Make changes locally under `C:\Workspace\projects\fabric-events`
-2. Commit and push to the fork:
+1. Make changes locally
+2. Create a branch and commit:
    ```bash
+   git checkout -b your-branch-name
    git add .
    git commit -m "describe change here"
-   git push fork main
+   git push fork your-branch-name
    ```
-3. Open a PR from `robece/fabric-events` → `microsoft/fabric-events`
+3. Open a PR from your fork → `microsoft/fabric-events`
 4. Do **not** include `Co-authored-by` trailers in commit messages
 
 ---
 
 ## 3. Deploy
 
-MkDocs compiles the site and pushes directly to the `gh-pages` branch of `origin`:
+### Auto-deploy (GitHub Actions)
+
+Every merge to `main` triggers `.github/workflows/deploy.yml` which runs `mkdocs gh-deploy` automatically. No manual deploy needed after a PR merge.
+
+### Manual deploy
 
 ```bash
-cd C:\Workspace\projects\fabric-events
+cd <project-root>
 mkdocs gh-deploy --remote-name origin --force
 ```
-
-- This does **not** require a PR — it writes `gh-pages` directly
-- Run this after a PR is merged to production, or to preview live changes
-- The site is available at https://microsoft.github.io/fabric-events/ within ~2 minutes
 
 ### Local preview
 
 ```bash
-cd C:\Workspace\projects\fabric-events
-mkdocs serve --dev-addr 127.0.0.1:8000
+cd <project-root>
+mkdocs serve --dev-addr 127.0.0.1:8000 --watch overrides
 ```
 
 Preview at http://127.0.0.1:8000/fabric-events/
@@ -102,33 +92,69 @@ fabric-events/
 ├── mkdocs.yml                          # Site config, nav, theme, plugins
 ├── requirements.txt                    # MkDocs + Material dependencies
 ├── INSTRUCTIONS.md                     # This file
+├── overrides/
+│   └── main.html                       # Announcement banner + Ask a question widget
 ├── docs/
-│   ├── index.md                        # Home page (3-pillar layout)
+│   ├── index.md                        # Root redirect to /home/
+│   ├── home/
+│   │   └── index.md                    # Home page (3-pillar layout)
 │   ├── stylesheets/
-│   │   └── extra.css                   # Hides logo icon, full-width layout
-│   ├── javascripts/
-│   │   └── nav.js                      # Navigation helper
-│   ├── 01-introduction/
-│   │   ├── what-are-business-events.md
-│   │   ├── architecture-overview.md
-│   │   ├── event-schema.md
-│   │   └── decision-guide.md
-│   ├── 02-scenarios/
-│   │   ├── index.md                    # Scenario overview table
-│   │   ├── scenario-01-sales-volume-alert/README.md
-│   │   ├── scenario-02-low-stock-threshold/README.md
-│   │   ├── scenario-03-high-value-transaction/README.md
-│   │   ├── scenario-04-pipeline-audit/README.md
-│   │   └── scenario-05-loyalty-milestone/README.md
+│   │   └── extra.css                   # Banner color, nav styles, heart CSS
+│   ├── business-events/
+│   │   ├── introduction/
+│   │   │   ├── what-are-business-events.md
+│   │   │   ├── architecture-overview.md
+│   │   │   ├── event-schema.md
+│   │   │   └── decision-guide.md
+│   │   ├── design-guides/
+│   │   │   ├── index.md
+│   │   │   ├── structuring-payloads.md
+│   │   │   ├── handling-retries.md
+│   │   │   ├── schema-versioning.md
+│   │   │   └── multi-consumer-fanout.md
+│   │   ├── recipes/
+│   │   │   ├── index.md
+│   │   │   ├── filter-events-by-field-value.md
+│   │   │   ├── chain-two-business-events.md
+│   │   │   ├── batch-publish-notebook.md
+│   │   │   └── batch-publish-udf.md
+│   │   └── scenarios/
+│   │       ├── index.md
+│   │       ├── scenario-01-sales-volume-alert/README.md
+│   │       ├── scenario-02-low-stock-threshold/README.md
+│   │       ├── scenario-03-high-value-transaction/README.md
+│   │       ├── scenario-04-pipeline-audit/README.md
+│   │       └── scenario-05-loyalty-milestone/README.md
 │   ├── fabric-events/
 │   │   └── index.md                    # Coming soon placeholder
 │   └── azure-events/
 │       └── index.md                    # Coming soon placeholder
 ```
 
+### Nav order
+
+Introduction → Design Guides → Recipes → Scenarios
+
 ---
 
-## 5. Architecture Concepts (Critical)
+## 5. Site Features
+
+### Announcement banner
+
+Defined in `overrides/main.html` via `{% block announce %}`. Color is teal `#0D9488` set in `docs/stylesheets/extra.css`. The `announce.dismiss` feature is disabled so the banner is always visible.
+
+### Ask a question widget
+
+Also in `overrides/main.html` via `{% block content %}`. A floating button `💬 Ask a question` appears bottom-right on every page. The modal has two modes:
+
+- **About this page** — pre-fills a GitHub Discussion with the question, page title, and page URL
+- **General question** — pre-fills only the question, no page context
+
+Discussions are created in the **Q&A** category of `microsoft/fabric-events`.
+
+---
+
+## 6. Architecture Concepts (Critical)
 
 Getting these wrong will introduce inconsistencies across the site.
 
@@ -153,9 +179,14 @@ Getting these wrong will introduce inconsistencies across the site.
 - Creates a KQL table automatically — no separate ingestion config needed
 - KQL table names preserve dots — use bracket syntax: `['Retail.Sales.VolumeAlert']`
 
+### Platform behavior (critical)
+- Publish **always succeeds silently** — no error is returned if the event type name mismatches
+- Events are **discarded silently** if: wrong event type name, wrong schema set, no consumers subscribed
+- Retry: automatic for up to 24 hours if delivery fails after acceptance
+
 ---
 
-## 6. Naming Conventions
+## 7. Naming Conventions
 
 ### Event namespace
 ```
@@ -182,7 +213,7 @@ One schema set per domain, named without dots:
 
 ---
 
-## 7. Publisher APIs
+## 8. Publisher APIs
 
 ### Notebook (Python)
 
@@ -191,10 +222,12 @@ notebookutils.businessEvents.publish(
     eventSchemaSetWorkspace,  # workspace name string
     eventSchemaSet,           # schema set name string
     eventTypeName,            # e.g. "Retail.Sales.VolumeAlert"
-    eventData,                # dict or JSON string
+    eventData,                # dict or list of dicts (batch)
     dataVersion="v1"
 )
 ```
+
+`eventData` can be a single dict or a list of dicts for batch publishing.
 
 ### User Data Function (Python)
 
@@ -227,7 +260,6 @@ def publish_event(req: HttpRequest, businessEventsClient: FabricBusinessEventsCl
 
 ### Eventstream (100% UI — no code)
 
-Steps:
 1. Create a new Eventstream
 2. Add a source (e.g., Azure Event Hubs, sample data)
 3. Add a **Filter** transformation
@@ -248,7 +280,7 @@ Reference: https://learn.microsoft.com/en-us/fabric/real-time-hub/business-event
 
 ---
 
-## 8. Consumer Flows
+## 9. Consumer Flows
 
 ### Activator as Consumer
 
@@ -278,56 +310,64 @@ Reference: https://learn.microsoft.com/en-us/fabric/real-time-hub/business-event
 
 ---
 
-## 9. Content Rules (Non-Negotiable)
+## 10. Content Rules (Non-Negotiable)
 
 - **No em dashes** (`—`) anywhere in the content — split into two sentences or use a colon
-- **No horizontal rule dashes** (`---`) as visual dividers
-- **No generic "hub" or "bus"** — only allowed as part of: "Real-Time Hub", "Event Hubs", "Service Bus"
 - **No screenshots** — use Mermaid diagrams, JSON snippets, and code blocks
-- **No icons** on the three pillar cards on the home page
 - **All content in English** — conversations between contributor and AI can be in Spanish
 - **Numbered lists reset after code blocks** — indent code blocks 4 spaces inside the list item to preserve numbering
+- **No troubleshooting content** — platform behavior is too early-stage; troubleshooting articles are parked outside the site until the platform matures
 
 ---
 
-## 10. Scenario Structure Template
+## 11. Content Types
 
-Every scenario must follow this exact structure. Scenario 01 is the reference implementation
-— read it before writing a new scenario.
+### Design Guides
+Cover a single design decision, platform behavior, or architectural pattern that applies across projects. Not tied to a specific scenario. Lives under `docs/business-events/design-guides/`.
+
+### Recipes
+Short, executable code or UI walkthroughs for a specific task. No business context needed. Lives under `docs/business-events/recipes/`.
+
+### Scenarios
+End-to-end walkthroughs with full business context, architecture diagram, step-by-step setup, and end-to-end test. Lives under `docs/business-events/scenarios/scenario-NN-short-name/README.md`.
+
+---
+
+## 12. Scenario Structure Template
+
+Every scenario must follow this exact structure. Scenario 01 is the reference implementation — read it before writing a new scenario.
 
 ```
-## Overview
-Brief 2-3 sentence description. Include the publisher, consumer, and business value.
+## Business context
+2-3 sentence description of the business problem.
+
+**The problem without Business Events:**
+What the developer would have to do without this capability.
+
+**The solution with Business Events:**
+How Business Events solves the problem.
 
 ## Architecture
 Mermaid flowchart showing: Publisher → Business Event → Consumer(s)
-Include a table: Publisher, Consumer, Schema Set, Event Type, Namespace
+Include a table: Publisher, Consumer, Schema Set, Event Type
 
 ## Step 1: Create the Business Event
 Numbered steps to create the Business Event in Real-Time Hub → Business Events.
-Include the JSON schema definition (paste into the schema editor).
-End with "Analyze in Eventhouse" checkbox note and "Create" button.
+Include the JSON schema definition.
 
-## Step 2: Create the [Publisher]
-How to create and configure the publisher item (Notebook, UDF, Eventstream, Activator rule).
-Include all relevant code or UI steps.
+## Step 2: [Publisher setup]
+Publisher-specific steps with full code or UI walkthrough.
 
-## Step 3: Connect and Publish
-Publisher-specific connection/configuration steps.
-Full working code block (for code publishers) or full UI walkthrough (for Eventstream/Activator).
+## Step 3: [Consumer setup]
+Consumer-specific setup steps.
 
-## Step 4: Set Up [Consumer]
-Consumer-specific setup steps (Activator alert config or Eventhouse KQL queries).
-
-## Step 5: End-to-End Test
+## Step 4: End-to-end test
 How to trigger the event and verify it was received.
-For code publishers: show the API call and expected response.
-For Eventhouse consumers: show the KQL query that confirms arrival.
 ```
 
 ---
 
-## 11. Existing Scenarios
+## 13. Existing Scenarios
 
 | # | Title | Publisher | Consumer | Schema Set | Event Type |
 |---|-------|-----------|----------|------------|------------|
@@ -335,32 +375,29 @@ For Eventhouse consumers: show the KQL query that confirms arrival.
 | 02 | Low Stock Threshold | User Data Function | Eventhouse | RetailInventory | Retail.Inventory.LowStockThreshold |
 | 03 | High-Value Transaction | Eventstream | Activator | RetailPayments | Retail.Payment.HighValueTransaction |
 | 04 | Pipeline Audit Trail | Notebook | Eventhouse | DataOps | DataOps.Pipeline.RunCompleted |
-| 05 | Loyalty Milestone | Activator | Activator | RetailCustomers | Retail.Customer.MilestoneReached |
-
-All 5 are marked `✅ Available` in `docs/02-scenarios/index.md`.
+| 05 | Loyalty Milestone | Activator | Activator + Eventhouse | RetailCustomers | Retail.Customer.MilestoneReached |
 
 ---
 
-## 12. Suggested Next Scenarios
+## 14. Suggested Next Content
 
-When adding new scenarios, follow these guidelines:
-- Cover publisher/consumer combinations not yet represented
-- Each scenario should be in a different industry vertical when possible
-- Schema set names should follow the `Domain` (no dots) convention
-- Place new scenario folder under `docs/02-scenarios/scenario-NN-short-name/README.md`
-- Add entry to `docs/02-scenarios/index.md` table
-- Add entry to `mkdocs.yml` nav under `Business Events → Scenarios`
-
-Possible future scenarios:
-- UDF → Activator (not yet covered)
-- Notebook → Activator (multi-consumer, second Activator rule)
+### Scenarios
+- UDF → Activator (not yet covered as primary combination)
+- Notebook → Activator (multi-consumer, two independent Activator rules)
 - Eventstream → Eventhouse
 - Cross-workspace publishing
-- Batched event publishing from a Notebook
+
+### Design Guides
+- Idempotency patterns for consumers
+- Cross-workspace schema set strategy
+
+### Recipes
+- UDF → Activator end-to-end (short form)
+- Filter events by nested field
 
 ---
 
-## 13. Verified External Links
+## 15. Verified External Links
 
 All links below were verified as of June 2026. Use these exact URLs in content:
 
@@ -388,19 +425,11 @@ All links below were verified as of June 2026. Use these exact URLs in content:
 
 ---
 
-## 14. mkdocs.yml Notes
+## 16. Known Issues & Decisions
 
-- `site_url` must be `https://microsoft.github.io/fabric-events/` — do not change for `origin` deploys
-- If deploying to the fork (`robece/fabric-events`) for preview, temporarily change to `https://robece.github.io/fabric-events/` and revert before committing
-- Mermaid diagrams are enabled via the `pymdownx.superfences` extension — no additional plugin needed
-- The `gh-pages` branch is managed exclusively by `mkdocs gh-deploy`
-
----
-
-## 15. Known Issues & Decisions
-
-- **No Resources section** — API Reference, Troubleshooting, and FAQ were removed from the nav and their files deleted. Recreate only if there is substantial content to fill them.
-- **No icons on pillar cards** — home page uses text-only cards for the three pillars.
+- **No troubleshooting section** — articles are parked in `temporal/troubleshooting/` outside the repo until platform behavior is stable enough to document reliably.
 - **No Co-authored-by trailers** in commit messages.
 - **Numbered lists and code blocks** — MkDocs resets list numbering after a fenced code block unless the block is indented 4 spaces inside the list item.
-- **UDF alias** — auto-generated from schema set name (e.g., `RetailInventory` → alias `RetailInventory`). Document this explicitly in every UDF scenario so users know where to find it.
+- **UDF alias** — auto-generated from schema set name (e.g., `RetailInventory` → alias `RetailInventory`). Document this explicitly in every UDF scenario.
+- **Root redirect** — `docs/index.md` contains a JavaScript redirect to `/fabric-events/home/` because MkDocs requires a root `index.md` but the home page lives at `docs/home/index.md`.
+
