@@ -1,4 +1,4 @@
-# Event-Driven Architecture in Microsoft Fabric
+# Event-Driven Architectures in Microsoft Fabric
 
 In a traditional data platform, workloads communicate by **polling or direct calls**: a service checks for changes on a schedule, or one workload calls another and waits for a response. This works, but it creates fragile dependencies and wastes compute on work that may find nothing to process.
 
