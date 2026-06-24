@@ -6,6 +6,7 @@ Design guides cover design decisions, platform behavior, and architectural consi
 
 | Guide | Description |
 |---------|-------------|
+| [Event-Driven Architecture in Microsoft Fabric](event-driven-architecture.md) | How event-driven patterns work in Fabric and when to use them over polling or direct calls |
 | [Decision Guide](../introduction/decision-guide.md) | When to use Business Events vs. other Fabric capabilities |
 | [Structuring Payloads](structuring-payloads.md) | How to design clean, meaningful event payloads and how CloudEvents works under the hood |
 | [Handling Retries](handling-retries.md) | Built-in retry behavior and how to design idempotent consumers |
