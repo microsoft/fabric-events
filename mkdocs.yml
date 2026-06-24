@@ -79,7 +79,7 @@ nav:
       - Event Schema: business-events/introduction/event-schema.md
     - Design Guides:
       - Overview: business-events/design-guides/index.md
-      - Event-Driven Architectures: business-events/design-guides/event-driven-architecture.md
+      - Event-Driven Architectures: business-events/design-guides/event-driven-architectures.md
       - Decision Guide: business-events/introduction/decision-guide.md
       - Structuring Payloads: business-events/design-guides/structuring-payloads.md
       - Handling Retries: business-events/design-guides/handling-retries.md
