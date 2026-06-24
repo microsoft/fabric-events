@@ -6,3 +6,150 @@
     join the discussion
   </a>
 {% endblock %}
+
+{% block content %}
+{{ super() }}
+
+<!-- Ask a question floating button -->
+<div id="ask-fab" style="
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+">
+  <button onclick="document.getElementById('ask-modal').style.display='flex'" style="
+    background: #0D9488;
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: Inter, sans-serif;
+  ">
+    💬 Ask a question
+  </button>
+</div>
+
+<!-- Modal overlay -->
+<div id="ask-modal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+">
+  <div style="
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.75rem;
+    width: 100%;
+    max-width: 480px;
+    margin: 1rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    font-family: Inter, sans-serif;
+  ">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <h3 style="margin:0; font-size:1.1rem; color:#111827;">Ask a question</h3>
+      <button onclick="document.getElementById('ask-modal').style.display='none'" style="
+        background:none; border:none; cursor:pointer; font-size:1.25rem; color:#6B7280; line-height:1;
+      ">✕</button>
+    </div>
+
+    <!-- Question type radio buttons -->
+    <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+      <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.875rem; color:#374151; cursor:pointer;">
+        <input type="radio" name="ask-type" value="page" checked onchange="updateAskContext(this.value)" style="accent-color:#0D9488;">
+        About this page
+      </label>
+      <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.875rem; color:#374151; cursor:pointer;">
+        <input type="radio" name="ask-type" value="general" onchange="updateAskContext(this.value)" style="accent-color:#0D9488;">
+        General question
+      </label>
+    </div>
+
+    <p id="ask-hint" style="font-size:0.8rem; color:#6B7280; margin:0 0 1rem 0;">
+      This will open a new GitHub Discussion pre-filled with your question and a link to this page.
+    </p>
+
+    <label style="display:block; font-size:0.8rem; font-weight:600; color:#374151; margin-bottom:0.35rem;">
+      Your question
+    </label>
+    <textarea id="ask-question" placeholder="What would you like to ask about this page?" style="
+      width: 100%;
+      min-height: 100px;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.625rem;
+      font-size: 0.875rem;
+      font-family: Inter, sans-serif;
+      color: #111827;
+      resize: vertical;
+      box-sizing: border-box;
+      outline: none;
+    "></textarea>
+
+    <div style="display:flex; gap:0.75rem; margin-top:1rem; justify-content:flex-end;">
+      <button onclick="document.getElementById('ask-modal').style.display='none'" style="
+        background:none; border:1px solid #D1D5DB; border-radius:0.5rem;
+        padding:0.5rem 1rem; font-size:0.875rem; cursor:pointer; color:#374151;
+        font-family: Inter, sans-serif;
+      ">Cancel</button>
+      <button onclick="openDiscussion()" style="
+        background:#0D9488; color:white; border:none; border-radius:0.5rem;
+        padding:0.5rem 1rem; font-size:0.875rem; font-weight:600; cursor:pointer;
+        font-family: Inter, sans-serif;
+      ">Open in GitHub →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateAskContext(value) {
+  var hint = document.getElementById('ask-hint');
+  var textarea = document.getElementById('ask-question');
+  if (value === 'page') {
+    hint.textContent = 'This will open a new GitHub Discussion pre-filled with your question and a link to this page.';
+    textarea.placeholder = 'What would you like to ask about this page?';
+  } else {
+    hint.textContent = 'This will open a new GitHub Discussion with your question. No page link will be included.';
+    textarea.placeholder = 'What would you like to ask?';
+  }
+}
+
+function openDiscussion() {
+  var question = document.getElementById('ask-question').value.trim();
+  if (!question) { document.getElementById('ask-question').focus(); return; }
+
+  var isPage = document.querySelector('input[name="ask-type"]:checked').value === 'page';
+  var pageTitle = document.title.replace(' - Fabric Events', '').trim();
+
+  var title = isPage
+    ? encodeURIComponent('Question about ' + pageTitle)
+    : encodeURIComponent(question.length > 60 ? question.substring(0, 60) + '...' : question);
+
+  var bodyText = isPage
+    ? question + '\n\n---\n*Page: ' + window.location.href + '*'
+    : question;
+
+  var url = 'https://github.com/microsoft/fabric-events/discussions/new?category=q-a&title=' + title + '&body=' + encodeURIComponent(bodyText);
+  window.open(url, '_blank');
+  document.getElementById('ask-modal').style.display = 'none';
+  document.getElementById('ask-question').value = '';
+  document.querySelector('input[name="ask-type"][value="page"]').checked = true;
+  updateAskContext('page');
+}
+
+// Close modal on overlay click
+document.getElementById('ask-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+</script>
+{% endblock %}

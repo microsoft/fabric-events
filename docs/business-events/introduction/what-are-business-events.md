@@ -2,6 +2,9 @@
 
 A Business Event represents a significant occurrence or change-in-state that matters to the business. Unlike raw telemetry or diagnostic data, Business Events are intentionally modeled around business outcomes: driving critical decisions, automating workflows, triggering alerts, enabling analytics, and providing real-time context to AI.
 
+!!! note "Official documentation"
+    For the complete API reference and platform overview, see the [Business Events documentation on learn.microsoft.com](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-overview).
+
 ## The core idea
 
 In most data platforms, workloads communicate through **direct calls**: one service invokes another, waits for a response, and fails if the other is unavailable. This creates **tight coupling** that makes systems fragile and hard to evolve.
