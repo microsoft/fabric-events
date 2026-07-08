@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block extrahead %}
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "03c617f3c2ce4e70809697538bd8e52e"}'></script>
+{% endblock %}
+
 {% block announce %}
   🚀 <strong>Building with Fabric Events?</strong> Share your scenario, ask a question, or tell us what to build next —
   <a href="https://www.reddit.com/r/MicrosoftFabric/search/?q=flair%3A%22Real-Time+Intelligence%22+%28%5BBusiness+Events%5D+OR+%5BFabric+Events%5D+OR+%5BAzure+Events%5D%29&restrict_sr=1&sort=new" target="_blank">
