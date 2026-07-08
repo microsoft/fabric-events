@@ -62,7 +62,7 @@ extra:
       link: https://github.com/microsoft/fabric-events/discussions
       name: Join the discussion on GitHub
 
-copyright: 'Made with <span class="heart">&#10084;</span> from the Fabric Events team'
+copyright: 'Built with <span class="heart">&#10084;</span> by the Fabric Events team'
 
 extra_css:
   - stylesheets/extra.css
