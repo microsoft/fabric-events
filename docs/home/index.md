@@ -10,7 +10,7 @@ hide:
 
 Microsoft Fabric offers three event pillars for building event-driven solutions: business signals inside Fabric workloads, platform-level events across Fabric services, and cloud-scale events in Azure. This site is your developer resource for all three.
 
-This site complements the [official documentation](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-overview) with end-to-end scenarios, real code, and community-driven content.
+This site complements the [official documentation](https://learn.microsoft.com/en-us/fabric/real-time-hub/) with end-to-end scenarios, real code, and community-driven content.
 
 ## The three pillars
 
