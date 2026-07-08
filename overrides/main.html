@@ -146,7 +146,7 @@ function openRedditPost() {
 
   var pillar = document.getElementById('reddit-pillar').value;
   var fullTitle = '[' + pillar + '] ' + title;
-  var bodyText = question + '\n\n________________________________________\nAsked from the Fabric Events developer site: https://microsoft.github.io/fabric-events';
+  var bodyText = question + '\n\n>> Asked from the Fabric Events developer site: https://microsoft.github.io/fabric-events';
 
   var url = 'https://www.reddit.com/r/MicrosoftFabric/submit?flair_id=ecd6bad8-fb22-11ed-bcbb-8e4e63079c0e&title=' + encodeURIComponent(fullTitle) + '&text=' + encodeURIComponent(bodyText);
   window.open(url, '_blank');
