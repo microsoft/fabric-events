@@ -37,4 +37,4 @@ Have a question about a specific scenario or pattern? Want to share what you bui
 
 ---
 
-*Made with ❤ from the Fabric Events team*
+*Built with ❤ by the Fabric Events team*
