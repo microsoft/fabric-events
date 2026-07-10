@@ -23,7 +23,7 @@ flowchart LR
     end
 
     subgraph RTH[Real-Time Hub]
-        BE([Business Event\nRetail.Sales.VolumeAlert])
+        BE([Business Event\n'Retail.Sales.VolumeAlert'])
     end
 
     subgraph Consumers

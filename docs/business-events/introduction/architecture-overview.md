@@ -14,9 +14,11 @@ flowchart TB
     end
 
     subgraph RTH[Real-Time Hub]
-        BE1([Retail.Sales.VolumeAlert])
-        BE2([Retail.Inventory.LowStockThreshold])
-        BE3([DataOps.Pipeline.RunCompleted])
+        subgraph ESR[Event Schema Registry]
+            BE1([Business Event\n'Retail.Sales.VolumeAlert'])
+            BE2([Business Event\n'Retail.Inventory.LowStockThreshold'])
+            BE3([Business Event\n'DataOps.Pipeline.RunCompleted'])
+        end
     end
 
     subgraph Consumers
@@ -41,11 +43,14 @@ The **Event Schema Registry** is a platform-level capability in Microsoft Fabric
 
 ```mermaid
 flowchart LR
-    PUB[Publisher] -->|publish event| RTH
+    PUB[Publisher] -->|publish| RTH
     subgraph RTH[Real-Time Hub]
-        ESR[(Event Schema Registry\nEvent Schema Set)] -->|validate| BE([Business Event])
+        subgraph ESR[Event Schema Registry]
+            SS[(Event Schema Set)]
+            SS -->|validate| BE([Business Event\n'Retail.Sales.VolumeAlert'])
+        end
     end
-    BE -->|route| CON[Consumer]
+    BE -->|consume| CON[Consumer]
 ```
 
 Business Events cannot be created directly from the Event Schema Registry. They must be created from **Real-Time Hub → Business Events**. During creation, you can create a new Event Schema Set inline or select an existing one. The Event Schema Registry is the underlying storage; Real-Time Hub → Business Events is the entry point.
@@ -81,7 +86,7 @@ A single Business Event can trigger reactions in multiple consumers simultaneous
 
 ```mermaid
 flowchart LR
-    NB[Notebook] -->|publish| BE([Retail.Sales.VolumeAlert])
+    NB[Notebook] -->|publish| BE([Business Event\n'Retail.Sales.VolumeAlert'])
     BE -->|consume| ACT[Activator\nSend Teams alert]
     BE -->|consume| EH[Eventhouse\nLog for audit]
 ```

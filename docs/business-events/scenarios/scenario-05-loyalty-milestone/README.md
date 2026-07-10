@@ -27,7 +27,7 @@ flowchart LR
     end
 
     subgraph Real-Time Hub
-        BE([Retail.Customer.MilestoneReached\nBusiness Event])
+        BE([Business Event\n'Retail.Customer.MilestoneReached'])
     end
 
     subgraph Consumers
@@ -54,38 +54,38 @@ Before configuring Activator, define the Business Event in Real-Time Hub.
 
     ```json
     {
-      "type": "record",
-      "name": "Retail.Customer.MilestoneReached",
-      "fields": [
+      'type': 'record',
+      'name': 'Retail.Customer.MilestoneReached',
+      'fields': [
         {
-          "name": "customer_id",
-          "type": "string",
-          "doc": "Unique identifier of the customer"
+          'name': 'customer_id',
+          'type': 'string',
+          'doc': "Unique identifier of the customer"
         },
         {
-          "name": "customer_name",
-          "type": "string",
-          "doc": "Full name of the customer"
+          'name': 'customer_name',
+          'type': 'string',
+          'doc': "Full name of the customer"
         },
         {
-          "name": "milestone_tier",
-          "type": "string",
-          "doc": "Loyalty tier reached: silver, gold, or platinum"
+          'name': 'milestone_tier',
+          'type': 'string',
+          'doc': "Loyalty tier reached: silver, gold, or platinum"
         },
         {
-          "name": "total_spend",
-          "type": "float",
-          "doc": "Cumulative spend amount that triggered this milestone"
+          'name': 'total_spend',
+          'type': 'float',
+          'doc': "Cumulative spend amount that triggered this milestone"
         },
         {
-          "name": "store_id",
-          "type": "string",
-          "doc": "Identifier of the store where the milestone was reached"
+          'name': 'store_id',
+          'type': 'string',
+          'doc': "Identifier of the store where the milestone was reached"
         },
         {
-          "name": "detected_at",
-          "type": "string",
-          "doc": "Timestamp when the milestone was detected, ISO 8601 format"
+          'name': 'detected_at',
+          'type': 'string',
+          'doc': "Timestamp when the milestone was detected, ISO 8601 format"
         }
       ]
     }

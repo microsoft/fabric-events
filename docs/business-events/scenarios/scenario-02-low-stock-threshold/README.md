@@ -24,7 +24,7 @@ flowchart LR
 
     subgraph Fabric
         UDF[User Data Function\nWebhook receiver]
-        BE([Retail.Inventory.LowStockThreshold\nBusiness Event])
+        BE([Business Event\n'Retail.Inventory.LowStockThreshold'])
         EH[(Eventhouse\nKQL Database)]
     end
 
@@ -44,43 +44,43 @@ Before publishing any event, define it in Real-Time Hub. Eventhouse integration 
 
     ```json
     {
-      "type": "record",
-      "name": "Retail.Inventory.LowStockThreshold",
-      "fields": [
+      'type': 'record',
+      'name': 'Retail.Inventory.LowStockThreshold',
+      'fields': [
         {
-          "name": "product_id",
-          "type": "string",
-          "doc": "Unique identifier of the product"
+          'name': 'product_id',
+          'type': 'string',
+          'doc': "Unique identifier of the product"
         },
         {
-          "name": "product_name",
-          "type": "string",
-          "doc": "Display name of the product"
+          'name': 'product_name',
+          'type': 'string',
+          'doc': "Display name of the product"
         },
         {
-          "name": "store_id",
-          "type": "string",
-          "doc": "Identifier of the store or warehouse reporting the condition"
+          'name': 'store_id',
+          'type': 'string',
+          'doc': "Identifier of the store or warehouse reporting the condition"
         },
         {
-          "name": "current_stock",
-          "type": "int",
-          "doc": "Current units available at the time of detection"
+          'name': 'current_stock',
+          'type': 'int',
+          'doc': "Current units available at the time of detection"
         },
         {
-          "name": "threshold",
-          "type": "int",
-          "doc": "Minimum stock level that triggered this alert"
+          'name': 'threshold',
+          'type': 'int',
+          'doc': "Minimum stock level that triggered this alert"
         },
         {
-          "name": "supplier_id",
-          "type": "string",
-          "doc": "Identifier of the preferred supplier for reordering"
+          'name': 'supplier_id',
+          'type': 'string',
+          'doc': "Identifier of the preferred supplier for reordering"
         },
         {
-          "name": "detected_at",
-          "type": "string",
-          "doc": "Timestamp when the condition was detected, ISO 8601 format"
+          'name': 'detected_at',
+          'type': 'string',
+          'doc': "Timestamp when the condition was detected, ISO 8601 format"
         }
       ]
     }
@@ -119,7 +119,7 @@ import logging
 udf = fn.UserDataFunctions()
 
 # The alias must match the connection configured in Manage connections
-@udf.connection(argName="businessEventsClient", alias="RetailInventory")
+@udf.connection(argName='businessEventsClient', alias='RetailInventory')
 @udf.function()
 def publish_low_stock_event(
     businessEventsClient: fn.FabricBusinessEventsClient,
@@ -134,19 +134,19 @@ def publish_low_stock_event(
     logging.info("publish_low_stock_event invoked.")
 
     event_data = {
-        "product_id": product_id,
-        "product_name": product_name,
-        "store_id": store_id,
-        "current_stock": current_stock,
-        "threshold": threshold,
-        "supplier_id": supplier_id,
-        "detected_at": detected_at
+        'product_id': product_id,
+        'product_name': product_name,
+        'store_id': store_id,
+        'current_stock': current_stock,
+        'threshold': threshold,
+        'supplier_id': supplier_id,
+        'detected_at': detected_at
     }
 
     businessEventsClient.PublishEvent(
-        type="Retail.Inventory.LowStockThreshold",
+        type='Retail.Inventory.LowStockThreshold',
         event_data=event_data,
-        data_version="v1"
+        data_version='v1'
     )
 
     return "Event 'Retail.Inventory.LowStockThreshold' published successfully"
@@ -220,7 +220,7 @@ With events persisted in Eventhouse, the inventory team can extend the solution 
 
 ```mermaid
 flowchart LR
-    BE([Retail.Inventory.LowStockThreshold]) --> EH[(Eventhouse)]
+    BE([Business Event\n'Retail.Inventory.LowStockThreshold']) --> EH[(Eventhouse)]
     EH --> KQL[KQL queries\nand analysis]
     EH --> RTD[Real-Time Dashboard\nlive operational view]
     EH --> ML[ML model input\npredictive reorder]
