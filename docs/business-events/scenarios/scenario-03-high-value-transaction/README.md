@@ -24,7 +24,7 @@ flowchart LR
 
     subgraph Fabric
         ES[Eventstream\namount > 5000]
-        BE([Retail.Payment.HighValueTransaction\nBusiness Event])
+        BE([Business Event\n'Retail.Payment.HighValueTransaction'])
         ACT{Activator\nRule}
         TEAMS[Teams alert\nFraud review team]
     end
@@ -46,38 +46,38 @@ Before configuring the Eventstream, define the Business Event in Real-Time Hub.
 
     ```json
     {
-      "type": "record",
-      "name": "Retail.Payment.HighValueTransaction",
-      "fields": [
+      'type': 'record',
+      'name': 'Retail.Payment.HighValueTransaction',
+      'fields': [
         {
-          "name": "transaction_id",
-          "type": "string",
-          "doc": "Unique identifier of the payment transaction"
+          'name': 'transaction_id',
+          'type': 'string',
+          'doc': "Unique identifier of the payment transaction"
         },
         {
-          "name": "payment_method",
-          "type": "string",
-          "doc": "Payment method used: credit_card, debit_card, or digital_wallet"
+          'name': 'payment_method',
+          'type': 'string',
+          'doc': "Payment method used: credit_card, debit_card, or digital_wallet"
         },
         {
-          "name": "amount",
-          "type": "float",
-          "doc": "Transaction amount in the store's local currency"
+          'name': 'amount',
+          'type': 'float',
+          'doc': "Transaction amount in the store's local currency"
         },
         {
-          "name": "currency",
-          "type": "string",
-          "doc": "ISO 4217 currency code, for example USD or MXN"
+          'name': 'currency',
+          'type': 'string',
+          'doc': "ISO 4217 currency code, for example USD or MXN"
         },
         {
-          "name": "store_id",
-          "type": "string",
-          "doc": "Identifier of the store where the transaction was processed"
+          'name': 'store_id',
+          'type': 'string',
+          'doc': "Identifier of the store where the transaction was processed"
         },
         {
-          "name": "processed_at",
-          "type": "string",
-          "doc": "Timestamp when the transaction was processed, ISO 8601 format"
+          'name': 'processed_at',
+          'type': 'string',
+          'doc': "Timestamp when the transaction was processed, ISO 8601 format"
         }
       ]
     }
@@ -173,7 +173,7 @@ With the Eventstream filtering the stream and publishing discrete events, any ne
 
 ```mermaid
 flowchart LR
-    BE([Retail.Payment.HighValueTransaction]) --> ACT[Activator]
+    BE([Business Event\n'Retail.Payment.HighValueTransaction']) --> ACT[Activator]
     ACT --> TEAMS[Teams / Email alert]
     ACT --> UDF[User Data Function\ncustom fraud logic]
     ACT --> PA[Power Automate\ncase management]

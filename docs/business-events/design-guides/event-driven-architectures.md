@@ -23,7 +23,7 @@ flowchart LR
     end
 
     subgraph RTH[Real-Time Hub]
-        BE([Business Event\nRetail.Sales.VolumeAlert])
+        BE([Business Event\n'Retail.Sales.VolumeAlert'])
     end
 
     subgraph Reactions
@@ -49,7 +49,7 @@ flowchart LR
     end
 
     subgraph RTH[Real-Time Hub]
-        FE([Fabric Event\nMicrosoft.Fabric.ItemCreateSucceeded])
+        FE([Fabric Event\n'Microsoft.Fabric.ItemCreateSucceeded'])
     end
 
     subgraph Reactions
@@ -73,7 +73,7 @@ flowchart LR
     end
 
     subgraph RTH[Real-Time Hub]
-        AE([Azure Event\nMicrosoft.Storage.BlobCreated])
+        AE([Azure Event\n'Microsoft.Storage.BlobCreated'])
     end
 
     subgraph Reactions

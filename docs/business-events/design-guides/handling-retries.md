@@ -8,7 +8,7 @@ This means retry handling is **fully managed** — you do not need to implement 
 
 ```mermaid
 flowchart LR
-    P[Publisher] -->|Publishes event| BE[Business Events]
+    P[Publisher] -->|Publishes event| BE[Business Event\n'Retail.Inventory.LowStockThreshold']
     BE -->|Delivery attempt| C[Consumer]
     C -->|Delivery fails| BE
     BE -->|Retries automatically\nfor up to 24 hours| C
@@ -26,7 +26,7 @@ Your publish call succeeds as soon as the platform accepts the event. You do not
 ```python
 # This is all you need — no retry wrapper required
 notebookutils.businessEvents.publish(
-    workspace, schema_set, event_type, event_data, dataVersion="v1"
+    workspace, schema_set, event_type, event_data, dataVersion='v1'
 )
 ```
 
