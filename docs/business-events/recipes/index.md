@@ -6,7 +6,6 @@ Recipes are short, focused code snippets that solve one specific task. They are 
 
 | Recipe | Description |
 |--------|-------------|
-| [Filter Events by Field Value](filter-events-by-field-value.md) | Activator condition targeting a specific field |
 | [Chain Two Business Events](chain-two-business-events.md) | Use the output of one event as the trigger for another |
 | [Batch Publish from a Notebook](batch-publish-notebook.md) | Publish multiple events in a single Notebook run |
 | [Batch Publish from a User Data Function](batch-publish-udf.md) | Publish multiple events from a UDF using an array payload |

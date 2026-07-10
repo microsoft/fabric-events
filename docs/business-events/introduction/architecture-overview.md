@@ -29,10 +29,10 @@ flowchart TB
     ES -->|publish| BE3
     ACT_P -->|publish| BE1
 
-    BE1 -->|subscribe| ACT_C
-    BE2 -->|subscribe| ACT_C
-    BE1 -->|subscribe| EH
-    BE3 -->|subscribe| EH
+    BE1 -->|consume| ACT_C
+    BE2 -->|consume| ACT_C
+    BE1 -->|consume| EH
+    BE3 -->|consume| EH
 ```
 
 ## Event Schema Registry
@@ -82,8 +82,8 @@ A single Business Event can trigger reactions in multiple consumers simultaneous
 ```mermaid
 flowchart LR
     NB[Notebook] -->|publish| BE([Retail.Sales.VolumeAlert])
-    BE --> ACT[Activator\nSend Teams alert]
-    BE --> EH[Eventhouse\nLog for audit]
+    BE -->|consume| ACT[Activator\nSend Teams alert]
+    BE -->|consume| EH[Eventhouse\nLog for audit]
 ```
 
 This fan-out pattern is one of the key architectural advantages of Business Events over direct service-to-service calls.
