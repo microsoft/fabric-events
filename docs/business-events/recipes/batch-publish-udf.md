@@ -4,24 +4,26 @@ Publish multiple Business Events in a single User Data Function call by passing 
 
 ## When to use this recipe
 
-Use batch publishing from a UDF when your function processes a collection of items and each item should generate its own event — for example, processing an HTTP request that contains multiple inventory updates at once.
+Use batch publishing from a UDF when your function processes a collection of items and each item should generate its own event — for example, when multiple inventory updates arrive together and each one should produce an independent event.
 
 ## Batch publish with an array payload
 
 The key difference from a single-event publish is that `event_data` is a list of dictionaries instead of a single dictionary:
 
 ```python
-import azure.functions as func
-from fabric.functions import *
+import fabric.functions as fn
+import json
+from datetime import datetime, timezone
 
-udf = UserDataFunctions()
+udf = fn.UserDataFunctions()
 
 @udf.connection(argName="businessEventsClient", alias="RetailInventory")
-@udf.route(trigger=HttpTrigger())
-def batch_publish(req: HttpRequest, businessEventsClient: FabricBusinessEventsClient):
-    from datetime import datetime, timezone
-
-    items = req.get_json()  # expects a list of inventory items
+@udf.function()
+def batch_publish(
+    businessEventsClient: fn.FabricBusinessEventsClient,
+    items_json: str
+) -> str:
+    items = json.loads(items_json)
 
     event_data = [
         {
@@ -40,10 +42,12 @@ def batch_publish(req: HttpRequest, businessEventsClient: FabricBusinessEventsCl
         data_version="v1"
     )
 
-    return HttpResponse(f"Published {len(event_data)} events", status_code=200)
+    return f"Published {len(event_data)} events"
 ```
 
-## Example request payload
+## Example input
+
+Pass a JSON string as the `items_json` parameter when calling the function:
 
 ```json
 [
@@ -56,18 +60,25 @@ def batch_publish(req: HttpRequest, businessEventsClient: FabricBusinessEventsCl
 ## Add error handling
 
 ```python
-@udf.connection(argName="businessEventsClient", alias="RetailInventory")
-@udf.route(trigger=HttpTrigger())
-def batch_publish(req: HttpRequest, businessEventsClient: FabricBusinessEventsClient):
-    from datetime import datetime, timezone
+import fabric.functions as fn
+import json
+from datetime import datetime, timezone
 
+udf = fn.UserDataFunctions()
+
+@udf.connection(argName="businessEventsClient", alias="RetailInventory")
+@udf.function()
+def batch_publish(
+    businessEventsClient: fn.FabricBusinessEventsClient,
+    items_json: str
+) -> str:
     try:
-        items = req.get_json()
-    except ValueError:
-        return HttpResponse("Invalid JSON body", status_code=400)
+        items = json.loads(items_json)
+    except (ValueError, TypeError):
+        return "Invalid JSON input"
 
     if not isinstance(items, list) or len(items) == 0:
-        return HttpResponse("Request body must be a non-empty array", status_code=400)
+        return "Input must be a non-empty array"
 
     event_data = [
         {
@@ -86,7 +97,7 @@ def batch_publish(req: HttpRequest, businessEventsClient: FabricBusinessEventsCl
         data_version="v1"
     )
 
-    return HttpResponse(f"Published {len(event_data)} events", status_code=200)
+    return f"Published {len(event_data)} events"
 ```
 
 ## Considerations

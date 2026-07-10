@@ -33,10 +33,9 @@ When you create a Business Event in Real-Time Hub, you define a schema with type
 | Type | Use for |
 |------|---------|
 | `string` | IDs, names, categories, status values |
-| `integer` | Counts, quantities, ranks |
-| `number` | Prices, percentages, measurements |
+| `int` | Counts, quantities, ranks |
+| `float` | Prices, percentages, measurements |
 | `boolean` | Flags, toggles |
-| `datetime` | Timestamps — always use ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 
 ## CloudEvents under the hood
 
