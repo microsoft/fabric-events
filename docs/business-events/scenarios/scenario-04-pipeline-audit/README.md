@@ -25,7 +25,7 @@ flowchart LR
     end
 
     subgraph Real-Time Hub
-        BE([DataOps.Pipeline.RunCompleted\nBusiness Event])
+        BE([Business Event\n'DataOps.Pipeline.RunCompleted'])
     end
 
     subgraph Eventhouse
@@ -49,48 +49,48 @@ Before publishing any event, define it in Real-Time Hub. Eventhouse integration 
 
     ```json
     {
-      "type": "record",
-      "name": "DataOps.Pipeline.RunCompleted",
-      "fields": [
+      'type': 'record',
+      'name': 'DataOps.Pipeline.RunCompleted',
+      'fields': [
         {
-          "name": "pipeline_id",
-          "type": "string",
-          "doc": "Unique identifier of the pipeline or notebook"
+          'name': 'pipeline_id',
+          'type': 'string',
+          'doc': "Unique identifier of the pipeline or notebook"
         },
         {
-          "name": "pipeline_name",
-          "type": "string",
-          "doc": "Human-readable name of the pipeline or notebook"
+          'name': 'pipeline_name',
+          'type': 'string',
+          'doc': "Human-readable name of the pipeline or notebook"
         },
         {
-          "name": "run_id",
-          "type": "string",
-          "doc": "Unique identifier of this specific run"
+          'name': 'run_id',
+          'type': 'string',
+          'doc': "Unique identifier of this specific run"
         },
         {
-          "name": "status",
-          "type": "string",
-          "doc": "Outcome of the run: completed, failed, or skipped"
+          'name': 'status',
+          'type': 'string',
+          'doc': "Outcome of the run: completed, failed, or skipped"
         },
         {
-          "name": "rows_processed",
-          "type": "int",
-          "doc": "Number of rows processed during this run"
+          'name': 'rows_processed',
+          'type': 'int',
+          'doc': "Number of rows processed during this run"
         },
         {
-          "name": "duration_seconds",
-          "type": "int",
-          "doc": "Total execution time in seconds"
+          'name': 'duration_seconds',
+          'type': 'int',
+          'doc': "Total execution time in seconds"
         },
         {
-          "name": "triggered_by",
-          "type": "string",
-          "doc": "What triggered the run: schedule, manual, or upstream"
+          'name': 'triggered_by',
+          'type': 'string',
+          'doc': "What triggered the run: schedule, manual, or upstream"
         },
         {
-          "name": "completed_at",
-          "type": "string",
-          "doc": "Timestamp when the run completed, ISO 8601 format"
+          'name': 'completed_at',
+          'type': 'string',
+          'doc': "Timestamp when the run completed, ISO 8601 format"
         }
       ]
     }
@@ -120,19 +120,19 @@ import uuid
 from datetime import datetime, timezone
 
 WORKSPACE_NAME = "<your-workspace-name>"
-SCHEMA_SET_NAME = "DataOps"
-EVENT_NAME = "DataOps.Pipeline.RunCompleted"
+SCHEMA_SET_NAME = 'DataOps'
+EVENT_NAME = 'DataOps.Pipeline.RunCompleted'
 
 # Replace with actual values from your notebook execution context
 payload = {
-    "pipeline_id": "nb-ingestion-sales-daily",
-    "pipeline_name": "Sales Daily Ingestion",
-    "run_id": str(uuid.uuid4()),
-    "status": "completed",
-    "rows_processed": 48320,
-    "duration_seconds": 142,
-    "triggered_by": "schedule",
-    "completed_at": datetime.now(timezone.utc).isoformat()
+    'pipeline_id': "nb-ingestion-sales-daily",
+    'pipeline_name': "Sales Daily Ingestion",
+    'run_id': str(uuid.uuid4()),
+    'status': 'completed',
+    'rows_processed': 48320,
+    'duration_seconds': 142,
+    'triggered_by': 'schedule',
+    'completed_at': datetime.now(timezone.utc).isoformat()
 }
 
 # Publish to Business Events
@@ -141,7 +141,7 @@ notebookutils.businessEvents.publish(
     eventSchemaSet=SCHEMA_SET_NAME,
     eventTypeName=EVENT_NAME,
     eventData=payload,
-    dataVersion="v1"
+    dataVersion='v1'
 )
 ```
 
@@ -164,7 +164,7 @@ Open your Eventhouse KQL database and run the following queries to explore the a
 ```kusto
 ['DataOps.Pipeline.RunCompleted']
 | where ingestion_time() > ago(30d)
-| where status == "failed"
+| where status == 'failed'
 | summarize FailureCount = count() by pipeline_name
 | order by FailureCount desc
 ```
@@ -208,7 +208,7 @@ With every pipeline run recorded in Eventhouse, the team can extend the solution
 
 ```mermaid
 flowchart LR
-    BE([DataOps.Pipeline.RunCompleted]) --> EH[(Eventhouse)]
+    BE([Business Event\n'DataOps.Pipeline.RunCompleted']) --> EH[(Eventhouse)]
     EH --> KQL[Audit queries\nand lineage]
     EH --> RTD[Real-Time Dashboard\npipeline health view]
     EH --> ACT[Activator rule\nfailure alert]
