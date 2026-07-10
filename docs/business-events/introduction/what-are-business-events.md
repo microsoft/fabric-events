@@ -23,7 +23,7 @@ flowchart LR
     end
 
     subgraph RTH[Real-Time Hub]
-        BE([Business Event])
+        BE([Business Event\nRetail.Sales.VolumeAlert])
     end
 
     subgraph Consumers
@@ -31,12 +31,12 @@ flowchart LR
         EH[Eventhouse]
     end
 
-    NB --> BE
-    UDF --> BE
-    ES --> BE
-    ACT1 --> BE
-    BE --> ACT2
-    BE --> EH
+    NB -->|publish| BE
+    UDF -->|publish| BE
+    ES -->|publish| BE
+    ACT1 -->|publish| BE
+    BE -->|consume| ACT2
+    BE -->|consume| EH
 ```
 
 ## Key concepts
