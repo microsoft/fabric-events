@@ -12,7 +12,7 @@ Without an event model, these interactions require scheduled triggers, hard-code
 
 ## The three event pillars
 
-**Business Events** are explicitly defined and published by your code. You decide what the event represents, what data it carries, and when it fires.
+**[Business Events](../introduction/what-are-business-events.md)** are explicitly defined and published by your code. You decide what the event represents, what data it carries, and when it fires.
 
 ```mermaid
 flowchart LR
@@ -23,7 +23,7 @@ flowchart LR
     end
 
     subgraph RTH[Real-Time Hub]
-        BE([Business Event])
+        BE([Business Event\nRetail.Sales.VolumeAlert])
     end
 
     subgraph Reactions
@@ -34,11 +34,11 @@ flowchart LR
     NB -->|you publish| BE
     UDF -->|you publish| BE
     ES -->|you publish| BE
-    BE -->|react| ACT
-    BE -->|react| EH
+    BE -->|consume| ACT
+    BE -->|consume| EH
 ```
 
-**Fabric Events** are emitted automatically by the platform. You do not write code to publish them. You only decide how to react when they occur.
+**[Fabric Events](../../fabric-events/index.md)** are emitted automatically by the platform. You do not write code to publish them. You only decide how to react when they occur.
 
 ```mermaid
 flowchart LR
@@ -49,7 +49,7 @@ flowchart LR
     end
 
     subgraph RTH[Real-Time Hub]
-        FE([Fabric Event])
+        FE([Fabric Event\nMicrosoft.Fabric.ItemCreateSucceeded])
     end
 
     subgraph Reactions
@@ -60,11 +60,11 @@ flowchart LR
     JOB -->|platform emits| FE
     CAP -->|platform emits| FE
     ITEM -->|platform emits| FE
-    FE -->|react| ACT
-    FE -->|react| ES
+    FE -->|consume| ACT
+    FE -->|consume| ES
 ```
 
-**Azure Events** connect Fabric workloads to the broader Azure ecosystem. Azure services publish events that Fabric can consume and react to in real time.
+**[Azure Events](../../azure-events/index.md)** connect Fabric workloads to the broader Azure ecosystem. Azure services publish events that Fabric can consume and react to in real time.
 
 ```mermaid
 flowchart LR
@@ -73,7 +73,7 @@ flowchart LR
     end
 
     subgraph RTH[Real-Time Hub]
-        AE([Azure Event])
+        AE([Azure Event\nMicrosoft.Storage.BlobCreated])
     end
 
     subgraph Reactions
@@ -82,18 +82,6 @@ flowchart LR
     end
 
     SA -->|cloud emits| AE
-    AE -->|react| ACT
-    AE -->|react| ES
+    AE -->|consume| ACT
+    AE -->|consume| ES
 ```
-
-## The cost question
-
-A common concern with event-driven architectures is resource overhead: more services, more moving parts, more cost. In practice, the opposite is often true.
-
-| Pattern | Compute behavior |
-|---|---|
-| Polling / scheduled | Runs on a fixed schedule regardless of whether there is work to do |
-| Direct call | Keeps both services coupled and running during the interaction |
-| Event-driven | Each workload activates only when a relevant event occurs |
-
-Event-driven workloads in Fabric consume resources **proportionally to actual activity**. A consumer that reacts to 10 events per day uses a fraction of the compute of a job that polls every 5 minutes around the clock.
