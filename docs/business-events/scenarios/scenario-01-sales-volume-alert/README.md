@@ -23,7 +23,7 @@ flowchart LR
     end
 
     subgraph Real-Time Hub
-        B([Retail.Sales.VolumeAlert\nBusiness Event])
+        B([Business Event\n'Retail.Sales.VolumeAlert'])
     end
 
     subgraph Activator
@@ -47,38 +47,38 @@ Before publishing any event, you need to define it in Real-Time Hub.
 
 ```json
 {
-  "type": "record",
-  "name": "Retail.Sales.VolumeAlert",
-  "fields": [
+  'type': 'record',
+  'name': 'Retail.Sales.VolumeAlert',
+  'fields': [
     {
-      "name": "store_id",
-      "type": "string",
-      "doc": "Unique identifier of the store reporting the alert"
+      'name': 'store_id',
+      'type': 'string',
+      'doc': "Unique identifier of the store reporting the alert"
     },
     {
-      "name": "expected_transactions",
-      "type": "int",
-      "doc": "Expected number of transactions based on historical average"
+      'name': 'expected_transactions',
+      'type': 'int',
+      'doc': "Expected number of transactions based on historical average"
     },
     {
-      "name": "actual_transactions",
-      "type": "int",
-      "doc": "Actual transactions recorded in the current monitoring window"
+      'name': 'actual_transactions',
+      'type': 'int',
+      'doc': "Actual transactions recorded in the current monitoring window"
     },
     {
-      "name": "deviation_pct",
-      "type": "float",
-      "doc": "Percentage deviation from expected volume. Negative means below expected."
+      'name': 'deviation_pct',
+      'type': 'float',
+      'doc': "Percentage deviation from expected volume. Negative means below expected."
     },
     {
-      "name": "window_start",
-      "type": "string",
-      "doc": "Start of the monitoring window in ISO 8601 format"
+      'name': 'window_start',
+      'type': 'string',
+      'doc': "Start of the monitoring window in ISO 8601 format"
     },
     {
-      "name": "severity",
-      "type": "string",
-      "doc": "Alert severity level: low, medium, high"
+      'name': 'severity',
+      'type': 'string',
+      'doc': "Alert severity level: low, medium, high"
     }
   ]
 }
@@ -103,23 +103,23 @@ Replace `WORKSPACE_NAME` with your Fabric workspace name and `SCHEMA_SET_NAME` w
 
 WORKSPACE_NAME = "<your-workspace-name>"
 SCHEMA_SET_NAME = "<your-schema-set-name>"
-EVENT_NAME = "Retail.Sales.VolumeAlert"
+EVENT_NAME = 'Retail.Sales.VolumeAlert'
 
 # Calculate deviation for a store
 store_id = "store-mx-042"
 expected = 1250
 actual = 743
 deviation_pct = round(((actual - expected) / expected) * 100, 2)
-severity = "high" if deviation_pct < -30 else "medium" if deviation_pct < -15 else "low"
+severity = 'high' if deviation_pct < -30 else 'medium' if deviation_pct < -15 else 'low'
 
 # Build the event payload
 payload = {
-    "store_id": store_id,
-    "expected_transactions": expected,
-    "actual_transactions": actual,
-    "deviation_pct": deviation_pct,
-    "window_start": "2024-06-22T09:00:00Z",
-    "severity": severity
+    'store_id': store_id,
+    'expected_transactions': expected,
+    'actual_transactions': actual,
+    'deviation_pct': deviation_pct,
+    'window_start': "2024-06-22T09:00:00Z",
+    'severity': severity
 }
 
 # Publish to Business Events
@@ -128,7 +128,7 @@ notebookutils.businessEvents.publish(
     eventSchemaSet=SCHEMA_SET_NAME,
     eventTypeName=EVENT_NAME,
     eventData=payload,
-    dataVersion="v1"
+    dataVersion='v1'
 )
 ```
 
@@ -181,7 +181,7 @@ When Activator receives the `Retail.Sales.VolumeAlert` event and the rule condit
 
 ```mermaid
 flowchart LR
-    BE([Retail.Sales.VolumeAlert]) -->|rule match| ACT[Activator]
+    BE([Business Event\n'Retail.Sales.VolumeAlert']) -->|rule match| ACT[Activator]
     ACT --> TEAMS[Teams / Email alert]
     ACT --> PA[Power Automate flow]
     ACT --> NB[Notebook]

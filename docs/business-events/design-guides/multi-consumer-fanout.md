@@ -6,7 +6,7 @@ Fanout is a pattern where a single Business Event is consumed by multiple indepe
 
 ```mermaid
 flowchart LR
-    P[Publisher\nNotebook / UDF / Eventstream] -->|publish| BE[Business Event\nRetail.Sales.VolumeAlert]
+    P[Publisher\nNotebook / UDF / Eventstream] -->|publish| BE[Business Event\n'Retail.Sales.VolumeAlert']
     BE -->|consume| A[Activator\nSend Teams alert]
     BE -->|consume| B[Eventhouse\nStore for analytics]
     BE -->|consume| C[Activator\nTrigger reorder pipeline]
@@ -22,7 +22,7 @@ The most common combination — one consumer reacts in real time, another stores
 
 ```mermaid
 flowchart LR
-    P[Publisher] -->|publish| BE[Business Event]
+    P[Publisher] -->|publish| BE[Business Event\n'Retail.Sales.VolumeAlert']
     BE -->|consume| ACT[Activator\nReal-time alert]
     BE -->|consume| EH[Eventhouse\nHistorical analytics]
 ```
@@ -35,7 +35,7 @@ Two Activator consumers with different actions — one notifies a human, another
 
 ```mermaid
 flowchart LR
-    P[Publisher] -->|publish| BE[Business Event]
+    P[Publisher] -->|publish| BE[Business Event\n'Retail.Sales.VolumeAlert']
     BE -->|consume| A1[Activator Rule 1\nSend email notification]
     BE -->|consume| A2[Activator Rule 2\nTrigger Power Automate flow]
 ```
@@ -48,7 +48,7 @@ A single business signal consumed by teams in different domains, each with their
 
 ```mermaid
 flowchart LR
-    P[Publisher\nRetail workload] -->|publish| BE[Business Event\nRetail.Customer.MilestoneReached]
+    P[Publisher\nRetail workload] -->|publish| BE[Business Event\n'Retail.Customer.MilestoneReached']
     BE -->|consume| A[Marketing team\nActivator → loyalty email]
     BE -->|consume| B[Analytics team\nEventhouse → cohort analysis]
     BE -->|consume| C[Finance team\nActivator → discount approval]
