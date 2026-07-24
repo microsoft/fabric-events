@@ -1,4 +1,4 @@
-# Scenario 8: Real-Time Viewer Recommendations
+# Real-Time Viewer Recommendations
 
 **Publisher:** User Data Function | **Consumer:** Activator, Eventhouse
 
