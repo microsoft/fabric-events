@@ -24,7 +24,7 @@ Use this pattern when you want one event to trigger multiple automated actions a
 
 | Scenario | Industry | Publisher | Consumer | Level |
 |----------|----------|-----------|----------|-------|
-| [Business Automation Loop](business-automation-loop.md) | Retail | Activator | Activator | Intermediate |
+| [Customer Loyalty Milestone](customer-loyalty-milestone.md) | Retail | Activator | Activator | Intermediate |
 | [Abandoned Cart Recovery](abandoned-cart-recovery.md) | Ecommerce | User Data Function | Activator, Eventhouse | Intermediate |
 | [Fraud Response Before Fulfillment](fraud-response-before-fulfillment.md) | Finance | User Data Function | Activator, Eventhouse | Advanced |
 | [Real-Time Viewer Recommendations](real-time-viewer-recommendations.md) | Media | User Data Function | Activator, Eventhouse | Advanced |
