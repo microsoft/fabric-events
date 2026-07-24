@@ -1,0 +1,69 @@
+.md-header__button.md-logo {
+  display: none;
+}
+
+/* Full-width layout */
+.md-grid {
+  max-width: 100%;
+  padding: 0 2rem;
+}
+
+.md-content {
+  max-width: 100%;
+}
+
+.md-sidebar--primary {
+  width: 14rem;
+}
+
+.md-sidebar--secondary {
+  width: 14rem;
+}
+
+/* Increase indentation for nav subitems */
+.md-nav--secondary .md-nav__item,
+.md-nav__item .md-nav__item {
+  padding-left: 0.75rem;
+}
+
+/* Visual separator for section titles */
+.md-nav__item--section > .md-nav__link {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-top: 0.4rem;
+}
+
+/* Subtle icon before leaf nav items */
+.md-nav__item:not(.md-nav__item--section) .md-nav__link::before {
+  content: "›";
+  margin-right: 0.35rem;
+  opacity: 0.4;
+  font-size: 0.85em;
+}
+
+/* Red heart in footer */
+.heart {
+  color: #e53e3e;
+}
+
+/* Announcement banner — teal background, always visible */
+.md-banner,
+.md-header__announce,
+[data-md-component="announce"] {
+  background-color: #0D9488 !important;
+}
+
+.md-banner__inner,
+.md-header__announce .md-header__inner,
+[data-md-component="announce"] > * {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+.md-banner__inner a,
+.md-header__announce a,
+[data-md-component="announce"] a {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
