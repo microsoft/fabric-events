@@ -92,10 +92,17 @@ nav:
       - Batch Publish from a User Data Function: business-events/recipes/batch-publish-udf.md
     - Scenarios:
       - Overview: business-events/scenarios/index.md
-      - "Scenario 1: Sales Volume Alert": business-events/scenarios/scenario-01-sales-volume-alert/README.md
-      - "Scenario 2: Low Stock Threshold": business-events/scenarios/scenario-02-low-stock-threshold/README.md
-      - "Scenario 3: Real-Time Stream Alert": business-events/scenarios/scenario-03-high-value-transaction/README.md
-      - "Scenario 4: Data Lineage Audit": business-events/scenarios/scenario-04-pipeline-audit/README.md
-      - "Scenario 5: Business Automation Loop": business-events/scenarios/scenario-05-loyalty-milestone/README.md
+      - Detect & Alert:
+        - Sales Volume Alert: business-events/scenarios/scenario-01-sales-volume-alert/README.md
+        - Real-Time Stream Alert: business-events/scenarios/scenario-03-high-value-transaction/README.md
+      - Decide & Act:
+        - Business Automation Loop: business-events/scenarios/scenario-05-loyalty-milestone/README.md
+        - Abandoned Cart Recovery: business-events/scenarios/scenario-06-abandoned-cart/README.md
+        - Fraud Response Before Fulfillment: business-events/scenarios/scenario-07-fraud-response/README.md
+        - Real-Time Viewer Recommendations: business-events/scenarios/scenario-08-viewer-recommendations/README.md
+        - Shipment Delay Auto-Mitigation: business-events/scenarios/scenario-09-shipment-delay/README.md
+      - Track & Analyze:
+        - Low Stock Threshold: business-events/scenarios/scenario-02-low-stock-threshold/README.md
+        - Data Lineage Audit: business-events/scenarios/scenario-04-pipeline-audit/README.md
   - Fabric Events: fabric-events/index.md
   - Azure Events: azure-events/index.md
