@@ -1,4 +1,4 @@
-# Scenario 3: Real-Time Stream Alert
+# Real-Time Stream Alert
 
 **Publisher:** Eventstream | **Consumer:** Activator
 
