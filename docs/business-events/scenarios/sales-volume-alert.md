@@ -1,4 +1,4 @@
-# Scenario 1: Sales Volume Alert
+# Sales Volume Alert
 
 **Publisher:** Notebook | **Consumer:** Activator
 

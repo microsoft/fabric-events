@@ -1,4 +1,4 @@
-# Scenario 9: Shipment Delay Auto-Mitigation
+# Shipment Delay Auto-Mitigation
 
 **Publisher:** User Data Function | **Consumer:** Activator, Eventhouse
 

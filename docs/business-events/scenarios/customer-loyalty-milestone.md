@@ -1,4 +1,4 @@
-# Scenario 5: Business Automation Loop
+# Customer Loyalty Milestone
 
 **Publisher:** Activator | **Consumer:** Activator
 

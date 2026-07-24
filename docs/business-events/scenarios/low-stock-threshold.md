@@ -1,4 +1,4 @@
-# Scenario 2: Low Stock Threshold
+# Low Stock Threshold
 
 **Publisher:** User Data Function | **Consumer:** Eventhouse
 
