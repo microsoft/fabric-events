@@ -1,4 +1,4 @@
-# Scenario 6: Abandoned Cart Recovery
+# Abandoned Cart Recovery
 
 **Publisher:** User Data Function | **Consumer:** Activator, Eventhouse
 

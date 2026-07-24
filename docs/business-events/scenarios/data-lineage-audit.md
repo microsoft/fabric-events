@@ -1,4 +1,4 @@
-# Scenario 4: Data Lineage Audit
+# Data Lineage Audit
 
 **Publisher:** Notebook | **Consumer:** Eventhouse
 
