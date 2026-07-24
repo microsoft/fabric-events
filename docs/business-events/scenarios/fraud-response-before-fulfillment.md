@@ -1,4 +1,4 @@
-# Scenario 7: Fraud Response Before Fulfillment
+# Fraud Response Before Fulfillment
 
 **Publisher:** User Data Function | **Consumer:** Activator, Eventhouse
 
