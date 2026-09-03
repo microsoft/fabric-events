@@ -63,38 +63,38 @@ This scenario uses two Business Events. Create both in Real-Time Hub before writ
 
     ```json
     {
-      'type': 'record',
-      'name': 'Ecommerce.Order.HighRiskDetected',
-      'fields': [
+      "type": "record",
+      "name": "Ecommerce.Order.HighRiskDetected",
+      "fields": [
         {
-          'name': 'order_id',
-          'type': 'string',
-          'doc': "Unique identifier of the order under review"
+          "name": "order_id",
+          "type": "string",
+          "doc": "Unique identifier of the order under review"
         },
         {
-          'name': 'customer_id',
-          'type': 'string',
-          'doc': "Identifier of the customer who placed the order"
+          "name": "customer_id",
+          "type": "string",
+          "doc": "Identifier of the customer who placed the order"
         },
         {
-          'name': 'risk_score',
-          'type': 'float',
-          'doc': "Computed fraud risk score between 0.0 (low) and 1.0 (high)"
+          "name": "risk_score",
+          "type": "float",
+          "doc": "Computed fraud risk score between 0.0 (low) and 1.0 (high)"
         },
         {
-          'name': 'amount',
-          'type': 'float',
-          'doc': "Total order amount in the store local currency"
+          "name": "amount",
+          "type": "float",
+          "doc": "Total order amount in the store local currency"
         },
         {
-          'name': 'payment_method',
-          'type': 'string',
-          'doc': "Payment method: credit_card, debit_card, or digital_wallet"
+          "name": "payment_method",
+          "type": "string",
+          "doc": "Payment method: credit_card, debit_card, or digital_wallet"
         },
         {
-          'name': 'detected_at',
-          'type': 'string',
-          'doc': "ISO 8601 timestamp of when the risk condition was detected"
+          "name": "detected_at",
+          "type": "string",
+          "doc": "ISO 8601 timestamp of when the risk condition was detected"
         }
       ]
     }
@@ -110,33 +110,33 @@ This scenario uses two Business Events. Create both in Real-Time Hub before writ
 
     ```json
     {
-      'type': 'record',
-      'name': 'Ecommerce.Order.FraudDecision',
-      'fields': [
+      "type": "record",
+      "name": "Ecommerce.Order.FraudDecision",
+      "fields": [
         {
-          'name': 'order_id',
-          'type': 'string',
-          'doc': "Unique identifier of the order"
+          "name": "order_id",
+          "type": "string",
+          "doc": "Unique identifier of the order"
         },
         {
-          'name': 'customer_id',
-          'type': 'string',
-          'doc': "Identifier of the customer who placed the order"
+          "name": "customer_id",
+          "type": "string",
+          "doc": "Identifier of the customer who placed the order"
         },
         {
-          'name': 'risk_score',
-          'type': 'float',
-          'doc': "Fraud risk score used to make this decision"
+          "name": "risk_score",
+          "type": "float",
+          "doc": "Fraud risk score used to make this decision"
         },
         {
-          'name': 'decision',
-          'type': 'string',
-          'doc': "Decision outcome: hold, manual_review, or release"
+          "name": "decision",
+          "type": "string",
+          "doc": "Decision outcome: hold, manual_review, or release"
         },
         {
-          'name': 'decided_at',
-          'type': 'string',
-          'doc': "ISO 8601 timestamp of when the decision was made"
+          "name": "decided_at",
+          "type": "string",
+          "doc": "ISO 8601 timestamp of when the decision was made"
         }
       ]
     }
