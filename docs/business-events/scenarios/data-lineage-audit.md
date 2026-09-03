@@ -49,48 +49,48 @@ Before publishing any event, define it in Real-Time Hub. Eventhouse integration 
 
     ```json
     {
-      'type': 'record',
-      'name': 'DataOps.Pipeline.RunCompleted',
-      'fields': [
+      "type": "record",
+      "name": "DataOps.Pipeline.RunCompleted",
+      "fields": [
         {
-          'name': 'pipeline_id',
-          'type': 'string',
-          'doc': "Unique identifier of the pipeline or notebook"
+          "name": "pipeline_id",
+          "type": "string",
+          "doc": "Unique identifier of the pipeline or notebook"
         },
         {
-          'name': 'pipeline_name',
-          'type': 'string',
-          'doc': "Human-readable name of the pipeline or notebook"
+          "name": "pipeline_name",
+          "type": "string",
+          "doc": "Human-readable name of the pipeline or notebook"
         },
         {
-          'name': 'run_id',
-          'type': 'string',
-          'doc': "Unique identifier of this specific run"
+          "name": "run_id",
+          "type": "string",
+          "doc": "Unique identifier of this specific run"
         },
         {
-          'name': 'status',
-          'type': 'string',
-          'doc': "Outcome of the run: completed, failed, or skipped"
+          "name": "status",
+          "type": "string",
+          "doc": "Outcome of the run: completed, failed, or skipped"
         },
         {
-          'name': 'rows_processed',
-          'type': 'int',
-          'doc': "Number of rows processed during this run"
+          "name": "rows_processed",
+          "type": "int",
+          "doc": "Number of rows processed during this run"
         },
         {
-          'name': 'duration_seconds',
-          'type': 'int',
-          'doc': "Total execution time in seconds"
+          "name": "duration_seconds",
+          "type": "int",
+          "doc": "Total execution time in seconds"
         },
         {
-          'name': 'triggered_by',
-          'type': 'string',
-          'doc': "What triggered the run: schedule, manual, or upstream"
+          "name": "triggered_by",
+          "type": "string",
+          "doc": "What triggered the run: schedule, manual, or upstream"
         },
         {
-          'name': 'completed_at',
-          'type': 'string',
-          'doc': "Timestamp when the run completed, ISO 8601 format"
+          "name": "completed_at",
+          "type": "string",
+          "doc": "Timestamp when the run completed, ISO 8601 format"
         }
       ]
     }

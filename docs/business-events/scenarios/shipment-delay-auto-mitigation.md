@@ -56,43 +56,43 @@ flowchart LR
 
     ```json
     {
-      'type': 'record',
-      'name': 'Supply.Chain.ShipmentDelayed',
-      'fields': [
+      "type": "record",
+      "name": "Supply.Chain.ShipmentDelayed",
+      "fields": [
         {
-          'name': 'shipment_id',
-          'type': 'string',
-          'doc': "Unique identifier of the delayed shipment"
+          "name": "shipment_id",
+          "type": "string",
+          "doc": "Unique identifier of the delayed shipment"
         },
         {
-          'name': 'order_id',
-          'type': 'string',
-          'doc': "Identifier of the order associated with this shipment"
+          "name": "order_id",
+          "type": "string",
+          "doc": "Identifier of the order associated with this shipment"
         },
         {
-          'name': 'route_id',
-          'type': 'string',
-          'doc': "Identifier of the current shipping route"
+          "name": "route_id",
+          "type": "string",
+          "doc": "Identifier of the current shipping route"
         },
         {
-          'name': 'carrier_id',
-          'type': 'string',
-          'doc': "Identifier of the carrier responsible for the shipment"
+          "name": "carrier_id",
+          "type": "string",
+          "doc": "Identifier of the carrier responsible for the shipment"
         },
         {
-          'name': 'delay_minutes',
-          'type': 'int',
-          'doc': "Estimated delay in minutes relative to the original SLA"
+          "name": "delay_minutes",
+          "type": "int",
+          "doc": "Estimated delay in minutes relative to the original SLA"
         },
         {
-          'name': 'sla_breach',
-          'type': 'boolean',
-          'doc': "True if the delay results in an SLA breach"
+          "name": "sla_breach",
+          "type": "boolean",
+          "doc": "True if the delay results in an SLA breach"
         },
         {
-          'name': 'detected_at',
-          'type': 'string',
-          'doc': "ISO 8601 timestamp of when the delay was detected"
+          "name": "detected_at",
+          "type": "string",
+          "doc": "ISO 8601 timestamp of when the delay was detected"
         }
       ]
     }

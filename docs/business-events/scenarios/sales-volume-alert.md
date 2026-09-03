@@ -47,38 +47,38 @@ Before publishing any event, you need to define it in Real-Time Hub.
 
 ```json
 {
-  'type': 'record',
-  'name': 'Retail.Sales.VolumeAlert',
-  'fields': [
+  "type": "record",
+  "name": "Retail.Sales.VolumeAlert",
+  "fields": [
     {
-      'name': 'store_id',
-      'type': 'string',
-      'doc': "Unique identifier of the store reporting the alert"
+      "name": "store_id",
+      "type": "string",
+      "doc": "Unique identifier of the store reporting the alert"
     },
     {
-      'name': 'expected_transactions',
-      'type': 'int',
-      'doc': "Expected number of transactions based on historical average"
+      "name": "expected_transactions",
+      "type": "int",
+      "doc": "Expected number of transactions based on historical average"
     },
     {
-      'name': 'actual_transactions',
-      'type': 'int',
-      'doc': "Actual transactions recorded in the current monitoring window"
+      "name": "actual_transactions",
+      "type": "int",
+      "doc": "Actual transactions recorded in the current monitoring window"
     },
     {
-      'name': 'deviation_pct',
-      'type': 'float',
-      'doc': "Percentage deviation from expected volume. Negative means below expected."
+      "name": "deviation_pct",
+      "type": "float",
+      "doc": "Percentage deviation from expected volume. Negative means below expected."
     },
     {
-      'name': 'window_start',
-      'type': 'string',
-      'doc': "Start of the monitoring window in ISO 8601 format"
+      "name": "window_start",
+      "type": "string",
+      "doc": "Start of the monitoring window in ISO 8601 format"
     },
     {
-      'name': 'severity',
-      'type': 'string',
-      'doc': "Alert severity level: low, medium, high"
+      "name": "severity",
+      "type": "string",
+      "doc": "Alert severity level: low, medium, high"
     }
   ]
 }
