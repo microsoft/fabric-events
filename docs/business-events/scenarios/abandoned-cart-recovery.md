@@ -55,38 +55,38 @@ Before publishing any event, define it in Real-Time Hub. Enable Eventhouse integ
 
     ```json
     {
-      'type': 'record',
-      'name': 'Ecommerce.Cart.Abandoned',
-      'fields': [
+      "type": "record",
+      "name": "Ecommerce.Cart.Abandoned",
+      "fields": [
         {
-          'name': 'customer_id',
-          'type': 'string',
-          'doc': "Unique identifier of the customer"
+          "name": "customer_id",
+          "type": "string",
+          "doc": "Unique identifier of the customer"
         },
         {
-          'name': 'customer_email',
-          'type': 'string',
-          'doc': "Customer email address for recovery communication"
+          "name": "customer_email",
+          "type": "string",
+          "doc": "Customer email address for recovery communication"
         },
         {
-          'name': 'cart_id',
-          'type': 'string',
-          'doc': "Unique identifier of the abandoned cart"
+          "name": "cart_id",
+          "type": "string",
+          "doc": "Unique identifier of the abandoned cart"
         },
         {
-          'name': 'cart_value',
-          'type': 'float',
-          'doc': "Total value of items in the cart at time of abandonment"
+          "name": "cart_value",
+          "type": "float",
+          "doc": "Total value of items in the cart at time of abandonment"
         },
         {
-          'name': 'item_count',
-          'type': 'int',
-          'doc': "Number of distinct items in the cart"
+          "name": "item_count",
+          "type": "int",
+          "doc": "Number of distinct items in the cart"
         },
         {
-          'name': 'last_activity_at',
-          'type': 'string',
-          'doc': "ISO 8601 timestamp of the last customer cart interaction"
+          "name": "last_activity_at",
+          "type": "string",
+          "doc": "ISO 8601 timestamp of the last customer cart interaction"
         }
       ]
     }

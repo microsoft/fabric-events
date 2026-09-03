@@ -44,43 +44,43 @@ Before publishing any event, define it in Real-Time Hub. Eventhouse integration 
 
     ```json
     {
-      'type': 'record',
-      'name': 'Retail.Inventory.LowStockThreshold',
-      'fields': [
+      "type": "record",
+      "name": "Retail.Inventory.LowStockThreshold",
+      "fields": [
         {
-          'name': 'product_id',
-          'type': 'string',
-          'doc': "Unique identifier of the product"
+          "name": "product_id",
+          "type": "string",
+          "doc": "Unique identifier of the product"
         },
         {
-          'name': 'product_name',
-          'type': 'string',
-          'doc': "Display name of the product"
+          "name": "product_name",
+          "type": "string",
+          "doc": "Display name of the product"
         },
         {
-          'name': 'store_id',
-          'type': 'string',
-          'doc': "Identifier of the store or warehouse reporting the condition"
+          "name": "store_id",
+          "type": "string",
+          "doc": "Identifier of the store or warehouse reporting the condition"
         },
         {
-          'name': 'current_stock',
-          'type': 'int',
-          'doc': "Current units available at the time of detection"
+          "name": "current_stock",
+          "type": "int",
+          "doc": "Current units available at the time of detection"
         },
         {
-          'name': 'threshold',
-          'type': 'int',
-          'doc': "Minimum stock level that triggered this alert"
+          "name": "threshold",
+          "type": "int",
+          "doc": "Minimum stock level that triggered this alert"
         },
         {
-          'name': 'supplier_id',
-          'type': 'string',
-          'doc': "Identifier of the preferred supplier for reordering"
+          "name": "supplier_id",
+          "type": "string",
+          "doc": "Identifier of the preferred supplier for reordering"
         },
         {
-          'name': 'detected_at',
-          'type': 'string',
-          'doc': "Timestamp when the condition was detected, ISO 8601 format"
+          "name": "detected_at",
+          "type": "string",
+          "doc": "Timestamp when the condition was detected, ISO 8601 format"
         }
       ]
     }
