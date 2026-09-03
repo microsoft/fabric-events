@@ -50,33 +50,33 @@ flowchart LR
 
     ```json
     {
-      'type': 'record',
-      'name': 'Streaming.Viewer.BehaviorDetected',
-      'fields': [
+      "type": "record",
+      "name": "Streaming.Viewer.BehaviorDetected",
+      "fields": [
         {
-          'name': 'viewer_id',
-          'type': 'string',
-          'doc': "Unique identifier of the viewer"
+          "name": "viewer_id",
+          "type": "string",
+          "doc": "Unique identifier of the viewer"
         },
         {
-          'name': 'session_id',
-          'type': 'string',
-          'doc': "Identifier of the current streaming session"
+          "name": "session_id",
+          "type": "string",
+          "doc": "Identifier of the current streaming session"
         },
         {
-          'name': 'content_id',
-          'type': 'string',
-          'doc': "Identifier of the content being interacted with"
+          "name": "content_id",
+          "type": "string",
+          "doc": "Identifier of the content being interacted with"
         },
         {
-          'name': 'action',
-          'type': 'string',
-          'doc': "Type of interaction: click, search, watch, skip, or like"
+          "name": "action",
+          "type": "string",
+          "doc": "Type of interaction: click, search, watch, skip, or like"
         },
         {
-          'name': 'occurred_at',
-          'type': 'string',
-          'doc': "ISO 8601 timestamp of the viewer interaction"
+          "name": "occurred_at",
+          "type": "string",
+          "doc": "ISO 8601 timestamp of the viewer interaction"
         }
       ]
     }
