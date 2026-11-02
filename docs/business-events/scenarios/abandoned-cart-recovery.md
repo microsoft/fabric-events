@@ -4,20 +4,20 @@
 
 ## Business context
 
-An ecommerce company loses significant revenue when customers add products to their cart but do not complete checkout. Most recovery strategies rely on scheduled batch jobs that fire hours after the abandonment occurs, long after the customer's intent has faded.
+An ecommerce company already detects abandoned carts in its storefront and uses recovery campaigns to encourage customers to complete checkout. Marketing needs to act while an offer is still relevant, and analytics needs to measure which responses lead to purchases.
 
-A User Data Function receives a real-time webhook from the storefront whenever a cart is abandoned. It retrieves the customer profile, evaluates eligibility for a recovery offer, and publishes a `Ecommerce.Cart.Abandoned` Business Event. Activator sends a personalized recovery email immediately. Eventhouse stores every event for conversion analytics.
+A User Data Function receives a webhook when the storefront identifies an abandoned cart. It retrieves the customer profile, evaluates offer eligibility, and publishes an `Ecommerce.Cart.Abandoned` Business Event. Activator initiates the recovery response, and Eventhouse stores received events for conversion analytics.
 
 **The problem without Business Events:**
-The User Data Function would need to call the email service, the CRM follow-up API, and the analytics store directly. Each integration is a hard dependency. Changing the recovery channel — from email to push notification, for example — requires modifying the function code.
+Recovery can use existing campaigns and integrations. The scaling challenge is sharing the same abandonment and eligibility context with email, CRM, and analytics without embedding each channel's behavior in the function.
 
 **The solution with Business Events:**
-The User Data Function publishes one event. Activator delivers the personalized offer independently. The CRM follow-up is a separate Activator rule. A new recovery channel is a new subscription, not a code change.
+The function publishes one event contract for the detected abandonment. Separate Activator rules handle the offer and CRM follow-up. Another channel can reuse that context without changing the publisher, provided it does not require additional fields or a different eligibility decision.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph External
         EC[Ecommerce\nStorefront]
     end

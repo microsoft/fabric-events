@@ -1,6 +1,6 @@
 # Decision Guide
 
-Microsoft Fabric Real-Time Intelligence offers multiple ways to connect workloads and move data between services. Use this guide to choose the right approach for your scenario.
+Microsoft Fabric Real-Time Intelligence offers multiple ways to detect conditions, move data, and trigger responses. Start with what your existing implementation already does, then decide whether you also need a shared event contract. These capabilities can work together rather than replace one another.
 
 ## Capabilities at a glance
 
@@ -29,13 +29,16 @@ flowchart TD
 - A Notebook finishes a transformation and Activator or Eventhouse need to react
 - A threshold condition is detected and multiple consumers need to be notified independently
 - You want to add a new consumer without modifying the publisher
-- You need a schema contract that enforces what data the event carries
+- Multiple teams need a common representation of the same detected business condition
+- You need an explicit schema contract for the data the event carries
 
 **Use Eventstream when:**
 
 - You are ingesting continuous data from IoT sensors, event producers, or external systems
 - You need to process or route high-volume data streams in real time
-- The data is a stream, not a discrete signal
+- You need to process raw records before deciding which business conditions matter
+
+Eventstream can also publish a Business Event when its processing detects a meaningful condition. The stream carries the underlying records; the Business Event represents the finding that other teams need.
 
 **Use Activator directly when:**
 

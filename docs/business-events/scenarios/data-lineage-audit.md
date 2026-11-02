@@ -6,13 +6,13 @@
 
 A data engineering team runs a series of daily notebooks in Microsoft Fabric that ingest, transform, and load data across multiple domains. Each run must be auditable: when it ran, what it processed, whether it succeeded or failed, and who or what triggered it.
 
-Without a centralized event record, the team relies on scattered logs across individual notebooks, making it difficult to trace lineage, identify recurring failures, or satisfy compliance requirements.
+The notebooks already produce operational logs. The team also needs a consistent run-completion record across domains so it can compare outcomes and investigate recurring failures without interpreting a different log format for each notebook.
 
 **The problem without Business Events:**
-Each notebook would need to write audit records to a different store (Lakehouse table, log file, external API), creating inconsistent schemas and fragmented lineage data.
+A shared logging library or audit table can already centralize these records. The challenge is maintaining a common run-completion contract as more notebooks and consumers participate, rather than coupling each notebook to every reporting destination.
 
 **The solution with Business Events:**
-Every notebook publishes a `DataOps.Pipeline.RunCompleted` event at the end of its execution. Eventhouse stores every event automatically using a consistent schema, giving the team a unified, queryable audit trail across all pipelines.
+Each notebook publishes a `DataOps.Pipeline.RunCompleted` event using the same schema. With Eventhouse integration enabled, received events form a queryable record of reported runs. This complements operational logs; it does not by itself provide complete lineage or establish compliance.
 
 ## Architecture
 

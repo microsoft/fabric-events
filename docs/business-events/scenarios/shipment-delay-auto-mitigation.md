@@ -4,48 +4,61 @@
 
 ## Business context
 
-A logistics company manages thousands of shipments per day across multiple carriers and routes. When a delay is detected, the standard response requires a human to identify the affected order, assess available inventory and alternate routes, notify the customer, and log the incident — a process that can take hours and routinely results in SLA breaches.
+A logistics company already tracks shipments across carriers and routes. When its supply chain system detects a delay, operations needs to assess the affected order, available inventory, alternate routes, and customer commitments while there is still time to reduce the impact.
 
-A User Data Function receives a delay signal from the supply chain system, retrieves order, inventory, route, and SLA context from Fabric, calls an AI model to generate a mitigation plan, and publishes a `Supply.Chain.ShipmentDelayed` Business Event. Three independent Activator rules act on the event: one reroutes the shipment, one reallocates inventory, and one notifies the customer. Eventhouse stores the full delay record for SLA reporting and route performance analysis.
+A User Data Function receives the delay signal, retrieves order, inventory, route, and SLA context from Fabric, calls an AI model to generate a mitigation plan, and publishes a `Supply.Chain.ShipmentDelayed` Business Event. Three independent Activator rules use the event for rerouting, inventory reallocation, and customer notification. Eventhouse records received events for SLA reporting and route performance analysis.
 
 **The problem without Business Events:**
-The User Data Function would need to call the routing system, the inventory system, the customer notification API, and the audit store directly. Adding a new mitigation action — escalating to a carrier account manager, for example — requires modifying the function code and redeploying.
+Existing tracking and mitigation tools can handle individual delays. As more teams need the finding, embedding each response in the function couples delay interpretation to routing, inventory, notification, and audit integrations.
 
 **The solution with Business Events:**
-The function publishes one delay event carrying the full mitigation context. Each action is an independent Activator rule. A new mitigation step is a new subscription, not a code change.
+The function shares the delay and mitigation context through one event contract. Each response is configured separately in Activator, so a new consumer can reuse the finding without changing detection. Coordinating potentially conflicting mitigation actions remains a responsibility of the consuming workflows.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
-    subgraph External
-        SC[Supply Chain\nSystems]
+flowchart TB
+    subgraph External["Source"]
+        SC["Supply chain systems"]
     end
 
-    subgraph Fabric
-        UDF[User Data Function\nDelay mitigator]
-        FA[(Fabric Data + AI\nOrders, inventory, routes,\nSLA rules, AI model)]
-        BE([Business Event\n'Supply.Chain.ShipmentDelayed'])
+    subgraph Detection["Enrich the detected delay"]
+        FA[("Fabric Data + AI<br/>Mitigation context")]
+        UDF["User Data Function<br/>Delay mitigator"]
     end
 
-    subgraph Consumers
-        ACT1{Activator\nReroute rule}
-        ACT2{Activator\nReallocate rule}
-        ACT3{Activator\nNotify rule}
-        EH[(Eventhouse\nSLA analytics)]
-    end
+    BE(["Business Event<br/>Shipment delayed"])
+
+    ACT1{"Activator<br/>Reroute rule"}
+    ACT2{"Activator<br/>Reallocate rule"}
+    ACT3{"Activator<br/>Notify rule"}
+    ROUTE["Reroute shipment"]
+    INV["Reallocate inventory"]
+    CUST["Notify customer"]
+
+    EH[("Eventhouse<br/>SLA analytics")]
 
     SC -->|Delay webhook| UDF
-    FA -.->|context + mitigation plan| UDF
+    FA -->|Context + mitigation plan| UDF
     UDF -->|Publish event| BE
     BE --> ACT1
     BE --> ACT2
     BE --> ACT3
     BE --> EH
-    ACT1 --> ROUTE[Reroute\nshipment]
-    ACT2 --> INV[Reallocate\ninventory]
-    ACT3 --> CUST[Notify\ncustomer]
+    ACT1 --> ROUTE
+    ACT2 --> INV
+    ACT3 --> CUST
 ```
+
+Arrows show data flow. The event is published and consumed asynchronously; the three response branches are independent, not a prescribed sequence. Data and AI enrichment belong to the publisher, not the event-delivery path.
+
+| Component | Contract or responsibility |
+|---|---|
+| Fabric Data + AI | Orders, inventory, routes, SLA rules, and the AI model used to generate a mitigation plan |
+| User Data Function | Enriches the detected delay and publishes the event |
+| Shipment delayed | `Supply.Chain.ShipmentDelayed` |
+| Activator rules | Invoke separate rerouting, inventory reallocation, and customer notification workflows |
+| Eventhouse | Stores received events for SLA reporting and route performance analysis |
 
 ## Step 1: Create the Business Event
 
