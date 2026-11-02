@@ -4,20 +4,20 @@
 
 ## Business context
 
-A retail company receives inventory updates from an external warehouse management system (WMS). When a product's stock drops below the reorder threshold, the WMS sends a webhook to a User Data Function in Microsoft Fabric. The function normalizes the payload and publishes a `Retail.Inventory.LowStockThreshold` Business Event.
+A retail company already uses an external warehouse management system (WMS) to track stock and detect when a product falls below its reorder threshold. The inventory team needs a consistent record of these occurrences to identify recurring shortages and inform replenishment decisions.
 
-Eventhouse automatically stores every event as a queryable record. The inventory team uses KQL to identify which products breach thresholds most frequently, track patterns over time, and build reorder predictions.
+The WMS sends a webhook to a User Data Function in Microsoft Fabric. The function normalizes the payload and publishes a `Retail.Inventory.LowStockThreshold` Business Event. With Eventhouse integration enabled, the team can query received events using KQL and compare patterns across products and stores.
 
 **The problem without Business Events:**
-The User Data Function would need to call the inventory system, the analytics store, and any notification service directly. Each integration is a hard dependency that breaks if the downstream system changes.
+The WMS can continue detecting low stock, and existing integrations can continue responding. The sharing challenge is agreeing on one low-stock contract rather than creating a different payload and integration for each new consumer.
 
 **The solution with Business Events:**
-The User Data Function publishes one event. Eventhouse stores it automatically. Any additional consumer can be added later without touching the function.
+The User Data Function publishes the detected condition using a shared schema, and Eventhouse stores received events for analysis. Other consumers can use the same contract without replacing WMS detection or adding a separate call to the function for each response.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph External
         WMS[Warehouse\nManagement System]
     end

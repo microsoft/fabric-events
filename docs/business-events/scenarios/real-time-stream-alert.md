@@ -6,18 +6,18 @@
 
 A retail company processes a continuous stream of payment transactions from multiple stores and channels. Most transactions are routine, but high-value transactions above a defined threshold require immediate review by the fraud team.
 
-Monitoring every transaction individually is not practical. Eventstream evaluates each record in the stream, applies a filter condition, and publishes a `Retail.Payment.HighValueTransaction` Business Event only when the threshold is exceeded. Activator subscribes to that event and notifies the fraud review team in real time.
+Eventstream already evaluates the transaction stream and can identify records above the threshold. This scenario publishes that finding as a `Retail.Payment.HighValueTransaction` Business Event so the fraud team can review the transaction and other consumers can reuse the same signal. A high value indicates a review condition, not proof of fraud.
 
 **The problem without Business Events:**
-Eventstream would need to route the filtered data directly to a notification endpoint, creating a hard dependency between the stream pipeline and the alerting system. Any change to the notification channel requires modifying the Eventstream configuration.
+A direct Activator rule on the stream may be sufficient for one alert. When more teams need the high-value signal, separate filters and integrations can duplicate its definition and make threshold changes harder to coordinate.
 
 **The solution with Business Events:**
-Eventstream publishes one event when the condition is met. Activator subscribes independently. The stream pipeline does not need to change when the alert destination changes.
+Eventstream keeps the filter and publishes the matching transaction through a named contract. Activator uses that event for the review notification. Additional consumers can reuse the signal without reproducing the filter or adding alert-channel logic to the publisher.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Sources
         PS[Payment\nTransaction Stream]
     end

@@ -4,20 +4,20 @@
 
 ## Business context
 
-A retail company tracks customer spending across all stores. When a customer crosses a loyalty milestone (say, $5,000 in cumulative spend), three things need to happen: marketing sends a personalized reward, the analytics team logs the milestone in Eventhouse, and the CRM is updated with the customer's new loyalty tier.
+A retail company already tracks cumulative customer spending across stores. When a customer reaches a loyalty milestone, such as $5,000 in spend, marketing needs to issue a reward, analytics needs to record the occurrence, and the CRM needs the new loyalty tier.
 
-The challenge is that each team owns a different system and works on a different schedule. If all three are wired into the same Activator rule, any change by one team risks breaking the others. The teams end up coordinating every update instead of working independently.
+Each team owns a different system and response. They need a consistent definition of the milestone without having to reproduce the spending threshold in every application or coordinate every downstream update through the detection rule.
 
 **The problem without Business Events:**
-The only option is a single Activator rule that calls the Power Automate reward flow, writes to Eventhouse, and updates the CRM, all from the same place. When marketing wants to change the reward template, someone has to open the rule. When analytics wants to add a field to the Eventhouse table, someone has to open the rule. One misconfiguration and the milestone goes undetected for every team at once.
+A shared rule or existing integrations can deliver the first implementation. If detection and all responses are maintained together, adding a team or changing a response requires coordination with the owner of that implementation. Separate detection rules can instead drift in their interpretation of the milestone.
 
 **The solution with Business Events:**
-Activator detects the milestone and publishes a single `Retail.Customer.MilestoneReached` event. Each team sets up their own subscription. Marketing, analytics, and CRM each receive the same event and act on it independently. The detection logic stays untouched no matter how many teams subscribe or what they do with the event.
+Activator keeps detecting the milestone and publishes a `Retail.Customer.MilestoneReached` event. Marketing and CRM responses use independent Activator rules, and Eventhouse records received events for analytics. Teams can add responses using the existing contract without changing detection; changes to the milestone definition still require agreement.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Eventhouse
         KQL[KQL Query\nCumulative spend\nper customer]
     end
@@ -181,4 +181,3 @@ Trigger the flow manually by running the KQL query with a customer that meets th
 ## Why this matters
 
 Each team controls their own subscription. Marketing can update the reward flow without involving analytics or CRM. Analytics can change the destination table without touching the detection rule. Adding a new team — a customer success manager who wants a Teams notification, for example — means creating one new subscription, nothing else.
-
