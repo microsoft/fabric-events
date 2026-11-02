@@ -9,7 +9,7 @@ Use event chaining when a business process has sequential stages and each stage 
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     P1[Publisher\nNotebook] -->|Publishes| E1[Business Event A\nOrder.Processing.Completed]
     E1 --> ACT[Activator\nMonitors Event A]
     ACT -->|Condition met| P2[Activator publishes]

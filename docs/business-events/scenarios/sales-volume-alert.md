@@ -6,18 +6,18 @@
 
 A retail company runs daily sales processing in Microsoft Fabric. Each store is expected to process a baseline number of transactions per hour based on historical data. If a store's transaction volume drops significantly below its expected baseline, it may indicate a failure in the point-of-sale integration, not a natural slowdown.
 
-The operations team needs to be notified automatically when this condition is detected, without relying on a human to monitor dashboards.
+The notebook already compares actual volume with the baseline. Operations needs that finding in time to investigate a possible integration failure, and other teams may need the same finding for analysis.
 
 **The problem without Business Events:**
-The notebook that detects the condition would need to call a notification service directly, creating a hard dependency. If the notification service changes, the notebook code must change too.
+If the notebook calls each notification or analytics service directly, adding a response means updating the detection workload. Separate implementations can also interpret the same volume drop differently.
 
 **The solution with Business Events:**
-The notebook publishes a `Retail.Sales.VolumeAlert` event. Activator subscribes to that event and triggers the notification. The notebook does not know or care how the alert is delivered.
+The notebook keeps its detection logic and publishes a `Retail.Sales.VolumeAlert` event with the store and deviation context. Activator uses the event to notify operations. Additional consumers can reuse the same contract without adding notification logic to the notebook.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph Fabric Notebook
         A[Detect volume drop\nper store per hour]
     end
@@ -198,6 +198,5 @@ flowchart LR
 | **User Data Function** | Call custom logic or an external API |
 
 For full details on configuring each action type, see the [Activator documentation](https://learn.microsoft.com/fabric/real-time-intelligence/activator/activator-introduction).
-
 
 

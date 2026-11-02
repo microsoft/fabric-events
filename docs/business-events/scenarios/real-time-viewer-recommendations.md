@@ -4,20 +4,20 @@
 
 ## Business context
 
-A streaming platform serves personalized content recommendations. Traditional recommendation systems refresh on a schedule — every hour or every session — meaning recommendations reflect what the viewer watched yesterday, not what they are engaging with right now.
+A streaming platform already uses viewer profiles, interaction history, and a recommendation model to personalize content. It wants recent interactions to inform recommendations during the current session, while analytics measures engagement and model performance.
 
-A User Data Function receives a webhook each time a meaningful viewer interaction occurs: a click, a search, a skip, or a sustained watch. It retrieves the viewer's current profile and interaction history from Fabric, calls the recommendation model, and publishes a `Streaming.Viewer.BehaviorDetected` Business Event. Activator triggers an immediate recommendation refresh. Eventhouse stores the interaction stream for CTR analysis and model retraining.
+A User Data Function receives a webhook for a selected viewer interaction: a click, a search, a skip, or a sustained watch. It retrieves profile and interaction context from Fabric, calls the recommendation model, and publishes a `Streaming.Viewer.BehaviorDetected` Business Event. Activator triggers a recommendation refresh, and Eventhouse stores received events for click-through rate analysis and model retraining.
 
 **The problem without Business Events:**
-The User Data Function would need to call the recommendation serving layer, the personalization API, and the telemetry store directly. Adding a new downstream consumer — an A/B testing framework, a churn model — requires modifying the function.
+The platform can already refresh recommendations through application integrations. As experimentation and analytics teams need the same finding, adding a separate call or interpretation for each consumer makes the function harder to evolve.
 
 **The solution with Business Events:**
-The function publishes one behavior event. Activator refreshes recommendations immediately. Analytics teams subscribe to Eventhouse independently. Any new consumer adds a subscription, not a code change.
+The function shares the selected interaction and recommendation context through one event contract. Activator handles the refresh response, while analytics queries received events in Eventhouse. Consumers that use the existing contract can be added without changing the function; Business Events do not replace the recommendation model or raw interaction ingestion.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph External
         APP[Streaming\nApplication]
     end

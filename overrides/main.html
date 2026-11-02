@@ -4,15 +4,16 @@
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "03c617f3c2ce4e70809697538bd8e52e"}'></script>
 {% endblock %}
 
-{% block announce %}
-  🚀 <strong>Building with Fabric Events?</strong> Share your scenario, ask a question, or tell us what to build next —
-  <a href="https://www.reddit.com/r/MicrosoftFabric/search/?q=flair%3A%22Real-Time+Intelligence%22+%28%5BBusiness+Events%5D+OR+%5BFabric+Events%5D+OR+%5BAzure+Events%5D%29&restrict_sr=1&sort=new" target="_blank">
-    join the discussion on Reddit
-  </a>
-{% endblock %}
+{% block announce %}{% endblock %}
 
 {% block content %}
 {{ super() }}
+
+<section class="community-invitation" aria-labelledby="community-invitation-title">
+  <h2 id="community-invitation-title">What are you building?</h2>
+  <p>Ask a question, share your scenario, or help shape the next developer guide.</p>
+  <a class="md-button md-button--primary" href="https://www.reddit.com/r/MicrosoftFabric/search/?q=flair%3A%22Real-Time+Intelligence%22+%28%5BBusiness+Events%5D+OR+%5BFabric+Events%5D+OR+%5BAzure+Events%5D%29&restrict_sr=1&sort=new" target="_blank" rel="noopener noreferrer">Join the conversation on Reddit &rarr;</a>
+</section>
 
 <!-- Ask in our community floating button -->
 <div style="
