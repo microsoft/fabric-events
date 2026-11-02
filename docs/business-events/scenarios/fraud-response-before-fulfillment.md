@@ -4,40 +4,43 @@
 
 ## Business context
 
-An ecommerce marketplace processes thousands of orders per hour. High-risk orders must be reviewed before fulfillment to prevent chargebacks, but manual inspection of every flagged order slows down legitimate customers.
+An ecommerce marketplace already evaluates order risk using customer history, payment metadata, and fraud rules. It needs to hold or review high-risk orders before fulfillment while allowing legitimate purchases to proceed.
 
 A User Data Function receives an order webhook, evaluates the risk score against customer history, payment metadata, and fraud rules stored in Fabric, and publishes two Business Events: `Ecommerce.Order.HighRiskDetected` captures the signal, and `Ecommerce.Order.FraudDecision` carries the decision outcome (hold, manual review, or release). Three independent Activator rules act on the decision. Eventhouse stores the full audit trail for compliance and pattern analysis.
 
 **The problem without Business Events:**
-The User Data Function would need to call the order management system, the review queue, and the audit store directly. Any change to the hold logic or the review workflow requires modifying the function. A new downstream consumer — a compliance report, a fraud model retraining trigger — means another direct call.
+Risk evaluation can already run in a function or application. If each downstream system receives a separate integration or reproduces the decision logic, changes become harder to coordinate and teams may act on different interpretations of the same assessment.
 
 **The solution with Business Events:**
-The function publishes one decision event. Each action (hold, flag for review, release) is an independent Activator rule. New consumers subscribe without any change to the publisher.
+The function publishes separate contracts for the detected risk and the resulting decision. Activator rules use the decision event for hold, review, or release actions, while Eventhouse supports analysis of received events. New consumers can reuse these contracts; changes to risk policy still belong in the evaluator.
 
 ## Architecture
 
 ```mermaid
-flowchart LR
-    subgraph External
-        MP[Ecommerce\nMarketplace]
+flowchart TB
+    subgraph External["Source"]
+        MP["Ecommerce marketplace"]
     end
 
-    subgraph Fabric
-        UDF[User Data Function\nOrder risk evaluator]
-        FA[(Fabric Data + AI\nCustomer profile, payment\nhistory, fraud rules)]
-        BE1([Business Event\n'Ecommerce.Order.HighRiskDetected'])
-        BE2([Business Event\n'Ecommerce.Order.FraudDecision'])
+    subgraph Evaluation["Evaluate risk and decide"]
+        FA[("Fabric Data + AI<br/>Risk context")]
+        UDF["User Data Function<br/>Order risk evaluator"]
     end
 
-    subgraph Consumers
-        ACT1{Activator\nHold rule}
-        ACT2{Activator\nReview rule}
-        ACT3{Activator\nRelease rule}
-        EH[(Eventhouse\nFraud audit)]
-    end
+    BE1(["Business Event<br/>High risk detected"])
+    BE2(["Business Event<br/>Fraud decision"])
+
+    ACT1{"Activator<br/>Hold rule"}
+    ACT2{"Activator<br/>Review rule"}
+    ACT3{"Activator<br/>Release rule"}
+    HOLD["Hold order in OMS"]
+    REVIEW["Route to review queue"]
+    REL["Release to fulfillment"]
+
+    EH[("Eventhouse<br/>Fraud audit")]
 
     MP -->|Order webhook| UDF
-    FA -.->|context| UDF
+    FA -->|Risk context| UDF
     UDF -->|Publish signal| BE1
     UDF -->|Publish decision| BE2
     BE1 --> EH
@@ -45,10 +48,21 @@ flowchart LR
     BE2 --> ACT2
     BE2 --> ACT3
     BE2 --> EH
-    ACT1 --> HOLD[Hold order\nin OMS]
-    ACT2 --> REVIEW[Route to\nreview queue]
-    ACT3 --> REL[Release order\nto fulfillment]
+    ACT1 --> HOLD
+    ACT2 --> REVIEW
+    ACT3 --> REL
 ```
+
+Arrows show data flow. Event publication and consumption are asynchronous. The function publishes the risk signal and decision separately; the diagram does not imply that one event triggers the other. The hold, review, and release rules filter the decision outcome rather than executing all three actions for every event.
+
+| Component | Contract or responsibility |
+|---|---|
+| Fabric Data + AI | Customer profile, payment history, and fraud rules used by the evaluator |
+| User Data Function | Evaluates risk and publishes the signal and decision |
+| High risk detected | `Ecommerce.Order.HighRiskDetected` |
+| Fraud decision | `Ecommerce.Order.FraudDecision` |
+| Activator rules | Route the decision to hold, manual review, or release workflows |
+| Eventhouse | Stores received signal and decision events for audit analysis |
 
 ## Step 1: Create the Business Events
 

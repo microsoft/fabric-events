@@ -1,30 +1,24 @@
 # Architecture Overview
 
-Business Events connects publishers and consumers through Microsoft Fabric Real-Time Hub. This page explains how the components fit together.
+Business Events connect existing detection workloads with independent consumers through a shared event contract in Microsoft Fabric. A notebook, function, stream, or rule can keep recognizing a business condition while publishing a representation that other teams can reuse. This page explains how the components fit together.
 
 ## High-level architecture
 
 ```mermaid
 flowchart TB
-    subgraph Publishers
+    subgraph Publishers["Detect in existing workloads"]
         NB[Notebook]
         UDF[User Data Function]
         ES[Eventstream]
         ACT_P[Activator]
     end
 
-    subgraph RTH[Real-Time Hub]
-        subgraph ESR[Event Schema Registry]
-            BE1([Business Event\n'Retail.Sales.VolumeAlert'])
-            BE2([Business Event\n'Retail.Inventory.LowStockThreshold'])
-            BE3([Business Event\n'DataOps.Pipeline.RunCompleted'])
-        end
-    end
+    BE1(["Business Event<br/>Sales volume alert"])
+    BE2(["Business Event<br/>Low stock threshold"])
+    BE3(["Business Event<br/>Pipeline run completed"])
 
-    subgraph Consumers
-        ACT_C[Activator\nRules Engine]
-        EH[Eventhouse\nKQL Database]
-    end
+    ACT_C["Activator<br/>Rules and actions"]
+    EH[("Eventhouse<br/>KQL analysis")]
 
     NB -->|publish| BE1
     UDF -->|publish| BE2
@@ -37,21 +31,32 @@ flowchart TB
     BE3 -->|consume| EH
 ```
 
+Read from top to bottom: existing detection workloads, shared Business Event contracts, then independent consumers. Arrows show publication and consumption, not a required processing sequence across consumers. These are example routes, not an exhaustive compatibility matrix. Short event labels map to the full names below.
+
+| Diagram label | Event type |
+|---|---|
+| Sales volume alert | `Retail.Sales.VolumeAlert` |
+| Low stock threshold | `Retail.Inventory.LowStockThreshold` |
+| Pipeline run completed | `DataOps.Pipeline.RunCompleted` |
+
+Real-Time Hub is the entry point for creating and discovering Business Events. The Event Schema Registry is a platform-level capability, not a runtime stage between the publisher and consumer.
+
 ## Event Schema Registry
 
 The **Event Schema Registry** is a platform-level capability in Microsoft Fabric that stores and validates all schema definitions. Business Events are a special type of event schema stored in the registry, organized into **Event Schema Sets**.
 
 ```mermaid
-flowchart LR
-    PUB[Publisher] -->|publish| RTH
-    subgraph RTH[Real-Time Hub]
-        subgraph ESR[Event Schema Registry]
-            SS[(Event Schema Set)]
-            SS -->|validate| BE([Business Event\n'Retail.Sales.VolumeAlert'])
-        end
+flowchart TB
+    subgraph Definition["Definition and organization, not runtime flow"]
+        ESR["Event Schema Registry<br/>Platform capability"]
+        SS["Event Schema Set<br/>Groups schemas"]
+        BE(["Business Event schema<br/>Sales volume alert"])
+        ESR ---|organizes| SS
+        SS ---|contains| BE
     end
-    BE -->|consume| CON[Consumer]
 ```
+
+Lines show schema organization, not event delivery. The example schema is `Retail.Sales.VolumeAlert`; the runtime publication and consumption paths are shown in the high-level architecture above.
 
 Business Events cannot be created directly from the Event Schema Registry. They must be created from **Real-Time Hub → Business Events**. During creation, you can create a new Event Schema Set inline or select an existing one. The Event Schema Registry is the underlying storage; Real-Time Hub → Business Events is the entry point.
 
@@ -70,7 +75,7 @@ Any workload that detects a meaningful condition and signals it to the rest of t
 | **[Activator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/activator/activator-introduction)** | Re-publishing derived events from existing rules |
 
 ### Real-Time Hub
-The managed service in Microsoft Fabric Real-Time Intelligence that receives, routes, and delivers Business Events. Publishers write to it; consumers read from it. Real-Time Hub holds the schema registry for all defined Business Events.
+The entry point for creating and discovering Business Events in Microsoft Fabric. Event schemas are organized in Event Schema Sets in the platform-level Event Schema Registry; the diagram does not imply that the registry is hosted inside the Real-Time Hub interface.
 
 ### Consumers
 Workloads that subscribe to one or more Business Events and react when a matching event arrives.
@@ -82,15 +87,15 @@ Workloads that subscribe to one or more Business Events and react when a matchin
 
 ## One event, multiple consumers
 
-A single Business Event can trigger reactions in multiple consumers simultaneously. Publishers do not need to change when new consumers are added.
+A single Business Event can support independent responses in multiple consumers. Adding a consumer that uses the existing contract does not require changing the publisher.
 
 ```mermaid
 flowchart LR
-    NB[Notebook] -->|publish| BE([Business Event\n'Retail.Sales.VolumeAlert'])
-    BE -->|consume| ACT[Activator\nSend Teams alert]
-    BE -->|consume| EH[Eventhouse\nLog for audit]
+    NB[Notebook] -->|publish| BE(["Business Event<br/>Sales volume alert"])
+    BE -->|consume| ACT["Activator<br/>Send Teams alert"]
+    BE -->|consume| EH[("Eventhouse<br/>Log for audit")]
 ```
 
-This fan-out pattern is one of the key architectural advantages of Business Events over direct service-to-service calls.
+The event is `Retail.Sales.VolumeAlert`. Both consumers use the same contract; neither waits for the other to complete.
 
-
+This fan-out pattern separates detection from downstream responses. It is useful when several teams need the same finding, while direct service calls remain appropriate when a workload needs an immediate response to continue.

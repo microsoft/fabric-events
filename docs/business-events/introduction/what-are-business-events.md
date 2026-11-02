@@ -1,17 +1,19 @@
 # What are Business Events?
 
-A Business Event represents a significant occurrence or change-in-state that matters to the business. Unlike raw telemetry or diagnostic data, Business Events are intentionally modeled around business outcomes: driving critical decisions, automating workflows, triggering alerts, enabling analytics, and providing real-time context to AI.
+A Business Event is a named, schema-defined representation of a meaningful business occurrence or detected condition. It gives teams a shared contract for communicating situations such as inventory falling below a threshold, a shipment being delayed, or a customer reaching a loyalty milestone.
+
+The business signal is the meaning of that situation. The Business Event is how you represent and share an occurrence of it. Your existing notebooks, queries, rules, and applications can continue detecting the signal; consumers use the published event to support decisions, automation, and analysis.
 
 !!! note "Official documentation"
     For the complete API reference and platform overview, see the [Business Events documentation on learn.microsoft.com](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-overview).
 
 ## The core idea
 
-In most data platforms, workloads communicate through **direct calls**: one service invokes another, waits for a response, and fails if the other is unavailable. This creates **tight coupling** that makes systems fragile and hard to evolve.
+Your team may already detect important conditions and respond through dashboards, alerts, or application integrations. The challenge grows when other teams need the same signal: each implementation may use a different name, interpretation, or payload, and a change to the business definition requires coordination across them.
 
-Business Events introduce a different model. Any **publisher** (a [Notebook](https://learn.microsoft.com/en-us/fabric/data-engineering/how-to-use-notebook), a [User Data Function](https://learn.microsoft.com/en-us/fabric/data-engineering/user-data-functions/user-data-functions-overview), an [Eventstream](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/overview), or [Activator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/activator/activator-introduction)) can emit a named, schema-defined event to **[Real-Time Hub](https://learn.microsoft.com/en-us/fabric/real-time-hub/real-time-hub-overview)** the moment something meaningful happens. Any number of **consumers** ([Activator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/activator/activator-introduction) or [Eventhouse](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/eventhouse)) react to that event independently, without the publisher knowing who is listening or how many are subscribed.
+Business Events provide a reusable representation of that signal. A **publisher** (a [Notebook](https://learn.microsoft.com/en-us/fabric/data-engineering/how-to-use-notebook), a [User Data Function](https://learn.microsoft.com/en-us/fabric/data-engineering/user-data-functions/user-data-functions-overview), an [Eventstream](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/overview), or [Activator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/activator/activator-introduction)) publishes an occurrence through **[Real-Time Hub](https://learn.microsoft.com/en-us/fabric/real-time-hub/real-time-hub-overview)**. **Consumers**, such as [Activator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/activator/activator-introduction) and [Eventhouse](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/eventhouse), use that event independently, without the publisher calling each one.
 
-This means you can add new consumers, change how alerts are delivered, or route the same event to an analytics store, all without touching the code that published the event.
+For example, the same low-stock event can support an operations alert and inventory analysis. Adding a consumer that uses the existing contract does not require changing the publisher. Teams still need to agree on the signal's meaning, ownership, and evolution; the schema alone does not establish that agreement.
 
 ```mermaid
 flowchart LR
@@ -42,13 +44,13 @@ flowchart LR
 ## Key concepts
 
 **Schema-first design**
-Every Business Event has a defined schema before any data flows. The schema uses a record format with typed fields, ensuring consumers always know what to expect.
+Every Business Event has a defined schema before publication. The schema uses a record format with typed fields, giving publishers and consumers an explicit data contract. Document what those fields mean and coordinate changes to that contract.
 
 **Decoupled architecture**
-Publishers do not know who consumes their events. Consumers do not know who publishes. This means you can add new consumers without changing any publisher code.
+Publishers do not call each consumer directly. Consumers depend on the event contract rather than a direct call from a particular publisher. New consumers can reuse that contract without changes to the publishing code.
 
 **Real-time delivery**
-Events are delivered to consumers in real time through Microsoft Fabric Real-Time Hub infrastructure.
+Events reach configured consumers through Microsoft Fabric Real-Time Hub infrastructure. Detection frequency and downstream processing also affect how quickly the business can respond.
 
 ## Next steps
 

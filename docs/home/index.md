@@ -7,8 +7,7 @@ hide:
 
 <style>
 .md-typeset .home2 {
-  max-width: 1160px;
-  margin: 0 auto;
+  width: 100%;
 }
 .md-typeset .home2,
 .md-typeset .home2 * {
@@ -23,7 +22,8 @@ hide:
   letter-spacing: normal;
   line-height: inherit;
 }
-.md-typeset .home2 h1 {
+.md-typeset .home2 h1,
+.md-typeset .home2 h2 {
   margin: 0 0 .75em;
   font-size: 2em;
   line-height: 1.2;
@@ -38,7 +38,6 @@ hide:
   gap: 3em;
   padding: 1em 0 2em;
 }
-.home2 .h2-brand { font-weight: 700; }
 .home2 .h2-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1em; margin-top: 1.5em; }
 .md-typeset .home2 .md-button { padding: .5em 1em; }
 .home2 figure { min-width: 0; margin: 0; }
@@ -56,7 +55,8 @@ hide:
   border-top: 1px solid var(--md-default-fg-color--lightest);
 }
 .home2 .h2-scenes,
-.home2 .h2-pillars {
+.home2 .h2-pillars,
+.home2 .h2-resources {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2em;
@@ -67,6 +67,14 @@ hide:
 .home2 .h2-scene > a { display: block; margin-top: .75em; }
 .home2 .h2-pillar { min-width: 0; }
 .home2 .h2-pillar p:last-child { margin-bottom: 0; }
+.home2 .h2-resource {
+  min-width: 0;
+  padding: 1.5em;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: .2rem;
+}
+.home2 .h2-resource p { margin-bottom: 1.5em; }
+.home2 .h2-resource > a { display: inline-block; }
 .home2 a:focus-visible {
   outline: 2px solid var(--md-accent-fg-color);
   outline-offset: 4px;
@@ -74,7 +82,8 @@ hide:
 @media (max-width: 900px) {
   .home2 .h2-hero,
   .home2 .h2-scenes,
-  .home2 .h2-pillars { grid-template-columns: 1fr; gap: 1.5em; }
+  .home2 .h2-pillars,
+  .home2 .h2-resources { grid-template-columns: 1fr; gap: 1.5em; }
   .home2 .h2-hero { padding-top: 0; }
   .home2 figure { max-width: 600px; margin: 0 auto; }
   .home2 .h2-scene img { max-width: 420px; margin: 0 auto 1em; }
@@ -88,40 +97,39 @@ hide:
 <div class="home2">
   <section class="h2-hero" aria-labelledby="home2-title">
     <div>
-      <p class="h2-brand">Fabric Events</p>
-      <h1 id="home2-title">One event.<br>The right action.</h1>
-      <p>A sales dip. A delayed shipment. A moment that matters to your business.</p>
-      <p><strong>Business Events</strong> let Fabric workloads publish these moments as named, schema-defined signals. Independent consumers turn them into alerts, workflows, and analytics.</p>
+      <h1 id="home2-title">One business signal.<br>Many ways to act.</h1>
+      <p>A sales dip. A delayed shipment. Recognize what matters while there is still time to change the outcome.</p>
+      <p>Your workloads already detect important business situations. <strong>Business Events</strong> represent those signals through a shared, schema-defined contract, so teams and applications can reuse the same business meaning and respond independently.</p>
       <div class="h2-actions">
         <a class="md-button md-button--primary" href="../business-events/scenarios/sales-volume-alert/">Build your first event</a>
         <a href="../business-events/introduction/what-are-business-events/">Understand the basics &rarr;</a>
       </div>
     </div>
     <figure>
-      <img src="../assets/home2/v001/event-to-action.png" width="1200" height="675" fetchpriority="high" alt="A store's falling sales become a Business Event, which connects independently to a notification and an analytics view.">
-      <figcaption>Detect a moment. Publish an event. Let consumers react.</figcaption>
+      <img src="../assets/home2/v001/event-to-action.png" width="1200" height="675" fetchpriority="high" alt="Existing sales detection identifies a business signal. A shared Business Event represents that signal for independent notification and analytics consumers.">
+      <figcaption>Keep your detection. Share the signal. Enable independent responses.</figcaption>
     </figure>
   </section>
 
   <section class="h2-section" aria-labelledby="home2-scenarios-title">
-    <h2 id="home2-scenarios-title">Find a moment worth acting on.</h2>
+    <h2 id="home2-scenarios-title">Find a moment<br>worth acting on.</h2>
     <div class="h2-scenes">
       <article class="h2-scene">
         <img src="../assets/home2/v001/sales-alert.png" width="1200" height="675" loading="lazy" alt="A retail storefront with a chart showing falling sales.">
         <h3>Alert the team.</h3>
-        <p>A Notebook detects a sales dip. A Business Event triggers an Activator rule that sends a Teams alert.</p>
+        <p>A Notebook detects a sales dip and publishes a Business Event. Activator sends a Teams alert; other consumers can reuse the same signal without changing the Notebook.</p>
         <a href="../business-events/scenarios/sales-volume-alert/">Build a sales volume alert &rarr;</a>
       </article>
       <article class="h2-scene">
         <img src="../assets/home2/v001/cart-recovery.png" width="1200" height="675" loading="lazy" alt="A shopping bag and abandoned cart connect to a recovery email.">
         <h3>Bring a customer back.</h3>
-        <p>A cart abandonment event lets independent consumers trigger recovery actions and capture conversion analytics.</p>
+        <p>Share one cart abandonment signal with independent consumers for recovery actions and conversion analytics, instead of integrating each response into the publisher.</p>
         <a href="../business-events/scenarios/abandoned-cart-recovery/">Explore cart recovery &rarr;</a>
       </article>
       <article class="h2-scene">
         <img src="../assets/home2/v001/shipment-response.png" width="1200" height="675" loading="lazy" alt="A delivery truck follows an alternative route toward a destination marker.">
         <h3>Respond to a delay.</h3>
-        <p>A shipment delay event triggers mitigation actions, notifies the customer, and records the incident for analysis.</p>
+        <p>Share a shipment delay and its context so independent consumers can trigger mitigation actions, notify the customer, and analyze the incident.</p>
         <a href="../business-events/scenarios/shipment-delay-auto-mitigation/">Explore shipment mitigation &rarr;</a>
       </article>
     </div>
@@ -129,11 +137,11 @@ hide:
   </section>
 
   <section class="h2-section" aria-labelledby="home2-pillars-title">
-    <h2 id="home2-pillars-title">Three pillars. One event-driven toolkit.</h2>
+    <h2 id="home2-pillars-title">Three pillars.<br>One event-driven toolkit.</h2>
     <div class="h2-pillars">
       <div class="h2-pillar">
         <h3>Business Events</h3>
-        <p>Signals your workloads publish when something matters to the business.</p>
+        <p>Shared, schema-defined representations of business signals that teams and applications can reuse without replacing existing detection logic.</p>
         <p><a href="../business-events/introduction/what-are-business-events/">Guides available now &rarr;</a></p>
       </div>
       <div class="h2-pillar">
@@ -150,7 +158,26 @@ hide:
   </section>
 
   <section class="h2-section" aria-labelledby="home2-resources-title">
-    <h2 id="home2-resources-title">Go from an idea to a working solution.</h2>
-    <p><a href="../business-events/recipes/">Recipes</a> &middot; <a href="../business-events/design-guides/">Design guides</a> &middot; <a href="https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-overview">Official documentation</a> &middot; <a href="https://github.com/microsoft/fabric-events/discussions">Join the community</a></p>
+    <h2 id="home2-resources-title">Go from an idea<br>to a working solution.</h2>
+    <p>Choose your next step, whether you are exploring Business Events or building your own integration.</p>
+    <div class="h2-resources">
+      <article class="h2-resource">
+        <h3>Build your first solution.</h3>
+        <p>Follow a complete scenario, from the event schema and publisher to consumer setup and an end-to-end test.</p>
+        <a href="../business-events/scenarios/sales-volume-alert/">Start with a sales alert &rarr;</a>
+      </article>
+      <article class="h2-resource">
+        <h3>Implement a specific task.</h3>
+        <p>Use focused recipes to publish events in batches or chain two Business Events into a connected workflow.</p>
+        <a href="../business-events/recipes/">Find a recipe &rarr;</a>
+      </article>
+      <article class="h2-resource">
+        <h3>Design for what comes next.</h3>
+        <p>Explore payload design, schema versioning, retry behavior, and patterns for multiple independent consumers.</p>
+        <a href="../business-events/design-guides/">Explore design guides &rarr;</a>
+      </article>
+    </div>
+    <p>Need the platform reference? Read the <a href="https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-overview">official documentation</a>.</p>
   </section>
+
 </div>
