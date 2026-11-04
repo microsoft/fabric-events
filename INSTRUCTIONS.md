@@ -371,11 +371,12 @@ How to trigger the event and verify it was received.
 
 | # | Title | Publisher | Consumer | Schema Set | Event Type |
 |---|-------|-----------|----------|------------|------------|
-| 01 | Sales Volume Alert | Notebook | Activator | RetailSales | Retail.Sales.VolumeAlert |
-| 02 | Low Stock Threshold | User Data Function | Eventhouse | RetailInventory | Retail.Inventory.LowStockThreshold |
-| 03 | High-Value Transaction | Eventstream | Activator | RetailPayments | Retail.Payment.HighValueTransaction |
+| 01 | Sales Volume Alert | Notebook | Activator + Eventhouse | RetailSales | Retail.Sales.VolumeAlert |
+| 02 | Low Stock Threshold | User Data Function | Activator + Eventhouse | RetailInventory | Retail.Inventory.LowStockThreshold |
+| 03 | High-Value Transaction | Eventstream | Activator + Eventhouse | RetailPayments | Retail.Payment.HighValueTransaction |
 | 04 | Pipeline Audit Trail | Notebook | Eventhouse | DataOps | DataOps.Pipeline.RunCompleted |
 | 05 | Loyalty Milestone | Activator | Activator + Eventhouse | RetailCustomers | Retail.Customer.MilestoneReached |
+| 06 | Revenue Below Target | Activator | Activator + Eventhouse | SalesPerformance | Sales.Revenue.BelowTarget |
 
 ---
 
@@ -432,4 +433,3 @@ All links below were verified as of June 2026. Use these exact URLs in content:
 - **Numbered lists and code blocks** — MkDocs resets list numbering after a fenced code block unless the block is indented 4 spaces inside the list item.
 - **UDF alias** — auto-generated from schema set name (e.g., `RetailInventory` → alias `RetailInventory`). Document this explicitly in every UDF scenario.
 - **Root redirect** — `docs/index.md` contains a JavaScript redirect to `/fabric-events/home/` because MkDocs requires a root `index.md` but the home page lives at `docs/home/index.md`.
-
