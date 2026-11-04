@@ -1,18 +1,18 @@
 # Low Stock Threshold
 
-**Publisher:** User Data Function | **Consumer:** Eventhouse
+**Publisher:** User Data Function | **Consumers:** Activator, Eventhouse
 
 ## Business context
 
 A retail company already uses an external warehouse management system (WMS) to track stock and detect when a product falls below its reorder threshold. The inventory team needs a consistent record of these occurrences to identify recurring shortages and inform replenishment decisions.
 
-The WMS sends a webhook to a User Data Function in Microsoft Fabric. The function normalizes the payload and publishes a `Retail.Inventory.LowStockThreshold` Business Event. With Eventhouse integration enabled, the team can query received events using KQL and compare patterns across products and stores.
+The WMS sends a webhook to a User Data Function in Microsoft Fabric. The function normalizes the payload and publishes a `Retail.Inventory.LowStockThreshold` Business Event. Activator notifies inventory planning immediately, while Eventhouse retains the same finding for KQL analysis of recurring shortages across products and stores.
 
 **The problem without Business Events:**
 The WMS can continue detecting low stock, and existing integrations can continue responding. The sharing challenge is agreeing on one low-stock contract rather than creating a different payload and integration for each new consumer.
 
 **The solution with Business Events:**
-The User Data Function publishes the detected condition using a shared schema, and Eventhouse stores received events for analysis. Other consumers can use the same contract without replacing WMS detection or adding a separate call to the function for each response.
+The User Data Function publishes the detected condition using a shared schema. Activator sends a Teams notification with the product and stock context, and Eventhouse independently stores received events for analysis. Neither consumer replaces WMS detection or requires a separate call from the function. The alert informs replenishment planning; it does not place an order.
 
 ## Architecture
 
@@ -26,12 +26,24 @@ flowchart TB
         UDF[User Data Function\nWebhook receiver]
         BE([Business Event\n'Retail.Inventory.LowStockThreshold'])
         EH[(Eventhouse\nKQL Database)]
+        ACT[Activator\nOn each event]
+        TEAMS[Teams notification\nInventory planning]
     end
 
     WMS -->|HTTP webhook| UDF
     UDF -->|Publish event| BE
     BE -->|Auto-ingest| EH
+    BE --> ACT
+    ACT --> TEAMS
 ```
+
+| Component | Role |
+|---|---|
+| Publisher | User Data Function normalizes the WMS low-stock finding |
+| Consumer 1 | Activator sends a Teams notification to inventory planning |
+| Consumer 2 | Eventhouse stores the finding for shortage analysis |
+| Schema set | `RetailInventory` |
+| Event type and KQL table | `Retail.Inventory.LowStockThreshold` |
 
 ## Step 1: Create the Business Event
 
@@ -152,7 +164,19 @@ def publish_low_stock_event(
     return "Event 'Retail.Inventory.LowStockThreshold' published successfully"
 ```
 
-## Step 3: Consumer - Eventhouse
+## Step 3: Consumers - Activator and Eventhouse
+
+### Consumer 1: Notify inventory planning with Activator
+
+1. In Real-Time Hub, locate `Retail.Inventory.LowStockThreshold` under `RetailInventory`.
+2. Select **Set alert** and name the rule `Low Stock - Inventory Planning`.
+3. In **Monitor**, select **Business events** and connect to `Retail.Inventory.LowStockThreshold`.
+4. Set **Condition** to `On each event`. The WMS has already detected the low-stock condition; this rule does not reproduce that detector.
+5. In **Action**, select **Teams**, then **Channel post**, and choose the inventory planning channel.
+6. Include `product_id`, `store_id`, `current_stock`, `threshold`, and `supplier_id` in the context.
+7. Save the rule.
+
+### Consumer 2: Analyze shortages in Eventhouse
 
 Because Eventhouse integration was enabled during Business Event creation, a dedicated KQL table was created automatically in your Eventhouse database. Every published event is ingested into that table with no additional configuration.
 
@@ -212,15 +236,19 @@ Then run the following KQL query in your Eventhouse database and confirm the row
 | take 1
 ```
 
-If the row is present, your end-to-end setup is working. You can then configure the external WMS to call the User Data Function endpoint as a webhook.
+Also confirm that the Teams notification contains `prod-mx-7821`, `store-mx-042`, current stock `4`, and threshold `10`. The test is complete only when both the notification and the Eventhouse row are verified. The row does not confirm that an order was placed or stock was replenished.
+
+You can then configure the external WMS to call the User Data Function endpoint as a webhook.
 
 ## What happens next
 
-With events persisted in Eventhouse, the inventory team can extend the solution without modifying the publisher.
+With immediate notifications in Activator and history in Eventhouse, the inventory team can extend either response without modifying the publisher.
 
 ```mermaid
 flowchart LR
     BE([Business Event\n'Retail.Inventory.LowStockThreshold']) --> EH[(Eventhouse)]
+    BE --> ACT[Activator]
+    ACT --> TEAMS[Teams notification]
     EH --> KQL[KQL queries\nand analysis]
     EH --> RTD[Real-Time Dashboard\nlive operational view]
     EH --> ML[ML model input\npredictive reorder]
@@ -231,6 +259,6 @@ flowchart LR
 | **Real-Time Dashboard** | Live tile showing current low-stock alerts across all stores |
 | **KQL scheduled query** | Daily summary of products below threshold sent to a report |
 | **ML model input** | Historical event data as training features for reorder prediction |
-| **Activator rule** | Add an alert action without changing the User Data Function |
+| **Additional Activator rule** | Add a separately configured replenishment workflow without changing the User Data Function |
 
 For full details on querying and visualizing Business Events in Eventhouse, see the [Eventhouse integration documentation](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-eventhouse).
