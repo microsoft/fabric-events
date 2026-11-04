@@ -95,9 +95,11 @@ nav:
       - Detect & Alert:
         - Sales Volume Alert: business-events/scenarios/sales-volume-alert.md
         - Real-Time Stream Alert: business-events/scenarios/real-time-stream-alert.md
+        - Revenue Below Target: business-events/scenarios/revenue-below-target.md
       - Decide & Act:
         - Customer Loyalty Milestone: business-events/scenarios/customer-loyalty-milestone.md
         - Abandoned Cart Recovery: business-events/scenarios/abandoned-cart-recovery.md
+        - Discount Approval Evaluation and Event Publication: business-events/scenarios/discount-approval-routing.md
         - Fraud Response Before Fulfillment: business-events/scenarios/fraud-response-before-fulfillment.md
         - Real-Time Viewer Recommendations: business-events/scenarios/real-time-viewer-recommendations.md
         - Shipment Delay Auto-Mitigation: business-events/scenarios/shipment-delay-auto-mitigation.md
