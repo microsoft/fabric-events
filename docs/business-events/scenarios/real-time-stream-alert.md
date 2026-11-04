@@ -1,18 +1,18 @@
 # Real-Time Stream Alert
 
-**Publisher:** Eventstream | **Consumer:** Activator
+**Publisher:** Eventstream | **Consumers:** Activator, Eventhouse
 
 ## Business context
 
 A retail company processes a continuous stream of payment transactions from multiple stores and channels. Most transactions are routine, but high-value transactions above a defined threshold require immediate review by the fraud team.
 
-Eventstream already evaluates the transaction stream and can identify records above the threshold. This scenario publishes that finding as a `Retail.Payment.HighValueTransaction` Business Event so the fraud team can review the transaction and other consumers can reuse the same signal. A high value indicates a review condition, not proof of fraud.
+Eventstream already evaluates the transaction stream and can identify records above the threshold. This scenario publishes that finding as a `Retail.Payment.HighValueTransaction` Business Event. The fraud team needs an immediate notification, while payment operations needs a history of selected transactions to compare high-value activity by store, payment method, and currency. A high value indicates a review condition, not proof of fraud.
 
 **The problem without Business Events:**
 A direct Activator rule on the stream may be sufficient for one alert. When more teams need the high-value signal, separate filters and integrations can duplicate its definition and make threshold changes harder to coordinate.
 
 **The solution with Business Events:**
-Eventstream keeps the filter and publishes the matching transaction through a named contract. Activator uses that event for the review notification. Additional consumers can reuse the signal without reproducing the filter or adding alert-channel logic to the publisher.
+Eventstream keeps the filter and publishes the matching transaction through a named contract. Activator uses that event for the review notification, and Eventhouse independently stores the same event for historical analysis. Adding analytics does not require another high-value filter, a separate Eventstream-to-Eventhouse destination, or alert-channel logic in the publisher.
 
 ## Architecture
 
@@ -27,13 +27,25 @@ flowchart TB
         BE([Business Event\n'Retail.Payment.HighValueTransaction'])
         ACT{Activator\nRule}
         TEAMS[Teams alert\nFraud review team]
+        EH[(Eventhouse\nHigh-value transaction history)]
+        KQL[KQL analysis\nStore, payment method and currency]
     end
 
     PS -->|Continuous stream| ES
     ES -->|Filter match| BE
     BE -->|Trigger| ACT
     ACT --> TEAMS
+    BE -->|Auto-ingest| EH
+    EH --> KQL
 ```
+
+| Component | Role |
+|---|---|
+| Publisher | Eventstream filters payment records where `amount > 5000` |
+| Consumer 1 | Activator sends a Teams notification for each received high-value event |
+| Consumer 2 | Eventhouse stores the selected payment events for historical analysis |
+| Schema set | `RetailPayments` |
+| Event type and KQL table | `Retail.Payment.HighValueTransaction` |
 
 ## Step 1: Create the Business Event
 
@@ -83,7 +95,8 @@ Before configuring the Eventstream, define the Business Event in Real-Time Hub.
     }
     ```
 
-5. Select **Create**.
+5. Keep **Analyze in Eventhouse** enabled. Create a new Eventhouse or select an existing one in your workspace. Fabric automatically creates the dedicated `Retail.Payment.HighValueTransaction` KQL table.
+6. Select **Create**.
 
 ## Step 2: Publisher - Eventstream
 
@@ -123,18 +136,20 @@ Eventstream is configured entirely from the UI. There is no code to write. You a
 
 For full details on configuring Eventstream as a Business Events publisher, see the [Eventstream publisher documentation](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-event-stream-publisher) and the [end-to-end tutorial](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/tutorial-business-events-event-stream-user-data-function-activator).
 
-## Step 3: Consumer - Activator
+## Step 3: Consumers - Activator and Eventhouse
+
+### Consumer 1: Notify reviewers with Activator
 
 When a `Retail.Payment.HighValueTransaction` event is published, Activator evaluates the rule and triggers a Teams alert to the fraud review team.
 
-### Set up the alert rule
+#### Set up the alert rule
 
 1. In Microsoft Fabric, navigate to **Real-Time** on the left navigation bar.
 2. Select **Business events** in Real-Time Hub.
 3. Locate the `Retail.Payment.HighValueTransaction` event under your schema set.
 4. Select **Set alert** from the event options.
 
-### Configure the rule
+#### Configure the rule
 
 **Details section**
 
@@ -155,25 +170,84 @@ Set **Check** to `On each event`.
 1. For **Select action**, choose `Teams` then `Channel post`.
 2. Configure the Teams channel for the fraud review team.
 3. In **Context**, add `transaction_id`, `amount`, `store_id`, and `payment_method` so the alert includes the relevant details.
+4. Save and activate the rule.
+
+### Consumer 2: Analyze high-value activity in Eventhouse
+
+Open the Eventhouse KQL database selected in Step 1. Its dedicated table receives the Business Events independently of Activator and Teams. It contains the high-value findings published by Eventstream, not the full raw payment stream or the outcome of a fraud review.
+
+**Inspect the latest high-value events:**
+
+```kusto
+['Retail.Payment.HighValueTransaction']
+| order by ingestion_time() desc
+| take 50
+```
+
+**Compare received high-value activity by store and payment method:**
+
+```kusto
+['Retail.Payment.HighValueTransaction']
+| where ingestion_time() > ago(7d)
+| summarize ReceivedEvents = count(), LargestAmount = max(amount)
+    by store_id, payment_method, currency
+| order by ReceivedEvents desc
+```
+
+**Track hourly high-value event volume by currency:**
+
+```kusto
+['Retail.Payment.HighValueTransaction']
+| where ingestion_time() > ago(24h)
+| summarize ReceivedEvents = count()
+    by currency, ReceivedHour = bin(ingestion_time(), 1h)
+| order by ReceivedHour asc
+```
+
+Amounts are in the transaction's local currency. Keep currency in monetary comparisons rather than adding unlike currencies. The sample threshold is `5000` local-currency units; currency-specific thresholds are a separate policy decision. Counts represent received event records and can include repeated publications or deliveries. Calculating the high-value share of all payments requires the underlying payment stream as well.
+
+Save these queries to a Real-Time Dashboard for payment operations. See [Eventhouse and Business Events integration](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-eventhouse) for the dashboard steps.
 
 ## Step 4: End-to-end test
 
-Once you have the Business Event defined, the Eventstream published, and the Activator rule in place, verify the full flow.
+With the Eventstream published, the Activator rule saved, and Eventhouse integration enabled, send these two records through the configured payment source. Use new transaction IDs for each test run.
 
-1. In Real-Time Hub, select the `Retail.Payment.HighValueTransaction` event.
-2. Go to the **Publisher** tab and confirm that `PaymentTransactionStream` is listed as an active publisher.
-3. Switch to the **Data preview** tab, select the Eventstream publisher, and verify that event records are visible in the preview table.
-4. Confirm that the Teams alert fires for each matching event.
+| Field | Above-threshold record | Boundary record |
+|---|---|---|
+| `transaction_id` | `demo-review-6001` | `demo-boundary-5000` |
+| `payment_method` | `credit_card` | `credit_card` |
+| `amount` | `6000` | `5000` |
+| `currency` | `MXN` | `MXN` |
+| `store_id` | `store-mx-042` | `store-mx-042` |
+| `processed_at` | Current UTC time in ISO 8601 format | Current UTC time in ISO 8601 format |
 
-If records appear in the data preview and the Teams alert fires, your end-to-end setup is working.
+1. In Real-Time Hub, select `Retail.Payment.HighValueTransaction` and confirm that `PaymentTransactionStream` appears on the **Publisher** tab.
+2. On the **Data preview** tab, select that publisher and confirm that the `6000` record appears. The `5000` record should not be published because the filter is strictly greater than `5000`.
+3. Confirm that the Teams notification contains the above-threshold transaction's ID and amount. The boundary record should not trigger this rule.
+4. In the Eventhouse KQL database, run:
+
+    ```kusto
+    ['Retail.Payment.HighValueTransaction']
+    | where ingestion_time() > ago(1h)
+    | where transaction_id in ("demo-review-6001", "demo-boundary-5000")
+    | project ReceivedAt = ingestion_time(), transaction_id, amount,
+        currency, store_id, payment_method
+    | order by ReceivedAt desc
+    ```
+
+5. Confirm that the above-threshold transaction is stored and that the boundary transaction is absent from this Business Event table.
+
+The test is complete only when the matching payment reaches both the Teams notification and Eventhouse, and the boundary payment reaches neither. The raw source may still retain both payments. An Eventhouse row verifies analytical delivery, not completion of a fraud review or a payment block.
 
 ## What happens next
 
-With the Eventstream filtering the stream and publishing discrete events, any new consumer can be added without modifying the pipeline.
+The same high-value finding now supports immediate review and historical payment analysis. Further consumers can be added without changing the Eventstream filter. Review decisions, case status, and confirmed fraud outcomes must be captured separately if analytics needs those outcomes.
 
 ```mermaid
 flowchart LR
     BE([Business Event\n'Retail.Payment.HighValueTransaction']) --> ACT[Activator]
+    BE --> EH[(Eventhouse\nHigh-value event history)]
+    EH --> KQL[Payment operations dashboard]
     ACT --> TEAMS[Teams / Email alert]
     ACT --> UDF[User Data Function\ncustom fraud logic]
     ACT --> PA[Power Automate\ncase management]
@@ -184,4 +258,5 @@ flowchart LR
 | **Teams / Email alert** | Immediate notification to the fraud review team |
 | **User Data Function** | Run custom fraud scoring or call an external risk API |
 | **Power Automate** | Open a case in your case management system automatically |
-| **Eventhouse** | Store all high-value transactions for pattern analysis and model training |
+| **Real-Time Dashboard** | Visualize the existing Eventhouse history by store, payment method, and currency |
+| **Review-outcome correlation** | Join with separately captured case outcomes for review-effectiveness analysis |
