@@ -1,0 +1,51 @@
+{
+  "type": "record",
+  "name": "Sales.Deals.DiscountApprovalRequired",
+  "fields": [
+    {
+      "name": "deal_id",
+      "type": "string",
+      "doc": "Unique identifier of the proposal"
+    },
+    {
+      "name": "account_name",
+      "type": "string",
+      "doc": "Customer account associated with the proposal"
+    },
+    {
+      "name": "region",
+      "type": "string",
+      "doc": "Sales region responsible for the proposal"
+    },
+    {
+      "name": "deal_value",
+      "type": "double",
+      "doc": "Total commercial value of the proposal"
+    },
+    {
+      "name": "requested_discount_percent",
+      "type": "double",
+      "doc": "Discount percentage requested by the seller"
+    },
+    {
+      "name": "estimated_margin_percent",
+      "type": "double",
+      "doc": "Estimated margin after applying the requested discount"
+    },
+    {
+      "name": "approval_level",
+      "type": "string",
+      "doc": "Required approval authority: manager or executive"
+    },
+    {
+      "name": "approval_reason",
+      "type": "string",
+      "doc": "Discount rule that triggered the approval request"
+    },
+    {
+      "name": "event_time",
+      "type": "string",
+      "doc": "UTC time when the proposal was evaluated, ISO 8601 format"
+    }
+  ]
+}
