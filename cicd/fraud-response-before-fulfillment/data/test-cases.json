@@ -1,0 +1,8 @@
+[
+  {"id": "minimum-release", "input": {"order_id": "test-order-01", "customer_id": "test-customer-01", "risk_score": 0, "decided_at": "2026-11-01T10:00:00Z"}, "expected": {"decision": "release"}},
+  {"id": "below-review", "input": {"order_id": "test-order-02", "customer_id": "test-customer-02", "risk_score": 0.5499, "decided_at": "2026-11-01T10:01:00Z"}, "expected": {"decision": "release"}},
+  {"id": "exact-review", "input": {"order_id": "test-order-03", "customer_id": "test-customer-03", "risk_score": 0.55, "decided_at": "2026-11-01T10:02:00Z"}, "expected": {"decision": "manual_review"}},
+  {"id": "below-hold", "input": {"order_id": "test-order-04", "customer_id": "test-customer-04", "risk_score": 0.8499, "decided_at": "2026-11-01T10:03:00Z"}, "expected": {"decision": "manual_review"}},
+  {"id": "exact-hold", "input": {"order_id": "test-order-05", "customer_id": "test-customer-05", "risk_score": 0.85, "decided_at": "2026-11-01T10:04:00Z"}, "expected": {"decision": "hold"}},
+  {"id": "maximum-hold", "input": {"order_id": "test-order-06", "customer_id": "test-customer-06", "risk_score": 1, "decided_at": "2026-11-01T10:05:00Z"}, "expected": {"decision": "hold"}}
+]

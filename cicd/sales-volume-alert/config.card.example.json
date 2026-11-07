@@ -1,0 +1,20 @@
+{
+  "$schema": "./config.schema.json",
+  "configuration_version": "1.0",
+  "scenario_id": "sales-volume",
+  "environment": "fabric",
+  "workspace_id": null,
+  "resource_prefix": "SalesDrop",
+  "event_name": "Retail.Sales.VolumeAlert",
+  "source_backend": "native_kql_tables",
+  "resource_names": {
+    "schema": "SalesDropSchema",
+    "notebook": "SalesDropPublisher",
+    "activator": "SalesDropActions",
+    "eventhouse": "SalesDropHistory",
+    "database": "SalesDropAnalytics"
+  },
+  "teams_delivery": "individual",
+  "teams_recipients": ["@me"],
+  "teams_definition_file": null
+}

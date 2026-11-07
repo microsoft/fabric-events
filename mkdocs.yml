@@ -93,16 +93,30 @@ nav:
     - Scenarios:
       - Overview: business-events/scenarios/index.md
       - Detect & Alert:
-        - Sales Volume Alert: business-events/scenarios/sales-volume-alert.md
-        - Real-Time Stream Alert: business-events/scenarios/real-time-stream-alert.md
+        - Sales Volume Alert:
+          - Overview: business-events/scenarios/sales-volume-alert.md
+          - Deployment: business-events/scenarios/sales-volume-alert/deployment.md
+        - Real-Time Stream Alert:
+          - Overview: business-events/scenarios/real-time-stream-alert.md
+          - Deployment: business-events/scenarios/real-time-stream-alert/deployment.md
+        - Revenue Below Target:
+          - Overview: business-events/scenarios/revenue-below-target.md
+          - Deployment: business-events/scenarios/revenue-below-target/deployment.md
       - Decide & Act:
         - Customer Loyalty Milestone: business-events/scenarios/customer-loyalty-milestone.md
         - Abandoned Cart Recovery: business-events/scenarios/abandoned-cart-recovery.md
-        - Fraud Response Before Fulfillment: business-events/scenarios/fraud-response-before-fulfillment.md
+        - Discount Approval Evaluation and Event Publication:
+          - Overview: business-events/scenarios/discount-approval-routing.md
+          - Deployment: business-events/scenarios/discount-approval-routing/deployment.md
+        - Fraud Response Before Fulfillment:
+          - Overview: business-events/scenarios/fraud-response-before-fulfillment.md
+          - Deployment: business-events/scenarios/fraud-response-before-fulfillment/deployment.md
         - Real-Time Viewer Recommendations: business-events/scenarios/real-time-viewer-recommendations.md
         - Shipment Delay Auto-Mitigation: business-events/scenarios/shipment-delay-auto-mitigation.md
       - Track & Analyze:
-        - Low Stock Threshold: business-events/scenarios/low-stock-threshold.md
+        - Low Stock Threshold:
+          - Overview: business-events/scenarios/low-stock-threshold.md
+          - Deployment: business-events/scenarios/low-stock-threshold/deployment.md
         - Data Lineage Audit: business-events/scenarios/data-lineage-audit.md
   - Fabric Events: fabric-events/index.md
   - Azure Events: azure-events/index.md

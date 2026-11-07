@@ -1,0 +1,29 @@
+{
+  "scenario_id": "discount",
+  "title": "Discount approval required",
+  "owner": "Managed by fabric-events/cicd/discount-approval-routing.",
+  "source_backend": "native_udf",
+  "manual_eventstream": true,
+  "automation_limit": "The public Eventstream definition API does not expose Business events as a source. After native deployment, use Real-Time hub to connect this Business Event to a new Eventstream named by resource_names.eventstream. Record its explicitly selected ID with acknowledge-eventstream. No placeholder stream or replacement publisher is created.",
+  "resource_roles": ["schema", "publisher", "activator", "eventstream", "eventhouse", "database"],
+  "eventstream_roles": ["eventstream"],
+  "items": {
+    "schema": "DiscountSchema.EventSchemaSet",
+    "eventhouse": "DiscountHistory.Eventhouse",
+    "database": "DiscountAnalytics.KQLDatabase",
+    "activator": "DiscountActions.Reflex",
+    "publisher": "DiscountPublisher.UserDataFunction"
+  },
+  "identity_field": "deal_id",
+  "time_field": "event_time",
+  "fields": ["deal_id", "account_name", "region", "deal_value", "requested_discount_percent", "estimated_margin_percent", "approval_level", "approval_reason", "event_time"],
+  "parameter_map": {
+    "deal_id": "dealId",
+    "account_name": "accountName",
+    "region": "region",
+    "deal_value": "dealValue",
+    "requested_discount_percent": "requestedDiscountPercent",
+    "estimated_margin_percent": "estimatedMarginPercent",
+    "event_time": "eventTime"
+  }
+}

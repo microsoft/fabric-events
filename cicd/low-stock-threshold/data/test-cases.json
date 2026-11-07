@@ -1,0 +1,17 @@
+[
+  {
+    "id": "reported-low-stock",
+    "input": {"product_id": "test-product-01", "product_name": "Synthetic coffee", "store_id": "test-store-01", "current_stock": 3, "threshold": 10, "supplier_id": "test-supplier-01", "detected_at": "2026-11-01T10:00:00Z"},
+    "expected": {}
+  },
+  {
+    "id": "reported-zero-stock",
+    "input": {"product_id": "test-product-02", "product_name": "Synthetic tea", "store_id": "test-store-02", "current_stock": 0, "threshold": 5, "supplier_id": "test-supplier-02", "detected_at": "2026-11-01T10:01:00Z"},
+    "expected": {}
+  },
+  {
+    "id": "reported-second-location",
+    "input": {"product_id": "test-product-01", "product_name": "Synthetic coffee", "store_id": "test-store-03", "current_stock": 1, "threshold": 10, "supplier_id": "test-supplier-01", "detected_at": "2026-11-01T10:02:00Z"},
+    "expected": {}
+  }
+]

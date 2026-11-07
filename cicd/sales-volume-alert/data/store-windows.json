@@ -1,0 +1,7 @@
+[
+  {"store_id": "store-mx-042", "expected_transactions": 1250, "actual_transactions": 743},
+  {"store_id": "store-mx-043", "expected_transactions": 1250, "actual_transactions": 1000},
+  {"store_id": "store-mx-044", "expected_transactions": 1250, "actual_transactions": 875},
+  {"store_id": "store-mx-045", "expected_transactions": 1250, "actual_transactions": 1250},
+  {"store_id": "store-mx-046", "expected_transactions": 1250, "actual_transactions": 0}
+]

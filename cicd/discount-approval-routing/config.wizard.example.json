@@ -1,0 +1,21 @@
+{
+  "$schema": "./config.schema.json",
+  "configuration_version": "1.0",
+  "scenario_id": "discount",
+  "environment": "msit",
+  "workspace_id": null,
+  "resource_prefix": "Discount",
+  "event_name": "Sales.Deals.DiscountApprovalRequired",
+  "source_backend": "native_udf",
+  "resource_names": {
+    "schema": "DiscountSchema",
+    "publisher": "DiscountPublisher",
+    "activator": "DiscountActions",
+    "eventstream": "DiscountRouting",
+    "eventhouse": "DiscountHistory",
+    "database": "DiscountAnalytics"
+  },
+  "teams_delivery": "individual",
+  "teams_recipients": ["@me"],
+  "teams_definition_file": null
+}

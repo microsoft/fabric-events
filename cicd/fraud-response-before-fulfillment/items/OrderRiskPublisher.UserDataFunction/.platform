@@ -1,0 +1,5 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {"type": "UserDataFunction", "displayName": "OrderRiskPublisher"},
+  "config": {"version": "2.0", "logicalId": "81457d1b-b7da-4475-b2bd-000000000001"}
+}

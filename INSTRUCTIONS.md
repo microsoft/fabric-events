@@ -83,6 +83,16 @@ Preview at http://127.0.0.1:8000/fabric-events/
 pip install -r requirements.txt
 ```
 
+### Deployment runbooks
+
+Author customer deployment guides only in `docs/business-events/scenarios/<scenario>/deployment.md`, nested beneath the corresponding scenario in navigation. They are native MkDocs pages with the portal theme, navigation and search. Do not include internal deployment targets, service-environment names, execution IDs or personal machine paths. Describe functional limitations honestly without exposing internal operational context.
+
+When adapting an existing runbook to the portal, preserve its complete technical content: sections, command sequences, configuration and naming contracts, test cases, exit codes, recovery instructions, engineering handoff and references. Change presentation and navigation, not document scope. Remove or generalize only internal target details; never replace the runbook with a shorter overview.
+
+Keep deployment code in `cicd`, outside the documentation tree. Scenario packages and ZIPs contain executable assets and required configuration, not README files or other documentation. Do not generate documentation copies inside `cicd`. All deployment instructions live only in the nested documentation page, linked from the scenario and catalog. Building packages does not require building documentation, and building documentation must not write into deployment packages.
+
+Keep the six scenario sections and index honest about reference implementations versus unfinished seeds. Scenario-local `.deployments` directories remain excluded by `.gitignore`; that exclusion is not a substitute for keeping private files outside the website's source tree. Validate with `python -m unittest discover -s tests -p "test_deployment_docs.py"` and `mkdocs build --strict`. Existing manual scenario URLs remain unchanged.
+
 ---
 
 ## 4. Project Structure
@@ -371,11 +381,12 @@ How to trigger the event and verify it was received.
 
 | # | Title | Publisher | Consumer | Schema Set | Event Type |
 |---|-------|-----------|----------|------------|------------|
-| 01 | Sales Volume Alert | Notebook | Activator | RetailSales | Retail.Sales.VolumeAlert |
-| 02 | Low Stock Threshold | User Data Function | Eventhouse | RetailInventory | Retail.Inventory.LowStockThreshold |
-| 03 | High-Value Transaction | Eventstream | Activator | RetailPayments | Retail.Payment.HighValueTransaction |
+| 01 | Sales Volume Alert | Notebook | Activator + Eventhouse | RetailSales | Retail.Sales.VolumeAlert |
+| 02 | Low Stock Threshold | User Data Function | Activator + Eventhouse | RetailInventory | Retail.Inventory.LowStockThreshold |
+| 03 | High-Value Transaction | Eventstream | Activator + Eventhouse | RetailPayments | Retail.Payment.HighValueTransaction |
 | 04 | Pipeline Audit Trail | Notebook | Eventhouse | DataOps | DataOps.Pipeline.RunCompleted |
 | 05 | Loyalty Milestone | Activator | Activator + Eventhouse | RetailCustomers | Retail.Customer.MilestoneReached |
+| 06 | Revenue Below Target | Activator | Activator + Eventhouse | SalesPerformance | Sales.Revenue.BelowTarget |
 
 ---
 
@@ -432,4 +443,3 @@ All links below were verified as of June 2026. Use these exact URLs in content:
 - **Numbered lists and code blocks** — MkDocs resets list numbering after a fenced code block unless the block is indented 4 spaces inside the list item.
 - **UDF alias** — auto-generated from schema set name (e.g., `RetailInventory` → alias `RetailInventory`). Document this explicitly in every UDF scenario.
 - **Root redirect** — `docs/index.md` contains a JavaScript redirect to `/fabric-events/home/` because MkDocs requires a root `index.md` but the home page lives at `docs/home/index.md`.
-

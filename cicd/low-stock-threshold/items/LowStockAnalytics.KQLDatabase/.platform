@@ -1,0 +1,5 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {"type": "KQLDatabase", "displayName": "LowStockAnalytics"},
+  "config": {"version": "2.0", "logicalId": "05dfbf6f-4756-479b-a55a-41b27a71ef97"}
+}

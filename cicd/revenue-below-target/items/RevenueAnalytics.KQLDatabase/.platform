@@ -1,0 +1,5 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {"type": "KQLDatabase", "displayName": "RevenueAnalytics"},
+  "config": {"version": "2.0", "logicalId": "7ca27f8a-2cb6-4e67-9777-4c2e06ee5beb"}
+}

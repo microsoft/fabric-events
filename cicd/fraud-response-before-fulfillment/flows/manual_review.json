@@ -1,0 +1,72 @@
+{
+  "properties": {
+    "displayName": "${flow_name}",
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_an_activator_rule_is_triggered": {
+          "type": "OpenApiConnectionWebhook",
+          "inputs": {
+            "parameters": {
+              "connectionInfo": "${native_connection_info}"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_dataactivator",
+              "connectionName": "shared_dataactivator",
+              "operationId": "CreatePowerAutomateWorkflow"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Persist_manual_review": {
+          "runAfter": {},
+          "type": "Http",
+          "inputs": {
+            "uri": "@concat('${order_api_base_url}/orders/', uriComponent(triggerBody()?['customProperties/order_id']), '/manual_review')",
+            "headers": {
+              "x-activation-id": "@triggerBody()?['eventId']",
+              "Content-Type": "application/json",
+              "x-functions-key": "${order_api_key}"
+            },
+            "body": {
+              "order_id": "@triggerBody()?['customProperties/order_id']",
+              "customer_id": "@triggerBody()?['customProperties/customer_id']",
+              "risk_score": "@float(triggerBody()?['customProperties/risk_score'])"
+            },
+            "method": "POST"
+          },
+          "runtimeConfiguration": {
+            "secureData": {
+              "properties": [
+                "inputs",
+                "outputs"
+              ]
+            }
+          }
+        }
+      },
+      "outputs": {}
+    },
+    "connectionReferences": {
+      "shared_dataactivator": {
+        "connectionName": "${data_activator_connection_name}",
+        "source": "Embedded",
+        "id": "/providers/Microsoft.PowerApps/apis/shared_dataactivator"
+      }
+    },
+    "state": "Started"
+  }
+}

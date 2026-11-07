@@ -1,0 +1,2 @@
+# Required only by test.bat for external custom-endpoint dummy-input injection.
+azure-eventhub>=5.12,<6

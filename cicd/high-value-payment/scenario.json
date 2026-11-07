@@ -1,0 +1,19 @@
+{
+  "scenario_id": "high-value-payment",
+  "title": "High-value payment detected",
+  "owner": "Managed by fabric-events/cicd/high-value-payment.",
+  "source_backend": "native_eventstream",
+  "manual_eventstream": false,
+  "resource_roles": ["schema", "publisher", "activator", "eventhouse", "database"],
+  "eventstream_roles": ["publisher"],
+  "items": {
+    "schema": "PaymentReviewSchema.EventSchemaSet",
+    "eventhouse": "PaymentReviewHistory.Eventhouse",
+    "database": "PaymentReviewAnalytics.KQLDatabase",
+    "activator": "PaymentReviewActions.Reflex",
+    "publisher": "PaymentReviewPublisher.Eventstream"
+  },
+  "identity_field": "transaction_id",
+  "time_field": "processed_at",
+  "fields": ["transaction_id", "payment_method", "amount", "currency", "store_id", "processed_at"]
+}

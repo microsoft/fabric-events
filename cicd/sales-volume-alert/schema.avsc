@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "Retail.Sales.VolumeAlert",
+  "fields": [
+    {"name": "store_id", "type": "string"},
+    {"name": "expected_transactions", "type": "int"},
+    {"name": "actual_transactions", "type": "int"},
+    {"name": "deviation_pct", "type": "float"},
+    {"name": "window_start", "type": "string"},
+    {"name": "severity", "type": "string"}
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "eventTypes": [{
+    "id": "${event_name}",
+    "description": "A discount or margin policy exception requiring manager or executive approval.",
+    "category": "BusinessEventType",
+    "format": "CloudEvents/1.0",
+    "envelopeMetadata": {
+      "id": {"type": "string", "required": true},
+      "type": {"type": "string", "required": true, "value": "${event_name}"},
+      "source": {"type": "string", "required": true},
+      "specversion": {"type": "string", "required": true},
+      "time": {"type": "timestamp", "required": true},
+      "datacontenttype": {"type": "string", "required": true},
+      "dataversion": {"type": "string", "required": true},
+      "dataschema": {"type": "string", "required": true}
+    },
+    "schemaUrl": "${schema_url}",
+    "schemaFormat": "Avro/1.12.0"
+  }],
+  "schemas": [{
+    "id": "${event_name}",
+    "format": "Avro/1.12.0",
+    "versions": [{
+      "id": "v1",
+      "format": "Avro/1.12.0",
+      "schema": "{\"type\":\"record\",\"name\":\"${event_name}\",\"fields\":[{\"name\":\"deal_id\",\"type\":\"string\"},{\"name\":\"account_name\",\"type\":\"string\"},{\"name\":\"region\",\"type\":\"string\"},{\"name\":\"deal_value\",\"type\":\"double\"},{\"name\":\"requested_discount_percent\",\"type\":\"double\"},{\"name\":\"estimated_margin_percent\",\"type\":\"double\"},{\"name\":\"approval_level\",\"type\":\"string\"},{\"name\":\"approval_reason\",\"type\":\"string\"},{\"name\":\"event_time\",\"type\":\"string\"}]}"
+    }]
+  }]
+}

@@ -1,0 +1,8 @@
+[
+  {"id":"below-usd","input":{"transaction_id":"fixture","payment_method":"card","amount":4999.99,"currency":"USD","store_id":"synthetic-store-us","processed_at":"2026-01-01T00:00:00Z"},"expected":null},
+  {"id":"boundary-usd","input":{"transaction_id":"fixture","payment_method":"card","amount":5000.0,"currency":"USD","store_id":"synthetic-store-us","processed_at":"2026-01-01T00:00:00Z"},"expected":null},
+  {"id":"boundary-eur","input":{"transaction_id":"fixture","payment_method":"transfer","amount":5000.0,"currency":"EUR","store_id":"synthetic-store-eu","processed_at":"2026-01-01T00:00:00Z"},"expected":null},
+  {"id":"above-usd","input":{"transaction_id":"fixture","payment_method":"card","amount":5000.01,"currency":"USD","store_id":"synthetic-store-us","processed_at":"2026-01-01T00:00:00Z"},"expected":{}},
+  {"id":"above-eur","input":{"transaction_id":"fixture","payment_method":"transfer","amount":6000.0,"currency":"EUR","store_id":"synthetic-store-eu","processed_at":"2026-01-01T00:00:00Z"},"expected":{}},
+  {"id":"above-jpy","input":{"transaction_id":"fixture","payment_method":"card","amount":9000.0,"currency":"JPY","store_id":"synthetic-store-jp","processed_at":"2026-01-01T00:00:00Z"},"expected":{}}
+]

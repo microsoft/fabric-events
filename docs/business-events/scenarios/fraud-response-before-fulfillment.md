@@ -14,6 +14,17 @@ Risk evaluation can already run in a function or application. If each downstream
 **The solution with Business Events:**
 The function publishes separate contracts for the detected risk and the resulting decision. Activator rules use the decision event for hold, review, or release actions, while Eventhouse supports analysis of received events. New consumers can reuse these contracts; changes to risk policy still belong in the evaluator.
 
+## Deploy this scenario
+
+**Status: Reference implementation available.** [`cicd/fraud-response-before-fulfillment`](https://github.com/microsoft/fabric-events/tree/main/cicd/fraud-response-before-fulfillment) contains separate `deploy.bat` and `test.bat` launchers, protected Azure backend provisioning, the live-validated decision UDF, native Activator rules and custom actions, real Power Automate flows, Eventhouse assets and external boundary fixtures. The prototype can download the reviewed resource-name configuration.
+
+[Read the native deployment guide and verification scope](fraud-response-before-fulfillment/deployment.md).
+
+!!! warning "Decision-only reference, not a production OMS adapter"
+    The reference implements only `Ecommerce.Order.FraudDecision` from the prototype card. This full walkthrough also describes the independent `Ecommerce.Order.HighRiskDetected` signal and Fabric risk context; those are not implicitly implemented by the reference. Two fresh edited-name deployments and three independent six-case runs completed real native flows, Eventhouse delivery and persisted hold/review/release enforcement. Deployment creates no test orders or events; testing remains a separate explicit command.
+
+The decision publisher selects hold, manual review or release. Only the matching custom action must run; publication or a successful local test does not prove that a flow ran or that the order system enforced a hold. The reference verified these effects against an isolated synthetic backend, not a production OMS. Use the complete manual walkthrough below for the broader two-event example, and the deployment guide for the reference's precise scope.
+
 ## Architecture
 
 ```mermaid

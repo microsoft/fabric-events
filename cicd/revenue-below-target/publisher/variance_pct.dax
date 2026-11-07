@@ -1,0 +1,8 @@
+variance_pct =
+VAR RevenueAmount = SUM(RevenuePerformance[revenue])
+VAR TargetAmount = SUM(RevenuePerformance[target])
+RETURN
+    IF(
+        TargetAmount > 0,
+        100 * DIVIDE(RevenueAmount - TargetAmount, TargetAmount)
+    )

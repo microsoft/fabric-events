@@ -1,0 +1,38 @@
+{
+  "name": "RevenueSource",
+  "compatibilityLevel": 1601,
+  "model": {
+    "culture": "en-US",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-US",
+    "tables": [
+      {
+        "name": "RevenuePerformance",
+        "columns": [
+          {"name": "region", "dataType": "string", "sourceColumn": "region", "summarizeBy": "none"},
+          {"name": "period_start", "dataType": "string", "sourceColumn": "period_start", "summarizeBy": "none"},
+          {"name": "revenue", "dataType": "double", "sourceColumn": "revenue", "summarizeBy": "sum"},
+          {"name": "target", "dataType": "double", "sourceColumn": "target", "summarizeBy": "sum"}
+        ],
+        "measures": [
+          {"name": "variance_pct", "expression": "${variance_pct_expression}", "formatString": "0.00"}
+        ],
+        "partitions": [
+          {
+            "name": "RevenuePerformance",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = #table(type table [region = text, period_start = text, revenue = number, target = number], {})",
+                "in",
+                "    Source"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

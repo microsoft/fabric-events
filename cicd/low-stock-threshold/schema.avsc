@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "Retail.Inventory.LowStockThreshold",
+  "fields": [
+    {"name": "product_id", "type": "string"},
+    {"name": "product_name", "type": "string"},
+    {"name": "store_id", "type": "string"},
+    {"name": "current_stock", "type": "int"},
+    {"name": "threshold", "type": "int"},
+    {"name": "supplier_id", "type": "string"},
+    {"name": "detected_at", "type": "string"}
+  ]
+}

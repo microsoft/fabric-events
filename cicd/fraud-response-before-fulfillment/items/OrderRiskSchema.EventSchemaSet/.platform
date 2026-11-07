@@ -1,0 +1,5 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {"type": "EventSchemaSet", "displayName": "OrderRiskSchema"},
+  "config": {"version": "2.0", "logicalId": "5ebc4511-03ea-417c-9d43-02adb35e6cca"}
+}

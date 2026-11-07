@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sales volume scenario deployment configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "configuration_version", "scenario_id", "environment", "workspace_id",
+    "resource_prefix", "event_name", "source_backend", "resource_names",
+    "teams_delivery", "teams_recipients", "teams_definition_file"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "configuration_version": {"const": "1.0"},
+    "scenario_id": {"const": "sales-volume"},
+    "environment": {"enum": ["fabric", "daily", "msit"]},
+    "workspace_id": {"type": ["string", "null"], "format": "uuid"},
+    "resource_prefix": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]{2,39}$"},
+    "event_name": {
+      "type": "string", "minLength": 3, "maxLength": 80,
+      "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$"
+    },
+    "source_backend": {"const": "native_kql_tables"},
+    "resource_names": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "notebook", "activator", "eventhouse", "database"],
+      "properties": {
+        "schema": {"$ref": "#/$defs/resourceName"},
+        "notebook": {"$ref": "#/$defs/resourceName"},
+        "activator": {"$ref": "#/$defs/resourceName"},
+        "eventhouse": {"$ref": "#/$defs/resourceName"},
+        "database": {"$ref": "#/$defs/resourceName"}
+      }
+    },
+    "teams_delivery": {"enum": ["individual", "channel"]},
+    "teams_recipients": {
+      "type": "array", "items": {"type": "string", "pattern": "^(@me|[^@\\s]+@[^@\\s]+\\.[^@\\s]+)$"}
+    },
+    "teams_definition_file": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "resourceName": {
+      "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9 _-]{1,98}[A-Za-z0-9_-]$",
+      "not": {"pattern": "^(?:[Cc][Oo][Nn]|[Pp][Rr][Nn]|[Aa][Uu][Xx]|[Nn][Uu][Ll]|[Cc][Oo][Mm][1-9]|[Ll][Pp][Tt][1-9])$"}
+    }
+  }
+}

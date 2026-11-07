@@ -1,0 +1,16 @@
+// Every finding, including results that must not trigger the Teams rule.
+['Retail.Sales.VolumeAlert']
+| order by ingestion_time() desc
+| take 50
+
+// Recurring severe drops are findings to investigate, not confirmed POS failures.
+['Retail.Sales.VolumeAlert']
+| where ingestion_time() > ago(7d)
+| where deviation_pct < -30
+| summarize Findings = count(), WorstDeviationPct = min(deviation_pct) by store_id
+| order by Findings desc, WorstDeviationPct asc
+
+['Retail.Sales.VolumeAlert']
+| where ingestion_time() > ago(7d)
+| summarize Findings = count() by severity, ReceivedHour = bin(ingestion_time(), 1h)
+| order by ReceivedHour asc

@@ -1,0 +1,362 @@
+"""Bind checked-in Fabric definitions. Business rules remain in native artifacts."""
+
+import ast
+import base64
+import copy
+import json
+import re
+import uuid
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+EVENT_PATTERN = r"[A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*"
+RESOURCE_PATTERN = r"[A-Za-z][A-Za-z0-9 _-]{1,98}[A-Za-z0-9_-]"
+
+
+def manifest():
+    return json.loads((ROOT / "scenario.json").read_text(encoding="utf-8"))
+
+
+def bind(value, replacements):
+    if isinstance(value, dict):
+        return {
+            key: json.dumps(bind(json.loads(child), replacements))
+            if key in ("schema", "instance") and isinstance(child, str)
+            else bind(child, replacements)
+            for key, child in value.items()
+        }
+    if isinstance(value, list):
+        return [bind(child, replacements) for child in value]
+    if isinstance(value, str):
+        if value in replacements:
+            return copy.deepcopy(replacements[value])
+        if "${" in value:
+            raise ValueError(f"Unresolved native binding: {value}")
+    return value
+
+
+def bind_identities(value, replacements):
+    if isinstance(value, dict):
+        return {
+            key: json.dumps(bind_identities(json.loads(child), replacements))
+            if key in ("schema", "instance") and isinstance(child, str)
+            else bind_identities(child, replacements)
+            for key, child in value.items()
+        }
+    if isinstance(value, list):
+        return [bind_identities(child, replacements) for child in value]
+    return replacements.get(value, value) if isinstance(value, str) else value
+
+
+def validate_config(config):
+    spec = manifest()
+    required = {
+        "configuration_version", "scenario_id", "environment", "workspace_id",
+        "resource_prefix", "event_name", "source_backend", "resource_names",
+        "teams_delivery", "teams_recipients", "teams_definition_file",
+    }
+    if not isinstance(config, dict) or required - config.keys():
+        raise ValueError("Configuration must contain the complete versioned card contract.")
+    if config.keys() - required - {"$schema"}:
+        raise ValueError("Unknown configuration fields.")
+    if config["configuration_version"] != "1.0" or config["scenario_id"] != spec["scenario_id"]:
+        raise ValueError("Configuration version or scenario_id does not match this package.")
+    if config["source_backend"] != spec["source_backend"]:
+        raise ValueError("The publisher backend cannot be replaced with another workload.")
+    if config["environment"] not in ("msit", "daily", "fabric"):
+        raise ValueError("environment must be msit, daily or fabric.")
+    if config["workspace_id"] is not None:
+        if not isinstance(config["workspace_id"], str):
+            raise ValueError("workspace_id must be a UUID string or null for offline planning.")
+        config["workspace_id"] = str(uuid.UUID(config["workspace_id"]))
+    prefix = config["resource_prefix"]
+    if not isinstance(prefix, str) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{2,39}", prefix):
+        raise ValueError("resource_prefix must contain 3-40 letters, digits or underscores.")
+    event = config["event_name"]
+    if not isinstance(event, str) or not 3 <= len(event) <= 80 or not re.fullmatch(EVENT_PATTERN, event):
+        raise ValueError("event_name must be a 3-80 character Avro-qualified name.")
+    names = config["resource_names"]
+    if not isinstance(names, dict) or set(names) != set(spec["resource_roles"]):
+        raise ValueError("resource_names must exactly match this scenario's wizard resource roles.")
+    for role, name in names.items():
+        if not isinstance(name, str) or not re.fullmatch(RESOURCE_PATTERN, name) or re.fullmatch(
+            r"CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9]", name, re.I,
+        ):
+            raise ValueError(f"Invalid portable resource name for {role}.")
+        if role in spec["eventstream_roles"] and not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{2,99}", name):
+            raise ValueError("Eventstream names require 3-100 letters, digits or underscores.")
+    if len({name.casefold() for name in names.values()}) != len(names):
+        raise ValueError("Resource names must be distinct, ignoring case.")
+    if config["teams_delivery"] not in ("channel", "individual"):
+        raise ValueError("teams_delivery must explicitly select channel or individual.")
+    template = config["teams_definition_file"]
+    if template is not None and (not isinstance(template, str) or not template.strip()):
+        raise ValueError("teams_definition_file must be a non-empty path or null.")
+    if config["teams_delivery"] == "individual" and template is not None:
+        raise ValueError("An individual test destination cannot use a channel definition.")
+    recipients = config["teams_recipients"]
+    if not isinstance(recipients, list) or any(
+        not isinstance(value, str) or (
+            value != "@me" and not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", value)
+        ) for value in recipients
+    ):
+        raise ValueError("Choose approved individual Teams recipients or @me.")
+    if config["teams_delivery"] == "individual" and not recipients:
+        raise ValueError("Choose explicit individual test recipients; there is no channel-to-DM fallback.")
+    if config["teams_delivery"] == "channel" and recipients:
+        raise ValueError("Channel delivery must not contain individual recipients.")
+    return config
+
+
+def items(config):
+    spec = manifest()
+    result = {}
+    for role, folder in spec["items"].items():
+        root = ROOT / "items" / folder
+        platform = json.loads((root / ".platform").read_text(encoding="utf-8"))
+        identifier = str(uuid.UUID(platform["config"]["logicalId"]))
+        result[role] = {
+            "role": role, "root": root, "type": platform["metadata"]["type"],
+            "name": config["resource_names"][role],
+            "template_id": identifier,
+            "logical_id": str(uuid.uuid5(uuid.UUID(identifier), config["resource_prefix"])),
+        }
+    if len({item["logical_id"] for item in result.values()}) != len(result):
+        raise ValueError("Native logical IDs must be unique.")
+    return result
+
+
+def part(path, content):
+    if not isinstance(content, bytes):
+        content = content.encode("utf-8")
+    return {
+        "path": path, "payloadType": "InlineBase64",
+        "payload": base64.b64encode(content).decode("ascii"),
+    }
+
+
+def definition(role, config, actual_ids=None, recipients=None):
+    catalog = items(config)
+    item = catalog[role]
+    identifiers = {key: value["logical_id"] for key, value in catalog.items()}
+    identifiers.update(actual_ids or {})
+    workspace = config["workspace_id"] or "00000000-0000-0000-0000-000000000000"
+    event_id = f"/workspaces/{workspace}/eventschemasets/{identifiers['schema']}/eventtypes/{config['event_name']}"
+    replacements = {
+        "${event_name}": config["event_name"], "${schema_url}": "#/schemas/" + config["event_name"],
+        "${workspace_id}": workspace, "${schema_id}": identifiers["schema"],
+        "${schema_name}": config["resource_names"]["schema"],
+        "${source_id}": str(uuid.uuid5(uuid.NAMESPACE_URL, event_id)),
+        "${event_id}": event_id, "${rule_enabled}": True,
+        "${teams_recipients}": [
+            {"type": "string", "value": value} for value in (recipients or config["teams_recipients"])
+        ],
+        **{
+            value["template_id"]: (actual_ids or {}).get(key, value["logical_id"])
+            for key, value in catalog.items()
+        },
+    }
+    if role == "activator":
+        entities = json.loads((item["root"] / "ReflexEntities.json").read_text(encoding="utf-8"))
+        replacements.update({
+            entity["uniqueIdentifier"]: str(uuid.uuid5(
+                uuid.UUID(entity["uniqueIdentifier"]), config["resource_prefix"],
+            ))
+            for entity in entities if not entity["uniqueIdentifier"].startswith("${")
+        })
+    files = []
+    for path in sorted(item["root"].rglob("*")):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(item["root"]).as_posix()
+        content = path.read_text(encoding="utf-8")
+        if role == "activator" and relative == "ReflexEntities.json" and config["teams_delivery"] == "channel":
+            content = json.dumps(channel_definition(config, event_id, replacements["${source_id}"]))
+        if relative == ".platform" or path.suffix == ".json":
+            value = bind(bind_identities(json.loads(content), replacements), replacements)
+            if relative == ".platform":
+                value["metadata"].update(displayName=item["name"], description=manifest()["owner"])
+                value["config"]["logicalId"] = item["logical_id"]
+            content = json.dumps(value, indent=2)
+        elif path.suffix == ".py":
+            for marker, replacement in (
+                ('"${event_name}"', json.dumps(config["event_name"])),
+                ('"${schema_name}"', json.dumps(config["resource_names"]["schema"])),
+            ):
+                if content.count(marker) != 1:
+                    raise ValueError("The UDF must declare exactly one event and one connection-alias binding.")
+                content = content.replace(marker, replacement, 1)
+            ast.parse(content)
+        if "${" in content:
+            raise ValueError(f"Unresolved native binding in {role}/{relative}.")
+        files.append(part(relative, content))
+    return {"parts": files}
+
+
+def channel_definition(config, event_id, source_id):
+    template = config["teams_definition_file"]
+    if not template:
+        raise ValueError(
+            "Channel delivery requires an exported native inventory Teams-channel ReflexEntities.json. "
+            "No individual-message substitute will be created."
+        )
+    entities = json.loads(Path(template).read_text(encoding="utf-8-sig"))
+    if not isinstance(entities, list):
+        raise ValueError("The native channel definition must contain an entity array.")
+    ids = [entity["uniqueIdentifier"] for entity in entities]
+    if len(ids) != len(set(ids)):
+        raise ValueError("Channel definition contains duplicate entity identities.")
+    sources = [entity for entity in entities if entity["type"] == "realTimeHubSource-v1"]
+    rules = [
+        entity for entity in entities
+        if entity["payload"].get("definition", {}).get("type") == "Rule"
+    ]
+    views = [
+        entity for entity in entities
+        if entity["payload"].get("definition", {}).get("type") == "Event"
+    ]
+    if len(sources) != 1 or len(rules) != 1 or len(views) != 1:
+        raise ValueError("Export exactly one Business Events source, event view and inventory notification rule.")
+    source = sources[0]
+    connection = source["payload"].get("connection", {})
+    original = connection.get("eventTypeFullyQualifiedIds", [])
+    if connection.get("scope") != "BusinessEvents" or len(original) != 1 or not original[0].endswith(
+        "/eventtypes/" + config["event_name"]
+    ):
+        raise ValueError("The native channel export must belong to this inventory event type.")
+    if source["payload"].get("filterSettings", {}).get("filters") != []:
+        raise ValueError("The inventory consumer must not apply another stock detector or upstream filter.")
+    old_source = source["uniqueIdentifier"]
+    source["uniqueIdentifier"] = source_id
+    source["payload"]["connection"] = {"scope": "BusinessEvents", "eventTypeFullyQualifiedIds": [event_id]}
+    references = {"SourceReference": [], "EventReference": [], "EventFieldReference": []}
+
+    def inspect(value):
+        if isinstance(value, dict):
+            kind = value.get("kind")
+            if kind in references:
+                for argument in value.get("arguments", []):
+                    if kind == "SourceReference" and argument.get("name") == "entityId" and argument.get("value") == old_source:
+                        argument["value"] = source_id
+                    if argument.get("name") == ("fieldName" if kind == "EventFieldReference" else "entityId"):
+                        references[kind].append(argument.get("value"))
+            for child in value.values():
+                inspect(child)
+        elif isinstance(value, list):
+            for child in value:
+                inspect(child)
+
+    for entity in entities:
+        parent = entity["payload"].get("parentContainer")
+        if parent and parent["targetUniqueIdentifier"] not in ids:
+            raise ValueError("The native channel export has a dangling container reference.")
+        value = entity["payload"].get("definition", {})
+        if "instance" in value:
+            instance = json.loads(value["instance"])
+            inspect(instance)
+            value["instance"] = json.dumps(instance)
+    if references["SourceReference"] != [source_id] or references["EventReference"] != [views[0]["uniqueIdentifier"]]:
+        raise ValueError("The native channel export must connect its single rule to the inventory source view.")
+    if not set(manifest()["actions"][0]["context_fields"]) <= set(references["EventFieldReference"]):
+        raise ValueError("The channel action must include every inventory context field.")
+    rule = rules[0]["payload"]["definition"]
+    instance = json.loads(rule["instance"])
+    conditions = [step["rows"] for step in instance["steps"] if step["name"] == "EventDetectStep"]
+    actions = [step["rows"] for step in instance["steps"] if step["name"] == "ActStep"]
+    if instance.get("templateId") != "EventTrigger" or conditions != [[
+        {"name": "OnEveryValue", "kind": "OnEveryValue", "arguments": []}
+    ]]:
+        raise ValueError("Inventory findings require the native On each event condition without a second detector.")
+    if len(actions) != 1 or len(actions[0]) != 1 or "Teams" not in actions[0][0].get("kind", ""):
+        raise ValueError("Inventory requires exactly one native Teams action.")
+    if any(argument.get("name") == "recipients" and argument.get("values")
+           for argument in actions[0][0].get("arguments", [])):
+        raise ValueError("Individual Teams recipients are not a channel-post definition.")
+    rule.setdefault("settings", {}).update(shouldRun=True, shouldApplyRuleOnUpdate=True)
+    return entities
+
+
+def bulk_payload(roles, config, actual_ids=None, recipients=None):
+    catalog = items(config)
+    parts = []
+    for role in roles:
+        item = catalog[role]
+        for entry in definition(role, config, actual_ids, recipients)["parts"]:
+            if role == "activator" and entry["path"] == "ReflexEntities.json":
+                entities = json.loads(decoded({"parts": [entry]}, entry["path"]))
+                entities = [
+                    entity for entity in entities
+                    if entity["type"] != "powerAutomateFlowAction-v1"
+                    and entity["payload"].get("definition", {}).get("type") != "Rule"
+                ]
+                entry = part(entry["path"], json.dumps(entities))
+            parts.append({**entry, "path": f"/{item['name']}.{item['type']}/{entry['path']}"})
+    return {"definitionParts": parts, "options": {"allowPairingByName": False}}
+
+
+def decoded(definition, path):
+    parts = [entry for entry in definition["parts"] if entry["path"] == path]
+    if len(parts) != 1 or parts[0]["payloadType"] != "InlineBase64":
+        raise ValueError(f"Missing or ambiguous native definition part: {path}")
+    return base64.b64decode(parts[0]["payload"], validate=True).decode("utf-8-sig")
+
+
+def assert_subset(expected, actual, path="$"):
+    if isinstance(expected, dict):
+        if not isinstance(actual, dict) or not expected.keys() <= actual.keys():
+            raise ValueError(f"Native definition readback is missing expected properties at {path}.")
+        for key, value in expected.items():
+            if key in ("schema", "instance") and isinstance(value, str):
+                assert_subset(json.loads(value), json.loads(actual[key]), f"{path}.{key}")
+            else:
+                assert_subset(value, actual[key], f"{path}.{key}")
+    elif isinstance(expected, list):
+        if not isinstance(actual, list) or len(expected) != len(actual):
+            raise ValueError(f"Native definition readback contains different nodes or fields at {path}.")
+        if expected and all(isinstance(item, dict) and "uniqueIdentifier" in item for item in expected):
+            if not all(isinstance(item, dict) and "uniqueIdentifier" in item for item in actual):
+                raise ValueError("Native entity identifiers are missing.")
+            if len({item["uniqueIdentifier"] for item in actual}) != len(actual):
+                raise ValueError("Native entity identifiers are duplicated.")
+            expected = sorted(expected, key=lambda item: item["uniqueIdentifier"])
+            actual = sorted(actual, key=lambda item: item["uniqueIdentifier"])
+        for index, (left, right) in enumerate(zip(expected, actual)):
+            assert_subset(left, right, f"{path}[{index}]")
+    elif expected != actual:
+        raise ValueError(f"Native definition readback differs from the intended binding at {path}.")
+
+
+def assert_definition(expected, actual):
+    notes = []
+    for entry in expected["parts"]:
+        path = entry["path"]
+        if path == ".platform":
+            continue
+        if path == "resources/functions.json" and not any(
+            part["path"] == path for part in actual["parts"]
+        ):
+            notes.append("Generated UDF metadata is not exported; source/connection readback does not establish runtime execution.")
+            continue
+        left, right = decoded(expected, path), decoded(actual, path)
+        if path == "DatabaseSchema.kql" and all(
+            not line.strip() or line.lstrip().startswith("//") for line in left.splitlines()
+        ):
+            notes.append("KQL schema is platform-managed; association and actual payload delivery are checked independently.")
+            continue
+        if path.endswith(".json"):
+            left_value, right_value = json.loads(left), json.loads(right)
+            if path == "eventstream.json":
+                for graph in (left_value, right_value):
+                    for group in ("sources", "streams", "operators", "destinations"):
+                        nodes = graph.get(group, [])
+                        if len({node["name"] for node in nodes}) != len(nodes):
+                            raise ValueError(f"Duplicated Eventstream node names in {group}.")
+                        if group in graph:
+                            graph[group] = sorted(nodes, key=lambda node: node["name"])
+            assert_subset(left_value, right_value)
+        elif path.endswith(".py"):
+            if ast.dump(ast.parse(left)) != ast.dump(ast.parse(right)):
+                raise ValueError("Deployed UDF code differs from the native source.")
+        elif left.strip() != right.strip():
+            raise ValueError(f"Deployed native source differs: {path}.")
+    return notes

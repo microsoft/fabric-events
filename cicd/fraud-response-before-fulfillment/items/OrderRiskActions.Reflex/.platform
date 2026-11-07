@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Reflex",
+    "displayName": "OrderRiskActions",
+    "description": "Managed by fabric-events/cicd/fraud-response-before-fulfillment."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a6f91087-035a-43be-91f1-6ba155276c18"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "BusinessEventName": "Retail.Sales.VolumeAlert",
+  "DataFormat": "JSON",
+  "BusinessEventTypes": ["${event_id}"],
+  "AdvancedFilters": [],
+  "EventSchemaSetArtifactId": "${schema_id}",
+  "EventSchemaSetWorkspaceId": "${workspace_id}"
+}

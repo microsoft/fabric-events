@@ -1,0 +1,24 @@
+{
+  "runtime": "PYTHON",
+  "functionsMetadata": [{
+    "name": "evaluate_discount_request",
+    "scriptFile": "function_app.py",
+    "bindings": [
+      {"methods": ["POST"], "route": "", "authLevel": "Anonymous", "name": "req", "direction": "In", "type": "HttpTrigger"},
+      {"itemType": null, "subType": "FabricBusinessEventsClient", "alias": "${schema_name}", "name": "businessEventsClient", "direction": "In", "type": "FabricItem"}
+    ],
+    "fabricProperties": {
+      "fabricMetadataSchemaVersion": "1.1.0",
+      "fabricFunctionParameters": [
+        {"dataType": "str", "name": "dealId"},
+        {"dataType": "str", "name": "accountName"},
+        {"dataType": "str", "name": "region"},
+        {"dataType": "float", "name": "dealValue"},
+        {"dataType": "float", "name": "requestedDiscountPercent"},
+        {"dataType": "float", "name": "estimatedMarginPercent"},
+        {"dataType": "str", "name": "eventTime"}
+      ],
+      "fabricFunctionReturnType": "dict"
+    }
+  }]
+}

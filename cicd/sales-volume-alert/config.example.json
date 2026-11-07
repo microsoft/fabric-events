@@ -1,0 +1,8 @@
+{
+  "environment": "fabric",
+  "workspace_id": null,
+  "resource_prefix": "SalesVolumeCicdV1",
+  "teams_delivery": "individual",
+  "teams_recipients": ["@me"],
+  "teams_definition_file": null
+}

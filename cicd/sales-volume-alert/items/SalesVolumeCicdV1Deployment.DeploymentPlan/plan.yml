@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/deploymentPlan/definition/plan/1.0.0/schema.json",
+  "version": "1.0.0",
+  "groups": [
+    {"name": "EventSchema", "logicalId": "6ce6d6c9-4000-5000-8000-000000000002"},
+    {"name": "Eventhouse", "logicalId": "6ce6d6c9-4000-5000-8000-000000000003"},
+    {
+      "name": "HistoryDatabase",
+      "logicalId": "6ce6d6c9-4000-5000-8000-000000000004",
+      "dependsOn": [{"groupName": "Eventhouse"}]
+    },
+    {
+      "name": "Publisher",
+      "logicalId": "6ce6d6c9-4000-5000-8000-000000000005",
+      "dependsOn": [{"groupName": "EventSchema"}, {"groupName": "HistoryDatabase"}]
+    }
+  ]
+}

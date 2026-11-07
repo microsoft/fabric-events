@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "RevenueSource",
+    "description": "Managed by fabric-events/cicd/revenue-below-target."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "b9cbb885-91ac-4dc8-96f8-13ebde58c80c"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {"type": "EventSchemaSet", "displayName": "LowStockSchema"},
+  "config": {"version": "2.0", "logicalId": "12b6db5f-61b7-4c0f-b7f4-f249a5fda562"}
+}

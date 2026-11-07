@@ -1,0 +1,21 @@
+{
+  "runtime": "PYTHON",
+  "functionsMetadata": [{
+    "name": "evaluate_order_risk",
+    "scriptFile": "function_app.py",
+    "bindings": [
+      {"methods": ["POST"], "route": "", "authLevel": "Anonymous", "name": "req", "direction": "In", "type": "HttpTrigger"},
+      {"itemType": null, "subType": "FabricBusinessEventsClient", "alias": "${schema_name}", "name": "businessEventsClient", "direction": "In", "type": "FabricItem"}
+    ],
+    "fabricProperties": {
+      "fabricMetadataSchemaVersion": "1.1.0",
+      "fabricFunctionParameters": [
+        {"dataType": "str", "name": "orderId"},
+        {"dataType": "str", "name": "customerId"},
+        {"dataType": "float", "name": "riskScore"},
+        {"dataType": "str", "name": "decidedAt"}
+      ],
+      "fabricFunctionReturnType": "dict"
+    }
+  }]
+}

@@ -1,0 +1,35 @@
+{
+  "eventTypes": [
+    {
+      "id": "Retail.Sales.VolumeAlert",
+      "description": "Store transaction volume compared with its baseline.",
+      "category": "BusinessEventType",
+      "format": "CloudEvents/1.0",
+      "envelopeMetadata": {
+        "id": {"type": "string", "required": true},
+        "type": {"type": "string", "required": true, "value": "Retail.Sales.VolumeAlert"},
+        "source": {"type": "string", "required": true},
+        "specversion": {"type": "string", "required": true},
+        "time": {"type": "timestamp", "required": true},
+        "datacontenttype": {"type": "string", "required": true},
+        "dataversion": {"type": "string", "required": true},
+        "dataschema": {"type": "string", "required": true}
+      },
+      "schemaUrl": "#/schemas/Retail.Sales.VolumeAlert",
+      "schemaFormat": "Avro/1.12.0"
+    }
+  ],
+  "schemas": [
+    {
+      "id": "Retail.Sales.VolumeAlert",
+      "format": "Avro/1.12.0",
+      "versions": [
+        {
+          "id": "v1",
+          "format": "Avro/1.12.0",
+          "schema": "{\"type\":\"record\",\"name\":\"Retail.Sales.VolumeAlert\",\"fields\":[{\"name\":\"store_id\",\"type\":\"string\"},{\"name\":\"expected_transactions\",\"type\":\"int\"},{\"name\":\"actual_transactions\",\"type\":\"int\"},{\"name\":\"deviation_pct\",\"type\":\"float\"},{\"name\":\"window_start\",\"type\":\"string\"},{\"name\":\"severity\",\"type\":\"string\"}]}"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "scenario_id": "fraud",
+  "title": "Order risk decision",
+  "implementation_status": "native_reference_cicd_live_validated",
+  "deployable": true,
+  "event_name": "Ecommerce.Order.FraudDecision",
+  "schema_version": "v1",
+  "schema_file": "schema.avsc",
+  "owner": "Managed by fabric-events/cicd/fraud-response-before-fulfillment.",
+  "source_backend": "native_udf",
+  "manual_eventstream": false,
+  "eventstream_roles": [],
+  "resource_roles": ["schema", "publisher", "activator", "eventhouse", "database"],
+  "items": {
+    "schema": "OrderRiskSchema.EventSchemaSet",
+    "publisher": "OrderRiskPublisher.UserDataFunction",
+    "activator": "OrderRiskActions.Reflex",
+    "eventhouse": "OrderRiskHistory.Eventhouse",
+    "database": "OrderRiskAnalytics.KQLDatabase"
+  },
+  "source": "Ecommerce marketplace",
+  "publisher": {
+    "type": "User Data Function",
+    "item": "items/OrderRiskPublisher.UserDataFunction",
+    "function_name": "evaluate_order_risk",
+    "scope": "The card's decision event only. The separate HighRiskDetected signal from the full guide is not implicitly published."
+  },
+  "consumers": ["Activator", "Eventhouse"],
+  "resource_names": {
+    "schema": "OrderRiskSchema",
+    "publisher": "OrderRiskPublisher",
+    "activator": "OrderRiskActions",
+    "eventhouse": "OrderRiskHistory",
+    "database": "OrderRiskAnalytics"
+  },
+  "parameter_map": {
+    "order_id": "orderId",
+    "customer_id": "customerId",
+    "risk_score": "riskScore",
+    "decided_at": "decidedAt"
+  },
+  "action_mode": "exclusive",
+  "activator_reference": "items/OrderRiskActions.Reflex",
+  "test_backend": "test-order-api",
+  "validation": {
+    "native_publisher_cases": 6,
+    "successful_native_flow_runs": 6,
+    "complete_eventhouse_payloads": 6,
+    "persisted_fulfillment_checks": 6,
+    "review_requests_are_completed_human_reviews": false
+  },
+  "reusable_deployment_validation": {
+    "fresh_edited_name_deployments": 2,
+    "fresh_keyless_azure_backends": 1,
+    "independent_test_runs": 3,
+    "successful_native_flow_runs": 18,
+    "complete_eventhouse_payloads": 18,
+    "persisted_fulfillment_checks": 18,
+    "deployment_resume_verified": true,
+    "completed_fulfillment_verify_only_verified": true,
+    "deployment_created_test_orders": false,
+    "native_action_connection_information_generated_per_target": true
+  },
+  "actions": [
+    {"type": "Custom action", "caption": "Hold order", "decision": "hold", "flow_id": null, "flow_template": "flows/hold.json", "parameters": ["order_id", "risk_score"]},
+    {"type": "Custom action", "caption": "Manual review", "decision": "manual_review", "flow_id": null, "flow_template": "flows/manual_review.json", "parameters": ["order_id", "customer_id", "risk_score"]},
+    {"type": "Custom action", "caption": "Release order", "decision": "release", "flow_id": null, "flow_template": "flows/release.json", "parameters": ["order_id"]}
+  ],
+  "remaining_work": []
+}

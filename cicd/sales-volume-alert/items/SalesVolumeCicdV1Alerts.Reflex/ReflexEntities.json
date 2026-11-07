@@ -1,0 +1,47 @@
+[
+  {
+    "uniqueIdentifier": "cb40ed5c-e0fe-5b13-bbca-000000000001",
+    "type": "container-v1",
+    "payload": {"name": "Sales volume alert", "type": "rthSubscriptions"}
+  },
+  {
+    "uniqueIdentifier": "${source_id}",
+    "type": "realTimeHubSource-v1",
+    "payload": {
+      "name": "Retail.Sales.VolumeAlert",
+      "parentContainer": {"targetUniqueIdentifier": "cb40ed5c-e0fe-5b13-bbca-000000000001"},
+      "connection": {
+        "scope": "BusinessEvents",
+        "eventTypeFullyQualifiedIds": ["${event_id}"]
+      },
+      "filterSettings": {
+        "filters": []
+      }
+    }
+  },
+  {
+    "uniqueIdentifier": "cb40ed5c-e0fe-5b13-bbca-000000000002",
+    "type": "timeSeriesView-v1",
+    "payload": {
+      "name": "Sales findings",
+      "parentContainer": {"targetUniqueIdentifier": "cb40ed5c-e0fe-5b13-bbca-000000000001"},
+      "definition": {
+        "type": "Event",
+        "instance": "{\"templateId\":\"SourceEvent\",\"templateVersion\":\"1.2.4\",\"steps\":[{\"id\":\"cb40ed5c-e0fe-5b13-bbca-000000000004\",\"name\":\"SourceEventStep\",\"rows\":[{\"name\":\"SourceSelector\",\"kind\":\"SourceReference\",\"arguments\":[{\"name\":\"entityId\",\"type\":\"string\",\"value\":\"${source_id}\"}]}]}]}"
+      }
+    }
+  },
+  {
+    "uniqueIdentifier": "cb40ed5c-e0fe-5b13-bbca-000000000003",
+    "type": "timeSeriesView-v1",
+    "payload": {
+      "name": "Sales volume drop below -30%",
+      "parentContainer": {"targetUniqueIdentifier": "cb40ed5c-e0fe-5b13-bbca-000000000001"},
+      "definition": {
+        "type": "Rule",
+        "settings": {"shouldRun": false, "shouldApplyRuleOnUpdate": false},
+        "instance": "{\"templateId\":\"EventTrigger\",\"templateVersion\":\"1.2.4\",\"steps\":[{\"id\":\"cb40ed5c-e0fe-5b13-bbca-000000000005\",\"name\":\"FieldsDefaultsStep\",\"rows\":[{\"name\":\"EventSelector\",\"kind\":\"Event\",\"arguments\":[{\"name\":\"event\",\"type\":\"complex\",\"kind\":\"EventReference\",\"arguments\":[{\"name\":\"entityId\",\"type\":\"string\",\"value\":\"cb40ed5c-e0fe-5b13-bbca-000000000002\"}]}]}]},{\"id\":\"cb40ed5c-e0fe-5b13-bbca-000000000006\",\"name\":\"EventDetectStep\",\"rows\":[{\"name\":\"EventFieldSelector\",\"kind\":\"EventField\",\"arguments\":[{\"name\":\"fieldName\",\"type\":\"string\",\"value\":\"deviation_pct\"}]},{\"name\":\"NumberValueCondition\",\"kind\":\"NumberValueCondition\",\"arguments\":[{\"name\":\"op\",\"type\":\"string\",\"value\":\"IsLessThan\"},{\"name\":\"threshold\",\"type\":\"number\",\"value\":-30}]}]},{\"id\":\"cb40ed5c-e0fe-5b13-bbca-000000000007\",\"name\":\"ActStep\",\"rows\":[{\"name\":\"TeamsBinding\",\"kind\":\"TeamsMessage\",\"arguments\":[{\"name\":\"messageLocale\",\"type\":\"string\",\"value\":\"en-us\"},{\"name\":\"recipients\",\"type\":\"array\",\"values\":\"${teams_recipients}\"},{\"name\":\"headline\",\"type\":\"array\",\"values\":[{\"type\":\"string\",\"value\":\"Investigate a store transaction-volume drop\"}]},{\"name\":\"optionalMessage\",\"type\":\"array\",\"values\":[{\"type\":\"string\",\"value\":\"store_id: \"},{\"kind\":\"EventFieldReference\",\"type\":\"complex\",\"arguments\":[{\"name\":\"fieldName\",\"type\":\"string\",\"value\":\"store_id\"}]},{\"type\":\"string\",\"value\":\" actual_transactions: \"},{\"kind\":\"EventFieldReference\",\"type\":\"complex\",\"arguments\":[{\"name\":\"fieldName\",\"type\":\"string\",\"value\":\"actual_transactions\"}]},{\"type\":\"string\",\"value\":\" deviation_pct: \"},{\"kind\":\"EventFieldReference\",\"type\":\"complex\",\"arguments\":[{\"name\":\"fieldName\",\"type\":\"string\",\"value\":\"deviation_pct\"}]}]},{\"name\":\"additionalInformation\",\"type\":\"array\",\"values\":[]}]}]}]}"
+      }
+    }
+  }
+]

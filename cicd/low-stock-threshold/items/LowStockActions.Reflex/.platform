@@ -1,0 +1,5 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {"type": "Reflex", "displayName": "LowStockActions"},
+  "config": {"version": "2.0", "logicalId": "d4201859-ead7-4200-936c-e7a835144295"}
+}

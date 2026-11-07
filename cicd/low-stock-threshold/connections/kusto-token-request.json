@@ -1,0 +1,10 @@
+{
+  "type": "[Start] GetMWCTokenV2",
+  "artifacts": [
+    {"artifactObjectId": "${database_id}", "artifactType": "KustoDatabase"}
+  ],
+  "workloadType": "Kusto",
+  "workspaceObjectId": "${workspace_id}",
+  "asyncId": "${async_id}",
+  "iframeId": "${iframe_id}"
+}

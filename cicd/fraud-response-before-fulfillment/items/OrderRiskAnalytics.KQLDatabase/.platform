@@ -1,0 +1,5 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {"type": "KQLDatabase", "displayName": "OrderRiskAnalytics"},
+  "config": {"version": "2.0", "logicalId": "b344424f-3a6d-4058-8314-2d63e00376a4"}
+}

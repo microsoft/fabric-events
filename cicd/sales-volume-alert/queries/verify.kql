@@ -1,0 +1,5 @@
+// deploy.py substitutes only a validated UUID into {{RUN_ID}}.
+['Retail.Sales.VolumeAlert']
+| where store_id startswith "cicd-{{RUN_ID}}-"
+| summarize Deliveries = count()
+    by store_id, expected_transactions, actual_transactions, deviation_pct, window_start, severity

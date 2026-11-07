@@ -1,0 +1,32 @@
+{
+  "configuration_version": "1.0",
+  "scenario_id": "fraud",
+  "environment": "fabric",
+  "workspace_id": null,
+  "resource_prefix": "OrderRisk",
+  "event_name": "Ecommerce.Order.FraudDecision",
+  "resource_names": {
+    "schema": "OrderRiskSchema",
+    "publisher": "OrderRiskPublisher",
+    "activator": "OrderRiskActions",
+    "eventhouse": "OrderRiskHistory",
+    "database": "OrderRiskAnalytics"
+  },
+  "flow_environment_id": null,
+  "data_activator_connection_name": null,
+  "flow_names": {
+    "hold": "OrderRiskHold",
+    "manual_review": "OrderRiskManualReview",
+    "release": "OrderRiskRelease"
+  },
+  "azure": {
+    "mode": "provision",
+    "subscription_id": null,
+    "resource_group": "",
+    "location": "westus2",
+    "storage_account": "feriskexample",
+    "function_app": "func-order-risk-example",
+    "identity_name": "id-order-risk-example",
+    "table_name": "TestOrders"
+  }
+}

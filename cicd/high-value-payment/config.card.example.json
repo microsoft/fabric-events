@@ -1,0 +1,20 @@
+{
+  "$schema": "./config.schema.json",
+  "configuration_version": "1.0",
+  "scenario_id": "high-value-payment",
+  "environment": "fabric",
+  "workspace_id": null,
+  "resource_prefix": "PaymentReview",
+  "event_name": "Retail.Payment.HighValueTransaction",
+  "source_backend": "native_eventstream",
+  "resource_names": {
+    "schema": "PaymentReviewSchema",
+    "publisher": "PaymentReviewPublisher",
+    "activator": "PaymentReviewActions",
+    "eventhouse": "PaymentReviewHistory",
+    "database": "PaymentReviewAnalytics"
+  },
+  "teams_delivery": "individual",
+  "teams_recipients": ["@me"],
+  "teams_definition_file": null
+}

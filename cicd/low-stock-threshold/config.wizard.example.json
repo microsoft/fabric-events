@@ -1,0 +1,20 @@
+{
+  "$schema": "./config.schema.json",
+  "configuration_version": "1.0",
+  "scenario_id": "inventory",
+  "environment": "fabric",
+  "workspace_id": null,
+  "resource_prefix": "LowStock",
+  "event_name": "Retail.Inventory.LowStockThreshold",
+  "source_backend": "native_udf",
+  "resource_names": {
+    "schema": "LowStockSchema",
+    "publisher": "LowStockPublisher",
+    "activator": "LowStockActions",
+    "eventhouse": "LowStockHistory",
+    "database": "LowStockAnalytics"
+  },
+  "teams_delivery": "channel",
+  "teams_recipients": [],
+  "teams_definition_file": null
+}

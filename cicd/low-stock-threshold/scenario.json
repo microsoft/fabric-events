@@ -1,0 +1,60 @@
+{
+  "scenario_id": "inventory",
+  "title": "Inventory at risk",
+  "implementation_status": "native_reference_validated_individual_test",
+  "deployable": true,
+  "validation_scope": "Three external findings verified as seven-field Eventhouse payloads and three actual Teams cards at the explicitly configured individual test destination. This does not establish inventory-planning channel delivery.",
+  "owner": "Managed by fabric-events/cicd/low-stock-threshold.",
+  "source_backend": "native_udf",
+  "manual_eventstream": false,
+  "resource_roles": ["schema", "publisher", "activator", "eventhouse", "database"],
+  "eventstream_roles": [],
+  "items": {
+    "schema": "LowStockSchema.EventSchemaSet",
+    "publisher": "LowStockPublisher.UserDataFunction",
+    "activator": "LowStockActions.Reflex",
+    "eventhouse": "LowStockHistory.Eventhouse",
+    "database": "LowStockAnalytics.KQLDatabase"
+  },
+  "identity_field": "product_id",
+  "time_field": "detected_at",
+  "fields": ["product_id", "product_name", "store_id", "current_stock", "threshold", "supplier_id", "detected_at"],
+  "event_name": "Retail.Inventory.LowStockThreshold",
+  "schema_version": "v1",
+  "schema_file": "schema.avsc",
+  "source": "Warehouse management system",
+  "publisher": {
+    "type": "User Data Function",
+    "item": "items/LowStockPublisher.UserDataFunction",
+    "function_name": "publish_low_stock_event",
+    "responsibility": "Normalize and publish a finding already detected by the warehouse system. Do not monitor stock or apply another threshold."
+  },
+  "consumers": ["Activator", "Eventhouse"],
+  "resource_names": {
+    "schema": "LowStockSchema",
+    "publisher": "LowStockPublisher",
+    "activator": "LowStockActions",
+    "eventhouse": "LowStockHistory",
+    "database": "LowStockAnalytics"
+  },
+  "parameter_map": {
+    "product_id": "productId",
+    "product_name": "productName",
+    "store_id": "storeId",
+    "current_stock": "currentStock",
+    "threshold": "threshold",
+    "supplier_id": "supplierId",
+    "detected_at": "detectedAt"
+  },
+  "actions": [{
+    "type": "Teams message",
+    "condition": "On each event",
+    "context_fields": ["product_id", "product_name", "store_id", "current_stock", "threshold", "supplier_id"],
+    "destination": null
+  }],
+  "remaining_work": [],
+  "validation_limitations": [
+    "The canonical inventory-planning Teams channel was not live-validated. Channel delivery requires its actual approved native export and separate destination evidence.",
+    "Automatic Eventhouse association depends on service capabilities outside the generally available public provisioning flow."
+  ]
+}
