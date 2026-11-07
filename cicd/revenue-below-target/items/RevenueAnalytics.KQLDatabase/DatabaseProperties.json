@@ -1,1 +1,4 @@
-{"databaseType": "ReadWrite", "parentEventhouseItemId": "f08fae0b-2fdd-40b1-80db-cbbd2f4098f1"}
+{
+  "databaseType": "ReadWrite",
+  "parentEventhouseItemId": "${eventhouse_id}"
+}

@@ -1,58 +1,48 @@
 {
   "scenario_id": "revenue",
   "title": "Revenue below target",
-  "implementation_status": "source_and_action_contract_seed",
-  "deployable": false,
+  "owner": "Managed by fabric-events/cicd/revenue-below-target.",
+  "implementation_status": "native_reference_validated_individual_test",
+  "deployable": true,
   "event_name": "Sales.Revenue.BelowTarget",
-  "schema_version": "v1",
-  "schema_file": "schema.avsc",
-  "source": "Power BI semantic model",
+  "source_backend": "native_activator_powerbi",
+  "manual_eventstream": false,
+  "eventstream_roles": [],
+  "resource_roles": ["source", "report", "schema", "publisher", "activator", "eventhouse", "database", "notebook", "pipeline"],
+  "items": {
+    "source": "RevenueSource.SemanticModel",
+    "report": "RevenueMonitor.Report",
+    "schema": "RevenueSchema.EventSchemaSet",
+    "publisher": "RevenuePublisher.Reflex",
+    "activator": "RevenueActions.Reflex",
+    "eventhouse": "RevenueHistory.Eventhouse",
+    "database": "RevenueAnalytics.KQLDatabase",
+    "notebook": "RevenueInvestigationNotebook.Notebook",
+    "pipeline": "RevenueInvestigation.DataPipeline"
+  },
   "publisher": {
-    "type": "Activator",
-    "measure_file": "publisher/variance_pct.dax",
     "measure": "variance_pct",
     "condition": "Becomes less than",
     "threshold": -15,
-    "grouping": ["region", "period_start"],
-    "context": "Same region, reporting period and currency; target must be positive.",
-    "field_mapping": {
-      "region": "Monitored visual's region",
-      "period_start": "Monitored visual's reporting period",
-      "revenue": "Revenue for that region and period",
-      "target": "Target for that region and period",
-      "variance_pct": "Numeric variance_pct measure, not a percent-formatted fraction",
-      "detected_at": "Dynamic current UTC timestamp"
-    }
+    "identity": ["region", "period_start"],
+    "timestamp": "UTC model-refresh snapshot, ISO 8601 basic UTC yyyyMMddTHHmmssZ"
   },
-  "consumers": ["Activator", "Eventhouse"],
-  "resource_names": {
-    "schema": "RevenueSchema",
-    "publisher": "RevenuePublisher",
-    "activator": "RevenueActions",
-    "eventhouse": "RevenueHistory",
-    "database": "RevenueAnalytics"
+  "remaining_work": [],
+  "validation": {
+    "fresh_native_resource_count": 9,
+    "actual_source_states_verified": 6,
+    "actual_blank_target_guards_verified": 2,
+    "actual_crossing_events": 2,
+    "actual_teams_cards": 2,
+    "actual_completed_native_pipeline_jobs": 2,
+    "actual_useful_investigation_rows": 3,
+    "teams_destination": "explicit individual test",
+    "native_source_observation": "Authenticated interactive Windows session",
+    "timestamp_semantics": "Actual model refresh snapshot UTC, not Activator ingestion time",
+    "provisioning_scope": "Verified MSIT reference; automatic association is not a generally available customer provisioning flow"
   },
-  "action_mode": "independent",
   "actions": [
-    {"type": "Teams message", "condition": "On each event", "destination": null},
-    {"type": "Run pipeline", "condition": "On each event", "pipeline_id": null, "purpose": "Refresh investigation data, not the source detector or test report's inputs."}
-  ],
-  "bindings": {
-    "semantic_model_workspace_id": null,
-    "semantic_model_id": null,
-    "report_id": null,
-    "report_page": null,
-    "visual_id": null,
-    "pipeline_workspace_id": null,
-    "pipeline_parameters": null
-  },
-  "remaining_work": [
-    "Bind a genuine Power BI semantic model and supported report visual; import and verify the actual native publisher definition.",
-    "Bind a real investigation-data pipeline and its parameter mapping; an empty pipeline does not satisfy the card.",
-    "Bind the Business Event, Eventhouse association and independent native Teams and pipeline consumer rules.",
-    "Add separate deployment and test launchers with fresh scenario-local ignored deployment records.",
-    "Drive external sample model inputs in sequence, awaiting actual refresh and evaluation after every step.",
-    "Independently verify Teams delivery, completed pipeline runs and full Eventhouse payloads.",
-    "Enable wizard configuration download only after executable bindings accept the reviewed names."
+    {"type": "Teams message", "condition": "On each event"},
+    {"type": "Run pipeline", "condition": "On each event", "purpose": "Refresh useful investigation data from actual event history; never modify source inputs."}
   ]
 }

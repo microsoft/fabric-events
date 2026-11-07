@@ -1,0 +1,24 @@
+{
+  "$schema": "./config.schema.json",
+  "configuration_version": "1.0",
+  "scenario_id": "revenue",
+  "environment": "msit",
+  "workspace_id": null,
+  "resource_prefix": "Revenue",
+  "event_name": "Sales.Revenue.BelowTarget",
+  "source_backend": "native_activator_powerbi",
+  "resource_names": {
+    "source": "RevenueSource",
+    "report": "RevenueMonitor",
+    "schema": "RevenueSchema",
+    "publisher": "RevenuePublisher",
+    "activator": "RevenueActions",
+    "eventhouse": "RevenueHistory",
+    "database": "RevenueAnalytics",
+    "notebook": "RevenueInvestigationNotebook",
+    "pipeline": "RevenueInvestigation"
+  },
+  "teams_delivery": "individual",
+  "teams_recipients": ["@me"],
+  "teams_definition_file": null
+}

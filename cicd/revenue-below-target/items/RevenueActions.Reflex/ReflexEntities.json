@@ -1,0 +1,95 @@
+[
+  {
+    "uniqueIdentifier": "2eeb7ef4-57cc-5679-810d-5bd7187152e8",
+    "payload": {
+      "name": "Revenue below target",
+      "type": "rthSubscriptions"
+    },
+    "type": "container-v1"
+  },
+  {
+    "uniqueIdentifier": "a0e809b6-2d40-5a8a-914d-b8c0f746f61d",
+    "payload": {
+      "name": "${event_name}",
+      "connection": {
+        "scope": "BusinessEvents",
+        "eventTypeFullyQualifiedIds": [
+          "${event_id}"
+        ]
+      },
+      "filterSettings": {
+        "filters": []
+      },
+      "parentContainer": {
+        "targetUniqueIdentifier": "2eeb7ef4-57cc-5679-810d-5bd7187152e8"
+      }
+    },
+    "type": "realTimeHubSource-v1"
+  },
+  {
+    "uniqueIdentifier": "c9d5bbde-7a23-565d-8b2b-79bfeb964f3f",
+    "payload": {
+      "name": "Reported revenue crossings",
+      "parentContainer": {
+        "targetUniqueIdentifier": "2eeb7ef4-57cc-5679-810d-5bd7187152e8"
+      },
+      "definition": {
+        "type": "Event",
+        "instance": "{\"templateId\": \"SourceEvent\", \"templateVersion\": \"1.3.0\", \"steps\": [{\"id\": \"0c7fadb4-32c7-5a4b-a47b-0d692b225dd5\", \"name\": \"SourceEventStep\", \"rows\": [{\"name\": \"SourceSelector\", \"kind\": \"SourceReference\", \"arguments\": [{\"name\": \"entityId\", \"type\": \"string\", \"value\": \"a0e809b6-2d40-5a8a-914d-b8c0f746f61d\"}]}]}]}"
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "b12c021e-2aca-5cd1-95db-dc863d3cd30d",
+    "payload": {
+      "name": "Notify revenue owner for each crossing",
+      "parentContainer": {
+        "targetUniqueIdentifier": "2eeb7ef4-57cc-5679-810d-5bd7187152e8"
+      },
+      "definition": {
+        "type": "Rule",
+        "instance": "{\"templateId\": \"EventTrigger\", \"templateVersion\": \"1.3.0\", \"steps\": [{\"id\": \"aec5c648-ec5b-5049-8fb0-58e5ca1916f4\", \"name\": \"FieldsDefaultsStep\", \"rows\": [{\"name\": \"EventSelector\", \"kind\": \"Event\", \"arguments\": [{\"name\": \"event\", \"type\": \"complex\", \"kind\": \"EventReference\", \"arguments\": [{\"name\": \"entityId\", \"type\": \"string\", \"value\": \"c9d5bbde-7a23-565d-8b2b-79bfeb964f3f\"}]}]}]}, {\"id\": \"622e9092-6407-592b-9710-4edd8c0833bf\", \"name\": \"EventDetectStep\", \"rows\": [{\"name\": \"OnEveryValue\", \"kind\": \"OnEveryValue\", \"arguments\": []}]}, {\"id\": \"ca2c9d4a-1317-5619-a26b-367b21992ce3\", \"name\": \"ActStep\", \"rows\": [{\"name\": \"TeamsBinding\", \"kind\": \"TeamsMessage\", \"arguments\": [{\"name\": \"messageLocale\", \"type\": \"string\", \"value\": \"en-us\"}, {\"name\": \"recipients\", \"type\": \"array\", \"values\": \"${teams_recipients}\"}, {\"name\": \"headline\", \"type\": \"array\", \"values\": [{\"type\": \"string\", \"value\": \"Revenue below target\"}]}, {\"name\": \"optionalMessage\", \"type\": \"array\", \"values\": [{\"type\": \"string\", \"value\": \"region: \"}, {\"kind\": \"EventFieldReference\", \"type\": \"complex\", \"arguments\": [{\"name\": \"fieldName\", \"type\": \"string\", \"value\": \"region\"}]}, {\"type\": \"string\", \"value\": \"\\n\"}, {\"type\": \"string\", \"value\": \"period_start: \"}, {\"kind\": \"EventFieldReference\", \"type\": \"complex\", \"arguments\": [{\"name\": \"fieldName\", \"type\": \"string\", \"value\": \"period_start\"}]}, {\"type\": \"string\", \"value\": \"\\n\"}, {\"type\": \"string\", \"value\": \"revenue: \"}, {\"kind\": \"EventFieldReference\", \"type\": \"complex\", \"arguments\": [{\"name\": \"fieldName\", \"type\": \"string\", \"value\": \"revenue\"}]}, {\"type\": \"string\", \"value\": \"\\n\"}, {\"type\": \"string\", \"value\": \"target: \"}, {\"kind\": \"EventFieldReference\", \"type\": \"complex\", \"arguments\": [{\"name\": \"fieldName\", \"type\": \"string\", \"value\": \"target\"}]}, {\"type\": \"string\", \"value\": \"\\n\"}, {\"type\": \"string\", \"value\": \"variance_pct: \"}, {\"kind\": \"EventFieldReference\", \"type\": \"complex\", \"arguments\": [{\"name\": \"fieldName\", \"type\": \"string\", \"value\": \"variance_pct\"}]}, {\"type\": \"string\", \"value\": \"\\n\"}, {\"type\": \"string\", \"value\": \"detected_at: \"}, {\"kind\": \"EventFieldReference\", \"type\": \"complex\", \"arguments\": [{\"name\": \"fieldName\", \"type\": \"string\", \"value\": \"detected_at\"}]}, {\"type\": \"string\", \"value\": \"\\n\"}]}, {\"name\": \"additionalInformation\", \"type\": \"array\", \"values\": []}]}]}]}",
+        "settings": {
+          "shouldRun": true,
+          "shouldApplyRuleOnUpdate": false
+        }
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "4bcfda70-ab6a-5dc9-abaa-5b84beb7ef03",
+    "payload": {
+      "name": "Refresh investigation data for each crossing",
+      "parentContainer": {
+        "targetUniqueIdentifier": "2eeb7ef4-57cc-5679-810d-5bd7187152e8"
+      },
+      "definition": {
+        "type": "Rule",
+        "instance": "{\"steps\": [{\"id\": \"e3981dfd-df4f-5619-b957-4a3064c2d83a\", \"name\": \"FieldsDefaultsStep\", \"rows\": [{\"arguments\": [{\"arguments\": [{\"name\": \"entityId\", \"type\": \"string\", \"value\": \"c9d5bbde-7a23-565d-8b2b-79bfeb964f3f\"}], \"kind\": \"EventReference\", \"name\": \"event\", \"type\": \"complex\"}], \"kind\": \"Event\", \"name\": \"EventSelector\"}]}, {\"id\": \"0abc2b3c-ebfa-5d66-9cd1-b061207da68d\", \"name\": \"EventDetectStep\", \"rows\": [{\"arguments\": [], \"kind\": \"OnEveryValue\", \"name\": \"OnEveryValue\"}]}, {\"id\": \"e71aabf1-3d74-5a01-9404-3969c99c08e3\", \"name\": \"ActStep\", \"rows\": [{\"kind\": \"FabricItemInvocation\", \"name\": \"FabricItemBinding\", \"arguments\": [{\"__typename\": \"templateInstanceV2StringArg\", \"name\": \"fabricJobConnectionDocumentId\", \"type\": \"string\", \"value\": \"3ae82811-87b6-5086-986f-076bcfaa3bd6\"}, {\"name\": \"parameters\", \"type\": \"array\", \"values\": []}, {\"name\": \"additionalInformation\", \"type\": \"array\", \"values\": []}, {\"name\": \"workspaceId\", \"type\": \"string\", \"value\": \"${workspace_id}\"}, {\"name\": \"itemId\", \"type\": \"string\", \"value\": \"${pipeline_id}\"}, {\"name\": \"itemType\", \"type\": \"string\", \"value\": \"Pipeline\"}, {\"name\": \"jobType\", \"type\": \"string\", \"value\": \"Pipeline\"}]}]}], \"templateId\": \"EventTrigger\", \"templateVersion\": \"1.3.1\"}",
+        "settings": {
+          "shouldRun": true,
+          "shouldApplyRuleOnUpdate": false
+        }
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "3ae82811-87b6-5086-986f-076bcfaa3bd6",
+    "payload": {
+      "name": "Fabric item action",
+      "fabricItem": {
+        "itemId": "${pipeline_id}",
+        "workspaceId": "${workspace_id}",
+        "itemType": "Pipeline"
+      },
+      "jobType": "Pipeline",
+      "parentContainer": {
+        "targetUniqueIdentifier": "2eeb7ef4-57cc-5679-810d-5bd7187152e8"
+      }
+    },
+    "type": "fabricItemAction-v1"
+  }
+]

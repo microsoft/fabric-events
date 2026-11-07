@@ -14,14 +14,14 @@ An Activator publisher monitors the report's revenue-variance measure and publis
 
 ## Deploy this scenario
 
-**Status: In preparation.** [`cicd/revenue-below-target`](https://github.com/microsoft/fabric-events/tree/main/cicd/revenue-below-target) currently contains the six-field event contract, the canonical DAX variance measure and ordered external test vectors for threshold crossings.
+**Status: Reference implementation available; fresh native end-to-end execution verified with an explicit individual Teams destination.** [`cicd/revenue-below-target`](https://github.com/microsoft/fabric-events/tree/main/cicd/revenue-below-target) contains the nine native resources, separate deployment and test launchers, the six-field event contract and ordered external source inputs.
 
-[Read the implementation notes and remaining work](revenue-below-target/deployment.md).
+[Read the complete deployment and verification guide](revenue-below-target/deployment.md).
 
-!!! warning "Real source and response bindings are still required"
-    The package is not deployable yet. The genuine Power BI semantic model/report visual, native Activator publisher and a useful investigation-data pipeline still need binding and verification. There is no ready-to-run `deploy.bat` or `test.bat`; a substitute Notebook, KQL detector or empty pipeline would not satisfy this scenario.
+!!! note "Verified reference, not general customer provisioning"
+    A fresh deployment in the authorized reference environment passed all six native source states and both invalid-target guards: exactly two Business Events, two matching actual Teams cards, two completed native pipeline jobs and three useful persisted investigation rows. Automatic history association still requires the documented service capabilities. The executable reference uses an explicitly approved individual Teams destination; the manual channel setup below is a separate configuration.
 
-The notes retain the strict **Becomes less than -15** crossing condition and separate notification, pipeline-completion and Eventhouse evidence requirements. The DAX and fixtures are implementation sources, not proof that the report or responses have run. The complete manual walkthrough remains below.
+The guide retains the strict **Becomes less than -15** crossing condition and separate native source, notification, pipeline-completion and Eventhouse evidence requirements. Deployment prepares an empty source; only the separate test changes its inputs. The complete manual walkthrough remains below.
 
 ## Architecture
 
@@ -94,7 +94,7 @@ Before starting, prepare a test report and a Data Factory pipeline that refreshe
         {
           "name": "detected_at",
           "type": "string",
-          "doc": "Time the publisher detected the shortfall, ISO 8601 UTC format"
+          "doc": "UTC model-refresh snapshot for the monitored row, ISO 8601 basic format yyyyMMddTHHmmssZ; not Activator ingestion time"
         }
       ]
     }
@@ -124,7 +124,21 @@ RETURN
 
 This measure returns `-10` for the starting values, not `-0.10`. Do not apply percentage formatting that multiplies it by 100 again. Zero or negative targets do not produce a valid variance in this example.
 
-Create a supported report visual for revenue variance by region. Include the revenue, target, region, and period context needed for parameter mapping. The report's data refresh and the Activator evaluation cadence determine when a change is detected; publishing does not make the semantic model update continuously.
+Add a calculated string column for the actual model-refresh snapshot UTC:
+
+```dax
+detected_at =
+VAR SnapshotUtc = UTCNOW()
+RETURN
+    FORMAT(SnapshotUtc, "yyyyMMdd")
+    & "T"
+    & FORMAT(SnapshotUtc, "HHmmss")
+    & "Z"
+```
+
+This ISO 8601 basic UTC representation preserves the timestamp as text through the verified native connector. The extended ISO representation was automatically converted to a culture-formatted datetime during source evaluation. `UTCNOW()` in this calculated column changes on model refresh: this is snapshot time, not Activator ingestion or alert activation time.
+
+Create a supported **table visual** containing `region`, `period_start`, `revenue`, `target`, `detected_at` and `variance_pct`. Keep the native composite object identity limited to `region` and `period_start`; money and refresh timestamps are context, not object identity. The report's data refresh and the Activator evaluation cadence determine when a change is detected; publishing does not make the semantic model update continuously.
 
 ### Configure the publisher
 
@@ -141,7 +155,7 @@ Create a supported report visual for revenue variance by region. Include the rev
     | `revenue` | Revenue for the monitored region and period |
     | `target` | Target for the same region and period |
     | `variance_pct` | The numeric variance measure |
-    | `detected_at` | Dynamic current UTC timestamp |
+    | `detected_at` | The same native source row's calculated UTC model-refresh snapshot |
 
 6. Save and activate the publisher rule.
 
@@ -156,7 +170,7 @@ For production data, supply the current period dynamically rather than leaving a
 3. In **Monitor**, select **Business events** and connect to this event.
 4. Set **Condition** to `On each event`. The publisher already owns the shortfall threshold.
 5. In **Action**, select **Teams**, then **Channel post**, and choose the test sales-operations channel.
-6. Include `region`, `period_start`, `revenue`, `target`, and `variance_pct` in the context.
+6. Include `region`, `period_start`, `revenue`, `target`, `variance_pct`, and `detected_at` in the context.
 7. Save the consumer rule.
 
 For multiple regional owners, configure the destination or region-specific consumer rules according to your ownership model.

@@ -1,34 +1,88 @@
 {
-  "name": "RevenueSource",
-  "compatibilityLevel": 1601,
+  "compatibilityLevel": 1606,
   "model": {
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"RevenuePerformance\"]"
+      }
+    ],
     "culture": "en-US",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
     "defaultPowerBIDataSourceVersion": "powerBI_V3",
     "sourceQueryCulture": "en-US",
     "tables": [
       {
         "name": "RevenuePerformance",
         "columns": [
-          {"name": "region", "dataType": "string", "sourceColumn": "region", "summarizeBy": "none"},
-          {"name": "period_start", "dataType": "string", "sourceColumn": "period_start", "summarizeBy": "none"},
-          {"name": "revenue", "dataType": "double", "sourceColumn": "revenue", "summarizeBy": "sum"},
-          {"name": "target", "dataType": "double", "sourceColumn": "target", "summarizeBy": "sum"}
+          {
+            "name": "region",
+            "dataType": "string",
+            "lineageTag": "b97f9100-26d7-55ad-ac3e-fe2940554893",
+            "sourceColumn": "region",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "period_start",
+            "dataType": "string",
+            "lineageTag": "f0417c57-5cbd-5eee-95d6-ca869fb530ff",
+            "sourceColumn": "period_start",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "revenue",
+            "dataType": "double",
+            "lineageTag": "999d1833-68d1-5e0e-b59f-2e228405dbd7",
+            "sourceColumn": "revenue",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "target",
+            "dataType": "double",
+            "lineageTag": "50edb5d2-ee9d-5f80-9045-3f970f0e5d41",
+            "sourceColumn": "target",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "detected_at",
+            "dataType": "string",
+            "expression": "VAR SnapshotUtc = UTCNOW() RETURN FORMAT(SnapshotUtc, \"yyyyMMdd\") & \"T\" & FORMAT(SnapshotUtc, \"HHmmss\") & \"Z\"",
+            "summarizeBy": "none",
+            "type": "calculated"
+          }
         ],
+        "lineageTag": "3f7f82d1-ec0a-5eb9-b390-6f54c7ace817",
         "measures": [
-          {"name": "variance_pct", "expression": "${variance_pct_expression}", "formatString": "0.00"}
+          {
+            "name": "variance_pct",
+            "expression": [
+              "VAR RevenueAmount = SUM(RevenuePerformance[revenue])",
+              "VAR TargetAmount = SUM(RevenuePerformance[target])",
+              "RETURN",
+              "    IF(",
+              "        TargetAmount > 0,",
+              "        100 * DIVIDE(RevenueAmount - TargetAmount, TargetAmount)",
+              "    )"
+            ],
+            "formatString": "0.00",
+            "lineageTag": "74ff4628-2155-50f8-84a0-061e1cfb23eb"
+          }
         ],
         "partitions": [
           {
             "name": "RevenuePerformance",
             "mode": "import",
             "source": {
-              "type": "m",
               "expression": [
                 "let",
                 "    Source = #table(type table [region = text, period_start = text, revenue = number, target = number], {})",
                 "in",
                 "    Source"
-              ]
+              ],
+              "type": "m"
             }
           }
         ]

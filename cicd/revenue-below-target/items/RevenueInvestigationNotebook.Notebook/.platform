@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "RevenueInvestigationNotebook",
+    "description": "Managed by fabric-events/cicd/revenue-below-target."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "932a2f27-a12e-50e9-b1e5-167253e04f57"
+  }
+}

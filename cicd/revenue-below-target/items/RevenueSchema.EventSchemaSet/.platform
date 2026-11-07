@@ -1,5 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
-  "metadata": {"type": "EventSchemaSet", "displayName": "RevenueSchema"},
-  "config": {"version": "2.0", "logicalId": "fdea0584-5e52-43d8-8606-b8e0b876292a"}
+  "metadata": {
+    "type": "EventSchemaSet",
+    "displayName": "RevenueSchema"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c2bc0c2f-4873-5dd8-84bf-92a691d98ba3"
+  }
 }

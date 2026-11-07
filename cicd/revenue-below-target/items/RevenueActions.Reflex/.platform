@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Reflex",
+    "displayName": "RevenueActions",
+    "description": "Managed by fabric-events/cicd/revenue-below-target."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7a21cd13-d4c8-5597-ae8a-8dbbd9237a02"
+  }
+}

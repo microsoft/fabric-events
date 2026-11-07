@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "RevenueInvestigation",
+    "description": "Managed by fabric-events/cicd/revenue-below-target."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7139ce80-202f-51e7-8408-629ba43b7738"
+  }
+}

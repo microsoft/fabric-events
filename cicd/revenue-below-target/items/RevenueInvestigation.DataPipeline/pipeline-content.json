@@ -1,0 +1,38 @@
+{
+  "properties": {
+    "description": "Refresh complete regional shortfall and lift-to-target investigation snapshots from real Revenue history, with native pipeline execution provenance.",
+    "activities": [
+      {
+        "name": "Materialize actual revenue investigation",
+        "type": "TridentNotebook",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.00:30:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30
+        },
+        "typeProperties": {
+          "notebookId": "${notebook_id}",
+          "workspaceId": "${workspace_id}",
+          "parameters": {
+            "query_endpoint": {
+              "type": "string",
+              "value": "${query_endpoint}"
+            },
+            "database_id": {
+              "type": "string",
+              "value": "${database_id}"
+            },
+            "pipeline_run_id": {
+              "type": "string",
+              "value": {
+                "type": "Expression",
+                "value": "@pipeline().RunId"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

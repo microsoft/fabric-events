@@ -1,0 +1,210 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.15.0/schema.json",
+  "name": "a977f068547f5609a78a",
+  "position": {
+    "x": 10,
+    "y": 0,
+    "z": 0,
+    "height": 420,
+    "width": 1160,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "RevenuePerformance"
+                    }
+                  },
+                  "Property": "region"
+                }
+              },
+              "queryRef": "RevenuePerformance.region",
+              "nativeQueryRef": "region"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "RevenuePerformance"
+                    }
+                  },
+                  "Property": "period_start"
+                }
+              },
+              "queryRef": "RevenuePerformance.period_start",
+              "nativeQueryRef": "period_start"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "RevenuePerformance"
+                    }
+                  },
+                  "Property": "revenue"
+                }
+              },
+              "queryRef": "RevenuePerformance.revenue",
+              "nativeQueryRef": "revenue"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "RevenuePerformance"
+                    }
+                  },
+                  "Property": "target"
+                }
+              },
+              "queryRef": "RevenuePerformance.target",
+              "nativeQueryRef": "target"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "RevenuePerformance"
+                    }
+                  },
+                  "Property": "variance_pct"
+                }
+              },
+              "queryRef": "RevenuePerformance.variance_pct",
+              "nativeQueryRef": "variance_pct"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "RevenuePerformance"
+                    }
+                  },
+                  "Property": "detected_at"
+                }
+              },
+              "queryRef": "RevenuePerformance.detected_at",
+              "nativeQueryRef": "detected_at"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "RevenuePerformance"
+                  }
+                },
+                "Property": "variance_pct"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "1f280ebf503addbd1c99",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "RevenuePerformance"
+              }
+            },
+            "Property": "region"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "ecb754806357a5668008",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "RevenuePerformance"
+              }
+            },
+            "Property": "period_start"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "f12c5910430e6ec5e1b0",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "RevenuePerformance"
+              }
+            },
+            "Property": "variance_pct"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "a4d9be1f26ee44be9739",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "RevenuePerformance"
+                  }
+                },
+                "Property": "revenue"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "4958d11a611740be4c4e",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "RevenuePerformance"
+                  }
+                },
+                "Property": "target"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}
