@@ -34,9 +34,9 @@ Treating every outcome as an incident creates the opposite problem: successful e
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-Each workload outcome is shared as a Business Event. The follow-up response selects failed outcomes and creates a case containing the workload identity, failure context and processed-row count. Completed and skipped work does not enter the triage queue.
+The follow-up response selects failed workload outcomes and creates a case containing the workload identity, failure context and processed-row count. Each workload outcome is shared as a Business Event. Completed and skipped work does not enter the triage queue.
 
 ```mermaid
 flowchart TB

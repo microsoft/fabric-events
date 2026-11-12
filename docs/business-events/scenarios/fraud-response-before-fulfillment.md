@@ -34,9 +34,9 @@ The missing connection is from the policy decision to an actual order-state chan
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-The risk-policy result is published as a Business Event for the order. The relevant connected response applies a hold, requests review or releases the order. The order system saves that result and enforces the corresponding fulfillment permission.
+The connected response applies a hold, requests review or releases the order. The order system saves that result and enforces the corresponding fulfillment permission. The risk-policy result is published as a Business Event for the order so the relevant response can apply it.
 
 ```mermaid
 flowchart TB

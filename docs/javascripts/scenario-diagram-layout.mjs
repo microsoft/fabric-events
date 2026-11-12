@@ -84,6 +84,23 @@ export function connectorFrames(edges, frames) {
   )?.id);
 }
 
+export function frameLabelBays(frame, blockers, content, available, labelWidth) {
+  const gap = 8;
+  const bays = [];
+  for (let padding = gap; padding <= labelWidth + gap * 2; padding += gap) {
+    for (const side of ["left", "right"]) {
+      const box = {...frame, [side]: frame[side] + (side === "left" ? -padding : padding)};
+      const width = Math.max(content.right, box.right) - Math.min(content.left, box.left) + gap * 4;
+      if (width > available || blockers.some(other =>
+        box.left < other.right + gap && box.right > other.left - gap &&
+        box.top < other.bottom + gap && box.bottom > other.top - gap
+      )) continue;
+      bays.push(box);
+    }
+  }
+  return bays;
+}
+
 export function connectionPorts(edges, center) {
   const port = (edge, endpoint) => {
     const siblings = edges.filter(other => other[endpoint] === edge[endpoint]);

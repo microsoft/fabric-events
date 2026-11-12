@@ -25,9 +25,9 @@ The comparison depends on preparing another extract before analysis can begin. T
 
 <span id="why-business-events"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-An accepted order becomes a shared finding with a consistent meaning. An independent history consumer records those findings so the analyst can compare stores without requesting a new export from the publisher. A run identifier separates exercises, and an order identifier supports counting each order once within a run.
+An independent history consumer records accepted order findings so the analyst can compare stores without requesting a new export from the publisher. Each accepted order is shared as a Business Event with a consistent meaning. A run identifier separates exercises, and an order identifier supports counting each order once within a run.
 
 ```mermaid
 flowchart TB

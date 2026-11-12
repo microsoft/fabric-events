@@ -34,9 +34,9 @@ The team needs selected actions to initiate recommendation work with enough cont
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-The application shares each interaction as a Business Event. The recommendation response selects watch and like actions, prepares suggestions from the sample catalog and saves the resulting list with its triggering interaction and session.
+The recommendation response selects watch and like actions, prepares suggestions from the sample catalog and saves the resulting list with its triggering interaction and session. The application shares each interaction as a Business Event.
 
 ```mermaid
 flowchart TB

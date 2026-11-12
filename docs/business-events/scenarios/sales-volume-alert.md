@@ -34,9 +34,9 @@ The team needs a consistent handoff from the sales comparison to operational att
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-The sales comparison publishes each store finding as a Business Event. Operations applies its agreed response threshold and receives an investigation prompt for the qualifying stores, with the original comparison and time window.
+Operations applies its agreed response threshold and receives an investigation prompt for the qualifying stores, with the original comparison and time window. The sales comparison publishes each store finding as a Business Event.
 
 ```mermaid
 flowchart TB

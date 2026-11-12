@@ -34,9 +34,9 @@ Repeating the stock check in the request process also creates two places to inte
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-The warehouse finding is shared as a low-stock Business Event. Each finding starts preparation of a saved replenishment request using the original item, location and stock context. The request is available for approval rather than remaining a shortage observation in another system.
+Each low-stock finding starts preparation of a saved replenishment request using the original item, location and stock context. The request is available for approval rather than remaining a shortage observation in another system. The warehouse finding is shared as a low-stock Business Event.
 
 ```mermaid
 flowchart TB

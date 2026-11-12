@@ -38,9 +38,9 @@ Missing campaign mappings also need a visible review path rather than disappeari
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-A qualifying crossing above 5000 USD is shared as a customer-milestone Business Event. The campaign response combines the milestone's tier and store with campaign and benefit context, producing candidates for active campaigns and a separate review list for missing mappings. Inactive matches produce no candidate.
+The campaign response combines the milestone's tier and store with campaign and benefit context, producing candidates for active campaigns and a separate review list for missing mappings. A qualifying crossing above 5000 USD is shared as a customer-milestone Business Event. Inactive matches produce no candidate.
 
 ```mermaid
 flowchart TB

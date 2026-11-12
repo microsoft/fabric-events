@@ -1,4 +1,4 @@
-import {connectorFrames, connectorOrder, graphParts, stackDiagram, wrapGraph} from "./scenario-diagram-layout.mjs";
+import {connectorFrames, connectorOrder, frameLabelBays, graphParts, stackDiagram, wrapGraph} from "./scenario-diagram-layout.mjs";
 
 (() => {
   const gap = 8;
@@ -221,11 +221,52 @@ import {connectorFrames, connectorOrder, graphParts, stackDiagram, wrapGraph} fr
       if (!chosen) {
         return false;
       }
-      foreign.setAttribute("x", (chosen.left - original.left) / scale);
-      foreign.setAttribute("y", (chosen.top - original.top) / scale);
+      foreign.setAttribute("x", foreign.x.baseVal.value + (chosen.left - original.left) / scale);
+      foreign.setAttribute("y", foreign.y.baseVal.value + (chosen.top - original.top) / scale);
       obstacles.push(chosen);
     }
     return true;
+  }
+
+  function reserveFrameLabelSpace(svg, graph, width, vertical) {
+    const {edges, frames} = graphParts(graph);
+    const internalFrames = connectorFrames(edges, frames);
+    const ids = connectorOrder(edges, [...svg.querySelectorAll("path.flowchart-link")].map(path => path.dataset.id));
+    const labelFrames = new Map(ids.map((id, index) => [id, internalFrames[index]]));
+    const matrix = svg.getScreenCTM();
+    const bounds = svg.getBBox();
+    const left = new DOMPoint(bounds.x, bounds.y).matrixTransform(matrix).x;
+    const right = new DOMPoint(bounds.x + bounds.width, bounds.y).matrixTransform(matrix).x;
+    for (const frame of frames) {
+      const cluster = [...svg.querySelectorAll("g.cluster")].find(element => element.id.endsWith("-" + frame.id));
+      if (cluster.querySelector(".cluster-label")) continue;
+      const rect = cluster.querySelector("rect");
+      const box = rect.getBoundingClientRect();
+      const blockers = [...svg.querySelectorAll("g.node")].filter(node =>
+        !frame.nodes.includes(node.id.match(/-flowchart-(.+)-\d+$/)?.[1])
+      ).map(node => node.getBoundingClientRect());
+      blockers.push(...[...svg.querySelectorAll("g.cluster > rect")].filter(other => other !== rect)
+        .map(other => other.getBoundingClientRect()));
+      const labels = [...svg.querySelectorAll("g.edgeLabels > g.edgeLabel")].filter(label =>
+        labelFrames.get(label.querySelector("[data-id]").getAttribute("data-id")) === frame.id
+      );
+      const labelWidth = Math.max(0, ...labels.map(label => label.getBoundingClientRect().width));
+      const originalX = rect.getAttribute("x");
+      const originalWidth = rect.getAttribute("width");
+      const inverse = rect.getScreenCTM().inverse();
+      for (const bay of frameLabelBays({
+        left: box.left, right: box.right, top: box.top, bottom: box.bottom,
+      }, blockers, {left, right}, width, labelWidth)) {
+        const start = new DOMPoint(bay.left, bay.top).matrixTransform(inverse);
+        const end = new DOMPoint(bay.right, bay.top).matrixTransform(inverse);
+        rect.setAttribute("x", start.x);
+        rect.setAttribute("width", end.x - start.x);
+        if (placeLabels(svg, graph, vertical)) return true;
+      }
+      rect.setAttribute("x", originalX);
+      rect.setAttribute("width", originalWidth);
+    }
+    return false;
   }
 
   function fitBounds(svg, padding = 16) {
@@ -296,7 +337,9 @@ import {connectorFrames, connectorOrder, graphParts, stackDiagram, wrapGraph} fr
         const diagram = shadow.querySelector("svg");
         const legends = extractFrameLegends(diagram, graph);
         clearCaptions(diagram);
-        const placed = placeLabels(diagram, graph, /^\s*flowchart TB\b/m.test(graph));
+        const vertical = /^\s*flowchart TB\b/m.test(graph);
+        const placed = placeLabels(diagram, graph, vertical) ||
+          reserveFrameLabelSpace(diagram, graph, available, vertical);
         if (placed) fitBounds(diagram);
         if (!placed || diagram.getBoundingClientRect().width > available + 0.5) {
           stackDiagram(diagram, graph, available);
