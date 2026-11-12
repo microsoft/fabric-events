@@ -1,0 +1,8 @@
+declare query_parameters(startTime:datetime = datetime(1970-01-01), endTime:datetime = datetime(9999-12-31));
+RevenuePerformance
+| where observed_at >= startTime and observed_at <= endTime
+| extend variance_pct = iff(target > 0, 100.0 * (revenue - target) / target, real(null))
+| extend detected_at = strcat(format_datetime(observed_at, 'yyyyMMdd'), 'T', format_datetime(observed_at, 'HHmmss'), 'Z')
+| project observed_at, ['Composite key'] = tostring(pack_array(region, period_start)),
+    region, period_start, revenue, target, variance_pct, detected_at
+| sort by observed_at asc

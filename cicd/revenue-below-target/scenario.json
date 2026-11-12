@@ -1,0 +1,77 @@
+{
+  "scenario_id": "revenue-below-target",
+  "scenario_name": "Revenue Below Target",
+  "package_policy": "single_current_package",
+  "source_backend": "native_activator_kql",
+  "resource_roles": ["eventhouse", "source", "queryset", "dashboard", "schema", "publisher", "activator", "record_store", "notebook", "pipeline"],
+  "implemented_scope": "public_hybrid_deployment",
+  "command_behavior": {
+    "test": "return_manual_kql_snapshot_instructions_without_submitting_inputs",
+    "verify": "check_hybrid_definitions_and_bindings_without_claiming_e2e",
+    "automated_source_trigger_available": false
+  },
+  "full_deployment_status": "manual_setup_required",
+  "distribution_assets": [
+    "revenue_deploy.py", "revenue_source.py", "revenue_components.py", "public_consumers.py",
+    "DatabaseSchema.kql", "source-query.kql", "sample-input.kql", "response-notebook.py",
+    "action_deploy.py", "business_records.py", "revenue_records.py"
+  ],
+  "business_response": {
+    "action": "DataPipeline",
+    "target_role": "pipeline",
+    "trigger": "OnEachEvent",
+    "rule_name": "Prepare revenue investigation",
+    "requires_teams": false,
+    "implementation_status": "public_event_driven_response_preconfigured_publication_manual_activation",
+    "purpose": "Prepare persisted revenue shortfall analysis for commercial review, not a notification or an automatic revenue recovery.",
+    "input": "The six fields of the triggering Business Event, passed as native Pipeline parameters.",
+    "output_folder": "Files/RevenueInvestigations",
+    "output_storage_role": "record_store",
+    "eventhouse_required": false,
+    "output_fields": [
+      "region", "period_start", "revenue", "target", "variance_pct", "detected_at",
+      "shortfall", "revenue_lift_pct", "pipeline_run_id", "investigated_at",
+      "investigation_id", "rule_id", "status"
+    ],
+    "verification_requirements": [
+      "actual_native_pipeline_rule_activation",
+      "completed_native_pipeline_job",
+      "independent_output_readback_for_the_exact_pipeline_run",
+      "original_six_event_fields_and_correct_derived_analysis"
+    ]
+  },
+  "event_analysis": {
+    "scope": "excluded",
+    "required_for_response": false,
+    "description": "Managed Eventhouse history is an optional enrichment, not an input to the Pipeline."
+  },
+  "public_contract_review": {
+    "scope": "event_driven_consumer_implementation_not_live_certification",
+    "consumer_input": "six_native_event_parameters",
+    "output": "execution_scoped_lakehouse_investigation",
+    "eventhouse_required": false,
+    "e2e_verified": false,
+    "remaining_gates": [
+      "native_publisher_activation_and_crossing",
+      "verified_public_stable_region_and_period_object_identity",
+      "native_kql_source_samples_and_actual_poll_cadence",
+      "strict_crossing_and_invalid_target_source_sequence",
+      "same_run_business_event_publication_pipeline_completion_and_persisted_analysis"
+    ]
+  },
+  "source_architecture": {
+    "eventhouse_role": "eventhouse",
+    "database_role": "source",
+    "queryset_role": "queryset",
+    "dashboard_role": "dashboard",
+    "dashboard_setup": "Pin the Current revenue query to a new Real-Time Dashboard",
+    "source_table": "RevenuePerformance",
+    "source_event_time": "observed_at",
+    "source_query": "source-query.kql",
+    "object_identity": ["region", "period_start"],
+    "crossing_threshold": -15,
+    "event_time_meaning": "UTC revenue snapshot, not ingestion or pipeline execution time",
+    "source_eventhouse_required": true,
+    "managed_business_event_history_configured": false
+  }
+}

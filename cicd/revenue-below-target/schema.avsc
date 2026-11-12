@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "Sales.Revenue.BelowTarget",
+  "fields": [
+    {"name": "region", "type": "string"},
+    {"name": "period_start", "type": "string"},
+    {"name": "revenue", "type": "double"},
+    {"name": "target", "type": "double"},
+    {"name": "variance_pct", "type": "double"},
+    {"name": "detected_at", "type": "string"}
+  ]
+}

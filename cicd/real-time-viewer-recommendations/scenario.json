@@ -1,0 +1,38 @@
+{
+  "scenario_name": "Real-Time Viewer Recommendations",
+  "scenario_id": "real-time-viewer-recommendations",
+  "source_backend": "native_udf",
+  "package_policy": "single_current_package",
+  "resource_roles": ["schema", "publisher", "activator", "record_store", "response_function"],
+  "implemented_scope": "public_full_deployment",
+  "command_behavior": {
+    "deploy": "prepare_native_publisher_filtered_activator_response_udf_and_empty_recommendation_folder",
+    "test": "invoke_six_original_viewer_interactions_without_calling_the_consumer",
+    "test_exit_zero_means": "native_source_execution_succeeded_not_consumer_delivery",
+    "verify": "read_saved_source_results_actual_native_executions_and_persisted_recommendations_without_republishing"
+  },
+  "business_response": {
+    "target_role": "response_function",
+    "action": "UserDataFunction",
+    "rule_name": "Refresh session recommendations",
+    "function_name": "refresh_session_recommendations",
+    "business_outcome": "Three ranked content recommendations persisted per qualifying session interaction, not a trained model or proof that an application served them."
+  },
+  "event_analysis": {
+    "scope": "excluded",
+    "reason": "The package does not configure managed Business Event history. Recommendation generation consumes the triggering event directly."
+  },
+  "distribution_assets": ["public_consumers.py", "public_udf.py", "action_deploy.py", "business_records.py", "viewer_deploy.py", "viewer_records.py", "function_app.py", "response-function.py", "fixtures.json", "catalog.json"],
+  "public_contract_review": {
+    "status": "local_contract_validation_live_execution_pending",
+    "live_deployment_verified": false,
+    "publisher_connection_artifact_type": "EventDefinition",
+    "publisher_connection_artifact_id": "public_event_schema_set_id",
+    "consumer_action": "FabricItemInvocation",
+    "source_filter": {"operatorType": "StringIn", "key": "data.action", "values": ["watch", "like"]},
+    "recommendation_method": "shared_tags_then_popularity",
+    "trained_model": false,
+    "serving_application_updated": false,
+    "payload_fields": ["viewer_id", "session_id", "content_id", "action", "occurred_at"]
+  }
+}

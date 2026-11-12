@@ -1,0 +1,1 @@
+.create-merge table CustomerSpendSnapshots (customer_id:string, customer_name:string, total_spend:real, store_id:string, observed_at:datetime)

@@ -1,0 +1,1 @@
+.create-merge table RevenuePerformance (region:string, period_start:string, revenue:real, target:real, observed_at:datetime)

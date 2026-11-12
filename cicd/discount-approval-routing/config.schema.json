@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discount Approval deployment configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenario_id", "tenant_id", "workspace_id", "auth_provider",
+    "resource_prefix", "event_name", "resource_names", "accept_preview_apis", "teams_recipients"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "configuration_version": {"type": "string", "deprecated": true},
+    "scenario_id": {"enum": ["discount-approval-routing", "discount"]},
+    "tenant_id": {"type": ["string", "null"], "format": "uuid"},
+    "workspace_id": {"type": ["string", "null"], "format": "uuid"},
+    "auth_provider": {"enum": ["azure_cli", "fabric_cli"]},
+    "resource_prefix": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]{2,39}$"},
+    "event_name": {"type": "string", "minLength": 3, "maxLength": 80, "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$"},
+    "accept_preview_apis": {"type": "boolean"},
+    "teams_recipients": {
+      "type": "array", "minItems": 1, "maxItems": 10, "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^(@me|[^@\\s]+@[^@\\s]+\\.[^@\\s]+)$"}
+    },
+    "resource_names": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "publisher", "activator", "eventstream"],
+      "patternProperties": {
+        "^(schema|publisher|activator|eventstream)$": {
+          "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{2,99}$"
+        }
+      },
+      "description": "Runtime validation additionally requires this scenario's exact reviewed roles and distinct names."
+    }
+  }
+}

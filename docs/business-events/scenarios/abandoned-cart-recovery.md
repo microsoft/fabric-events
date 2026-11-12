@@ -1,253 +1,117 @@
 # Abandoned Cart Recovery
 
-**Publisher:** User Data Function | **Consumer:** Activator, Eventhouse
+## Business Context
 
-## Business context
+The storefront already identifies abandoned carts and retains the cart identity, customer details, value and time of abandonment. The recovery team uses those records to prepare customer reminders and to organize commercial follow-up. Those activities share the same starting facts, but they serve different purposes and do not have the same eligibility rules.
 
-An ecommerce company already detects abandoned carts in its storefront and uses recovery campaigns to encourage customers to complete checkout. Marketing needs to act while an offer is still relevant, and analytics needs to measure which responses lead to purchases.
-
-A User Data Function receives a webhook when the storefront identifies an abandoned cart. It retrieves the customer profile, evaluates offer eligibility, and publishes an `Ecommerce.Cart.Abandoned` Business Event. Activator initiates the recovery response, and Eventhouse stores received events for conversion analytics.
-
-**The problem without Business Events:**
-Recovery can use existing campaigns and integrations. The scaling challenge is sharing the same abandonment and eligibility context with email, CRM, and analytics without embedding each channel's behavior in the function.
-
-**The solution with Business Events:**
-The function publishes one event contract for the detected abandonment. Separate Activator rules handle the offer and CRM follow-up. Another channel can reuse that context without changing the publisher, provided it does not require additional fields or a different eligibility decision.
-
-## Architecture
+Here, reminder preparation selects the carts that merit an email, while the team separately maintains a register of cart-level tasks. Staff must reconcile those two views rather than assume that everyone receiving an email represents all the work to be done. A lower-value cart still needs a task, and two carts belonging to one customer are two separate opportunities to follow up. The risk is incomplete coverage, not simply a missing email.
 
 ```mermaid
 flowchart TB
-    subgraph External
-        EC[Ecommerce\nStorefront]
+    S["<b>Storefront</b><br/>Identifies abandoned carts"]
+    C[("<b>Cart records</b><br/>Cart and customer<br/>Value and time")]
+    E["<b>Reminder preparation</b><br/>Selects carts for outreach"]
+    M["<b>Email channel</b><br/>Delivers customer reminders"]
+    subgraph GAP["Gap: Some carts can miss<br/>their own follow-up task"]
+        F["<b>Recovery team</b><br/>Reconciles tasks<br/>for every cart"]:::businessGap
     end
-
-    subgraph Fabric
-        UDF[User Data Function\nCart abandonment handler]
-        FA[(Fabric Data + AI\nCustomer profile, cart history,\noffer rules)]
-        BE([Business Event\n'Ecommerce.Cart.Abandoned'])
-    end
-
-    subgraph Consumers
-        ACT1{Activator\nOffer rule}
-        ACT2{Activator\nCRM rule}
-        EH[(Eventhouse\nConversion analytics)]
-    end
-
-    EC -->|Cart webhook| UDF
-    FA -.->|context| UDF
-    UDF -->|Publish event| BE
-    BE --> ACT1
-    BE --> ACT2
-    BE --> EH
-    ACT1 --> EMAIL[Personalized\nrecovery email]
-    ACT2 --> CRM[CRM\nfollow-up task]
+    T[("<b>Task register</b><br/>Individual carts")]
+    S -->|"Cart details"| C
+    C -->|"Select candidates"| E
+    E -->|"Send reminder"| M
+    C -->|"Cart context"| F
+    F -->|"Record tasks"| T
+    classDef businessGap fill:#FFF4CE,stroke:#C88700,color:#000000
+    style GAP fill:none,stroke:#C88700,stroke-width:1.5px
 ```
 
-## Step 1: Create the Business Event
+## Current Problem
 
-Before publishing any event, define it in Real-Time Hub. Enable Eventhouse integration during this step.
+Reminder eligibility and follow-up coverage are not the same policy. If the reminder list is treated as the complete worklist, lower-value carts disappear from follow-up. If work is recorded only against the customer, separate carts can lose their individual context.
 
-1. Go to [Real-Time Hub → Business Events → Create](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/create-business-events).
-2. Create or select an Event Schema Set. Use `EcommerceCart` as the schema set name. You will need this name when connecting the Event Schema Set to the User Data Function through the connection manager.
-3. Name the event `Ecommerce.Cart.Abandoned`.
-4. In the schema editor, paste the following JSON:
+The team needs selective outreach and a complete cart-level task register, both based on the abandonment the storefront already identified.
 
-    ```json
-    {
-      "type": "record",
-      "name": "Ecommerce.Cart.Abandoned",
-      "fields": [
-        {
-          "name": "customer_id",
-          "type": "string",
-          "doc": "Unique identifier of the customer"
-        },
-        {
-          "name": "customer_email",
-          "type": "string",
-          "doc": "Customer email address for recovery communication"
-        },
-        {
-          "name": "cart_id",
-          "type": "string",
-          "doc": "Unique identifier of the abandoned cart"
-        },
-        {
-          "name": "cart_value",
-          "type": "float",
-          "doc": "Total value of items in the cart at time of abandonment"
-        },
-        {
-          "name": "item_count",
-          "type": "int",
-          "doc": "Number of distinct items in the cart"
-        },
-        {
-          "name": "last_activity_at",
-          "type": "string",
-          "doc": "ISO 8601 timestamp of the last customer cart interaction"
-        }
-      ]
-    }
-    ```
+<span id="why-business-events"></span>
+<span id="business-value"></span>
 
-5. Confirm that **Analyze in Eventhouse** is enabled. Create a new Eventhouse or select an existing one in your workspace. This creates a dedicated KQL table named `Ecommerce.Cart.Abandoned` automatically.
-6. Select **Create**.
+## Business Events
 
-## Step 2: Publisher - User Data Function
-
-The User Data Function receives a webhook from the ecommerce storefront and publishes the Business Event.
-
-### Create the User Data Function
-
-1. In your Fabric workspace, select **+ New item** and create a **User Data Function** named `PublishCartAbandonedEvent`.
-2. Inside the UDF item, select **New function**.
-
-### Connect to the schema set
-
-3. In the **Home** ribbon, select **Manage connections**.
-4. Select **+ Add connection**, search for `EcommerceCart`, and select **Connect**.
-5. Note the alias (`EcommerceCart` by default). Close the pane.
-
-### Function code
-
-```python
-import fabric.functions as fn
-import logging
-
-udf = fn.UserDataFunctions()
-
-@udf.connection(argName='businessEventsClient', alias='EcommerceCart')
-@udf.function()
-def publish_cart_abandoned_event(
-    businessEventsClient: fn.FabricBusinessEventsClient,
-    customer_id: str,
-    customer_email: str,
-    cart_id: str,
-    cart_value: float,
-    item_count: int,
-    last_activity_at: str
-) -> str:
-    logging.info("publish_cart_abandoned_event invoked.")
-
-    event_data = {
-        'customer_id': customer_id,
-        'customer_email': customer_email,
-        'cart_id': cart_id,
-        'cart_value': cart_value,
-        'item_count': item_count,
-        'last_activity_at': last_activity_at,
-    }
-
-    businessEventsClient.PublishEvent(
-        type='Ecommerce.Cart.Abandoned',
-        event_data=event_data,
-        data_version='v1'
-    )
-
-    return "Event 'Ecommerce.Cart.Abandoned' published successfully"
-```
-
-For full details on publishing Business Events from User Data Functions, see the [User Data Function publisher documentation](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-user-data-function).
-
-## Step 3: Consumers
-
-### Consumer 1 - Activator: Personalized recovery offer
-
-1. In Real-Time Hub, locate `Ecommerce.Cart.Abandoned` under your schema set.
-2. Select **Set alert** and name the rule `Cart Recovery - Offer`.
-3. In the **Monitor** section, set **Source** to **Business events** and connect to `Ecommerce.Cart.Abandoned`.
-4. Set **Condition** to `On each event`. Add an optional filter on `cart_value > 30` to focus recovery spend on higher-value carts.
-5. In the **Action** section, configure the email or Power Automate flow that sends the personalized recovery offer. Add `customer_email`, `cart_id`, and `cart_value` as context fields.
-6. Select **Save**.
-
-### Consumer 2 - Activator: CRM follow-up task
-
-1. In Real-Time Hub, locate `Ecommerce.Cart.Abandoned`.
-2. Select **Set alert** and name the rule `Cart Recovery - CRM`.
-3. Set **Condition** to `On each event`.
-4. In the **Action** section, configure the Power Automate flow that creates a CRM follow-up task. Add `customer_id` and `cart_id` as context fields.
-5. Select **Save**.
-
-### Consumer 3 - Eventhouse: Conversion analytics
-
-Eventhouse integration was enabled during event creation. Every published event is ingested into the `Ecommerce.Cart.Abandoned` KQL table automatically.
-
-Open your Eventhouse KQL database and run the following queries to explore recovery patterns.
-
-**Peak abandonment windows — last 7 days:**
-
-```kusto
-['Ecommerce.Cart.Abandoned']
-| where ingestion_time() > ago(7d)
-| extend HourOfDay = hourofday(ingestion_time())
-| summarize Abandonments = count() by HourOfDay
-| order by Abandonments desc
-```
-
-**High-value carts abandoned in the last 24 hours:**
-
-```kusto
-['Ecommerce.Cart.Abandoned']
-| where ingestion_time() > ago(24h)
-| where cart_value > 100
-| project customer_id, cart_id, cart_value, item_count, last_activity_at
-| order by cart_value desc
-```
-
-**Daily abandonment volume trend:**
-
-```kusto
-['Ecommerce.Cart.Abandoned']
-| where ingestion_time() > ago(30d)
-| summarize Abandonments = count() by bin(ingestion_time(), 1d)
-| order by ingestion_time() asc
-```
-
-## Step 4: End-to-end test
-
-Invoke `publish_cart_abandoned_event` with the following test values:
-
-| Parameter | Value |
-|---|---|
-| `customer_id` | `cust-5521` |
-| `customer_email` | `test@example.com` |
-| `cart_id` | `cart-9987` |
-| `cart_value` | `145.50` |
-| `item_count` | `3` |
-| `last_activity_at` | `2024-06-22T09:00:00Z` |
-
-Then confirm the event arrived in Eventhouse:
-
-```kusto
-['Ecommerce.Cart.Abandoned']
-| where cart_id == "cart-9987"
-| order by ingestion_time() desc
-| take 1
-```
-
-If the row is present and the Activator offer rule fires, your end-to-end setup is working.
-
-## What happens next
-
-With the event in place, recovery channels can be added, changed, or removed without touching the User Data Function.
+The storefront's abandonment finding is published as a Business Event and reaches two independent responses. One sends reminders for qualifying cart values; the other registers a follow-up task for every valid cart, keeping different carts from the same customer separate.
 
 ```mermaid
-flowchart LR
-    BE([Business Event\n'Ecommerce.Cart.Abandoned']) --> ACT[Activator]
-    BE --> EH[(Eventhouse)]
-    ACT --> EMAIL[Recovery email]
-    ACT --> PA[Power Automate\nCRM follow-up]
-    ACT --> PUSH[Push notification]
-    EH --> KQL[Conversion analytics]
-    EH --> RTD[Real-Time Dashboard\nabandonment trends]
+flowchart TB
+    S["<b>Storefront</b><br/>Identifies abandoned carts"]
+    E(["<b>Business Event</b><br/>Individual cart abandonment"])
+    M["<b>Customer outreach</b><br/>Sends reminders for<br/>cart values above 30"]
+    subgraph VALUE["Improvement: Every valid cart gets<br/>its own follow-up task"]
+        F["<b>Commercial follow-up</b><br/>Registers each cart<br/>as a separate task"]:::businessValue
+        T[("<b>Task register</b><br/>Cart-specific context")]:::businessValue
+    end
+    S -->|"Share cart context"| E
+    E -->|"Apply reminder policy"| M
+    E -->|"Every valid cart"| F
+    F -->|"Preserve each cart separately"| T
+    classDef businessValue fill:#DFF6DD,stroke:#107C10,color:#000000
+    style VALUE fill:none,stroke:#107C10,stroke-width:1.5px
 ```
 
-| Extension | What it enables |
-|---|---|
-| **Recovery email** | Immediate personalized offer triggered by Activator |
-| **CRM follow-up** | Sales task created via Power Automate for high-value carts |
-| **Push notification** | Additional recovery channel — new Activator rule, no code change |
-| **Conversion analytics** | Query which recovery timing and offer types drive the highest conversion |
-| **Real-Time Dashboard** | Live view of abandonment volume and high-value cart pipeline |
+The recovery team can apply different policies to customer communication and internal work without recreating abandonment detection. A reminder does not have to finish before a task is registered, and the task register does not determine who receives an email. The result is organized recovery work, not evidence of recovered revenue.
+
+## Event-driven architecture {#architecture}
+
+**Business signal:** `Ecommerce.Cart.Abandoned`
+
+**Publisher:** User Data Function | **Consumer(s):** Activator (Power Automate: email and SQL follow-up)
+
+```mermaid
+flowchart TB
+    S["<b>Storefront</b><br/>Identifies abandoned carts"]
+    P["<b>Publisher UDF</b><br/>Validates six cart facts"]
+    BE(["<b>Business Event</b><br/>Cart abandoned"])
+    A["<b>Activator<br/>(Power Automate)</b><br/>Selects cart values<br/>above 30"]
+    C["<b>Activator<br/>(Power Automate)</b><br/>Starts follow-up<br/>for every cart"]
+    E["<b>Power Automate</b><br/>Sends a recovery email"]
+    T["<b>Power Automate</b><br/>Registers cart-level<br/>follow-up tasks"]
+    DB[("<b>SQL database</b><br/>Cart-level follow-up tasks")]
+    EH[("<b>Eventhouse</b><br/>Received abandonments")]
+    S -->|"Abandonment details"| P
+    P -->|"Publish"| BE
+    BE -->|"Subscribe"| A
+    BE -->|"Subscribe"| C
+    A -->|"Map cart context"| E
+    C -->|"Map cart context"| T
+    T -->|"Store task"| DB
+    BE -.->|"Analyze in Eventhouse"| EH
+    MAIL["<b>Approved mailbox</b><br/>Recovery reminders"]
+    E -->|"Deliver"| MAIL
+```
+
+The reminder and task branches proceed independently after publication:
+
+1. The publishing User Data Function validates the storefront's cart facts and shares the abandonment as a Business Event.
+2. One Activator rule selects cart values strictly above 30 and invokes the Power Automate reminder flow, which delivers to the approved mailbox.
+3. A separate Activator rule responds to every valid cart and invokes the SQL follow-up flow, preserving a task for that individual cart.
+
+Use an approved test mailbox and the writable SQL database. The task register represents follow-up work, not a complete CRM application.
+
+Dashed arrows show optional event history and its analysis, separate from the required response. **Analyze in Eventhouse** is a creation-time choice, not a connection enabled by the deployment package or a prerequisite for completing the Workbook.
+
+## Business outcome and boundaries
+
+From six synthetic carts, deliver three reminders for values strictly above 30 and create six SQL follow-up tasks. Different carts from the same customer remain separate tasks.
+
+**Where the exercise stops:** Exact 30, below-threshold and zero-value carts create tasks but no reminder. This exercise does not calculate offers, recover orders or prove revenue recovery. Real outreach also needs current cart state, contact preferences and approved eligibility checks.
+
+## Try the Workbook
+
+The [Workbook](abandoned-cart-recovery/deployment.md){#deploy-this-scenario} brings preparation, connections, sample inputs, expected results and code reference into one place. Follow that single path to explore the outcome above.
+
+<span id="evaluation-criteria"></span>
+<span id="inspect-independent-eventhouse-history"></span>
+<span id="prepare-the-sql-follow-up-register"></span>
+<span id="prepare-two-genuine-custom-actions"></span>
+<span id="step-1-create-the-business-event"></span>
+<span id="step-2-publisher-user-data-function"></span>
+<span id="step-3-consumers-recovery-email-sql-follow-up-and-history"></span>
+<span id="step-4-end-to-end-test"></span>
+<span id="what-happens-next"></span>

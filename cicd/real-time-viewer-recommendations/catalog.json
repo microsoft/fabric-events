@@ -1,0 +1,14 @@
+{
+  "catalog_id": "synthetic-streaming-catalog",
+  "items": [
+    {"content_id": "space-explorer", "tags": ["science", "space"], "popularity": 80},
+    {"content_id": "mars-mission", "tags": ["science", "space"], "popularity": 70},
+    {"content_id": "robot-future", "tags": ["science", "technology"], "popularity": 90},
+    {"content_id": "ocean-depths", "tags": ["science", "nature"], "popularity": 85},
+    {"content_id": "city-mystery", "tags": ["drama", "mystery"], "popularity": 75},
+    {"content_id": "case-notes", "tags": ["drama", "mystery"], "popularity": 90},
+    {"content_id": "hidden-case", "tags": ["drama", "mystery"], "popularity": 90},
+    {"content_id": "quiet-city", "tags": ["drama", "family"], "popularity": 85},
+    {"content_id": "family-roads", "tags": ["drama", "family"], "popularity": 80}
+  ]
+}

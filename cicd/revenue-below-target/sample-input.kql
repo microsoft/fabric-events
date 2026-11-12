@@ -1,0 +1,2 @@
+.set-or-append RevenuePerformance <|
+print region = 'West', period_start = '2026-11-01', revenue = 90000.0, target = 100000.0, observed_at = now()

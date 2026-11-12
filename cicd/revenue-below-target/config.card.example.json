@@ -1,0 +1,22 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "revenue-below-target",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "Revenue",
+  "event_name": "Sales.Revenue.BelowTarget",
+  "accept_preview_apis": true,
+  "resource_names": {
+    "eventhouse": "RevenueData",
+    "source": "RevenueSource",
+    "queryset": "RevenueQueries",
+    "dashboard": "RevenueMonitor",
+    "schema": "RevenueSchema",
+    "publisher": "RevenuePublisher",
+    "activator": "RevenueActions",
+    "record_store": "RevenueInvestigations",
+    "notebook": "RevenueInvestigationNotebook",
+    "pipeline": "RevenueInvestigation"
+  }
+}

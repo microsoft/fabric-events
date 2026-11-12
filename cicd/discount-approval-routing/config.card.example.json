@@ -1,0 +1,17 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "discount-approval-routing",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "Discount",
+  "event_name": "Sales.Deals.DiscountApprovalRequired",
+  "accept_preview_apis": true,
+  "teams_recipients": ["@me"],
+  "resource_names": {
+    "schema": "DiscountSchema",
+    "publisher": "DiscountPublisher",
+    "activator": "DiscountActions",
+    "eventstream": "DiscountRouting"
+  }
+}

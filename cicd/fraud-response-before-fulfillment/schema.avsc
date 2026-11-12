@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "Ecommerce.Order.FraudDecision",
+  "fields": [
+    {"name": "order_id", "type": "string"},
+    {"name": "customer_id", "type": "string"},
+    {"name": "risk_score", "type": "float"},
+    {"name": "decision", "type": "string"},
+    {"name": "decided_at", "type": "string"}
+  ]
+}

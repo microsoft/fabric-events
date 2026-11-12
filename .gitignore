@@ -2,3 +2,35 @@ site/
 __pycache__/
 *.pyc
 .DS_Store
+cicd/**/config.local.json
+cicd/**/teams-definition.local.json
+cicd/**/*.local.json
+/cicd/*/.deployments/
+cicd_old/**/config.local.json
+cicd_old/**/teams-definition.local.json
+cicd_old/**/*.local.json
+/cicd_old/*/.deployments/
+/cicd/.deployments/
+
+# Unpublished local Shipment work.
+/cicd/shipment-delay-auto-mitigation/
+/cicd/shipment-delay-escalation/
+/cicd/shipment_deploy.py
+/cicd/shipment_portal_deploy.py
+/tests/test_shipment_portal.py
+/tests/test_shipment_public_cicd.py
+/docs/business-events/scenarios/shipment-delay-auto-mitigation.md
+/docs/business-events/scenarios/shipment-delay-auto-mitigation/
+/docs/business-events/scenarios/shipment-delay-escalation.md
+/docs/business-events/scenarios/shipment-delay-escalation/
+/docs/assets/downloads/shipment-delay-auto-mitigation.zip
+/docs/assets/downloads/shipment-delay-escalation.zip
+
+# Local-only artwork.
+/diagrams/ignite-standalone-blogs/
+/docs/assets/home2/v001/
+
+# Tests for the private legacy implementation, retained outside this repository.
+/tests/test_deployment_lifecycle.py
+/tests/test_risk_flow_api.py
+/tests/test_risk_runtime.py

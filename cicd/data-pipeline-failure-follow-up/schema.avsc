@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "DataOps.Pipeline.RunCompleted",
+  "fields": [
+    {"name": "pipeline_id", "type": "string"},
+    {"name": "pipeline_name", "type": "string"},
+    {"name": "run_id", "type": "string"},
+    {"name": "status", "type": "string"},
+    {"name": "rows_processed", "type": "int"},
+    {"name": "duration_seconds", "type": "int"},
+    {"name": "triggered_by", "type": "string"},
+    {"name": "completed_at", "type": "string"}
+  ]
+}

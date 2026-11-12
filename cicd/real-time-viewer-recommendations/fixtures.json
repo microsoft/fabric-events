@@ -1,0 +1,8 @@
+[
+  {"id": "watch-science", "viewer": "viewer-a", "session": "session-a", "content_id": "space-explorer", "action": "watch", "expected": ["mars-mission", "robot-future", "ocean-depths"]},
+  {"id": "like-mystery", "viewer": "viewer-a", "session": "session-a", "content_id": "city-mystery", "action": "like", "expected": ["case-notes", "hidden-case", "quiet-city"]},
+  {"id": "watch-family", "viewer": "viewer-b", "session": "session-b", "content_id": "quiet-city", "action": "watch", "expected": ["family-roads", "case-notes", "hidden-case"]},
+  {"id": "click-excluded", "viewer": "viewer-c", "session": "session-c", "content_id": "space-explorer", "action": "click", "expected": null},
+  {"id": "search-excluded", "viewer": "viewer-d", "session": "session-d", "content_id": "space-explorer", "action": "search", "expected": null},
+  {"id": "skip-excluded", "viewer": "viewer-e", "session": "session-e", "content_id": "city-mystery", "action": "skip", "expected": null}
+]

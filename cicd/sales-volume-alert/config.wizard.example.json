@@ -1,0 +1,20 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "sales-volume-alert",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "SalesDrop",
+  "event_name": "Retail.Sales.VolumeAlert",
+  "accept_preview_apis": true,
+  "teams_recipients": ["@me"],
+  "teams_chat_id": null,
+  "teams_verifier": "windows_ui",
+  "resource_names": {
+    "schema": "SalesDropSchema",
+    "notebook": "SalesDropPublisher",
+    "activator": "SalesDropActions",
+    "eventhouse": "SalesDropSource",
+    "database": "SalesDropSourceDb"
+  }
+}

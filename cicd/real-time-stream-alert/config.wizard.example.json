@@ -1,0 +1,17 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "real-time-stream-alert",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "PaymentReview",
+  "event_name": "Retail.Payment.HighValueTransaction",
+  "accept_preview_apis": true,
+  "resource_names": {
+    "schema": "PaymentReviewSchema",
+    "publisher": "PaymentReviewPublisher",
+    "activator": "PaymentReviewActions",
+    "record_store": "PaymentReviewCases",
+    "response_function": "PaymentReviewFunctions"
+  }
+}

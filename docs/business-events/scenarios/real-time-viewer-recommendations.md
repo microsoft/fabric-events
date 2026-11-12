@@ -1,232 +1,111 @@
 # Real-Time Viewer Recommendations
 
-**Publisher:** User Data Function | **Consumer:** Activator, Eventhouse
+## Business Context
 
-## Business context
+A viewing application records watches, likes, clicks, searches and skips with the viewer, content and session context. A separate recommendation process uses a content catalog to prepare suggestions. The product team must decide which interactions express enough interest to justify refreshing those suggestions, rather than treating every action as equally meaningful.
 
-A streaming platform already uses viewer profiles, interaction history, and a recommendation model to personalize content. It wants recent interactions to inform recommendations during the current session, while analytics measures engagement and model performance.
-
-A User Data Function receives a webhook for a selected viewer interaction: a click, a search, a skip, or a sustained watch. It retrieves profile and interaction context from Fabric, calls the recommendation model, and publishes a `Streaming.Viewer.BehaviorDetected` Business Event. Activator triggers a recommendation refresh, and Eventhouse stores received events for click-through rate analysis and model retraining.
-
-**The problem without Business Events:**
-The platform can already refresh recommendations through application integrations. As experimentation and analytics teams need the same finding, adding a separate call or interpretation for each consumer makes the function harder to evolve.
-
-**The solution with Business Events:**
-The function shares the selected interaction and recommendation context through one event contract. Activator handles the refresh response, while analytics queries received events in Eventhouse. Consumers that use the existing contract can be added without changing the function; Business Events do not replace the recommendation model or raw interaction ingestion.
-
-## Architecture
+In this operating model, application-specific logic connects recorded interactions to requests for a new list. It must choose the relevant action and carry the right viewer and session context into recommendation preparation. Collecting more interaction history does not, on its own, make a refreshed list available. The business needs a consistent response to meaningful viewing behavior without turning every application interaction into another place to maintain recommendation rules.
 
 ```mermaid
 flowchart TB
-    subgraph External
-        APP[Streaming\nApplication]
+    A["<b>Viewing app</b><br/>Records viewer actions"]
+    L[("<b>Interaction records</b><br/>Viewer, content and session")]
+    subgraph GAP["Gap: Meaningful actions need<br/>a separate refresh request"]
+        I["<b>Application logic</b><br/>Selects actions that<br/>need a refresh"]:::businessGap
+        P["<b>Recommendation process</b><br/>Ranks candidate content"]:::businessGap
     end
-
-    subgraph Fabric
-        UDF[User Data Function\nBehavior handler]
-        FA[(Fabric Data + AI\nViewer profile, interaction\nhistory, recommendation model)]
-        BE([Business Event\n'Streaming.Viewer.BehaviorDetected'])
-    end
-
-    subgraph Consumers
-        ACT{Activator\nRefresh rule}
-        EH[(Eventhouse\nViewer telemetry)]
-    end
-
-    APP -->|Behavior webhook| UDF
-    FA -.->|context + model| UDF
-    UDF -->|Publish event| BE
-    BE --> ACT
-    BE --> EH
-    ACT --> REC[Update personalized\nrecommendations]
+    C[("<b>Content catalog</b><br/>Tags and popularity")]
+    R[("<b>Recommendation lists</b><br/>Session and action")]
+    A -->|"Record action"| L
+    L -->|"Action context"| I
+    I -->|"Request refresh"| P
+    C -->|"Candidate content"| P
+    P -->|"Save list"| R
+    classDef businessGap fill:#FFF4CE,stroke:#C88700,color:#000000
+    style GAP fill:none,stroke:#C88700,stroke-width:1.5px
 ```
 
-## Step 1: Create the Business Event
+## Current Problem
 
-1. Go to [Real-Time Hub → Business Events → Create](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/create-business-events).
-2. Create or select an Event Schema Set. Use `StreamingViewer` as the schema set name. You will need this name when connecting the Event Schema Set to the User Data Function through the connection manager.
-3. Name the event `Streaming.Viewer.BehaviorDetected`.
-4. In the schema editor, paste the following JSON:
+An interaction record does not, by itself, prepare a recommendation list. Treating every click or search as a reason to refresh also fails to distinguish stronger expressions of interest, such as watching or liking a title.
 
-    ```json
-    {
-      "type": "record",
-      "name": "Streaming.Viewer.BehaviorDetected",
-      "fields": [
-        {
-          "name": "viewer_id",
-          "type": "string",
-          "doc": "Unique identifier of the viewer"
-        },
-        {
-          "name": "session_id",
-          "type": "string",
-          "doc": "Identifier of the current streaming session"
-        },
-        {
-          "name": "content_id",
-          "type": "string",
-          "doc": "Identifier of the content being interacted with"
-        },
-        {
-          "name": "action",
-          "type": "string",
-          "doc": "Type of interaction: click, search, watch, skip, or like"
-        },
-        {
-          "name": "occurred_at",
-          "type": "string",
-          "doc": "ISO 8601 timestamp of the viewer interaction"
-        }
-      ]
-    }
-    ```
+The team needs selected actions to initiate recommendation work with enough context to explain which interaction produced each list, without making the viewing application own the ranking process.
 
-5. Confirm that **Analyze in Eventhouse** is enabled. Create a new Eventhouse or select an existing one. This creates a dedicated KQL table named `Streaming.Viewer.BehaviorDetected` automatically.
-6. Select **Create**.
+<span id="why-business-events"></span>
+<span id="business-value"></span>
 
-## Step 2: Publisher - User Data Function
+## Business Events
 
-The User Data Function receives a behavior webhook from the streaming application and publishes the Business Event.
-
-### Create the User Data Function
-
-1. In your Fabric workspace, select **+ New item** and create a **User Data Function** named `PublishViewerBehaviorEvent`.
-2. Inside the UDF item, select **New function**.
-
-### Connect to the schema set
-
-3. In the **Home** ribbon, select **Manage connections**.
-4. Select **+ Add connection**, search for `StreamingViewer`, and select **Connect**.
-5. Note the alias (`StreamingViewer` by default). Close the pane.
-
-### Function code
-
-```python
-import fabric.functions as fn
-import logging
-
-udf = fn.UserDataFunctions()
-
-@udf.connection(argName='businessEventsClient', alias='StreamingViewer')
-@udf.function()
-def publish_viewer_behavior_event(
-    businessEventsClient: fn.FabricBusinessEventsClient,
-    viewer_id: str,
-    session_id: str,
-    content_id: str,
-    action: str,
-    occurred_at: str
-) -> str:
-    logging.info("publish_viewer_behavior_event invoked.")
-
-    event_data = {
-        'viewer_id': viewer_id,
-        'session_id': session_id,
-        'content_id': content_id,
-        'action': action,
-        'occurred_at': occurred_at,
-    }
-
-    businessEventsClient.PublishEvent(
-        type='Streaming.Viewer.BehaviorDetected',
-        event_data=event_data,
-        data_version='v1'
-    )
-
-    return "Event 'Streaming.Viewer.BehaviorDetected' published successfully"
-```
-
-For full details on publishing Business Events from User Data Functions, see the [User Data Function publisher documentation](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-user-data-function).
-
-## Step 3: Consumers
-
-### Consumer 1 - Activator: Recommendation refresh
-
-1. In Real-Time Hub, locate `Streaming.Viewer.BehaviorDetected`.
-2. Select **Set alert** and name the rule `Viewer Behavior - Refresh Recommendations`.
-3. Set **Condition** to `On each event`. Add an optional filter on `action` to refresh only on high-signal interactions (for example, `action == watch` or `action == like`).
-4. In **Action**, configure the User Data Function or Power Automate flow that calls the recommendation serving layer to refresh the viewer's queue. Add `viewer_id`, `session_id`, and `content_id` as context fields.
-5. Select **Save**.
-
-### Consumer 2 - Eventhouse: Viewer telemetry
-
-Eventhouse integration was enabled during event creation. Every published event is ingested into the `Streaming.Viewer.BehaviorDetected` KQL table automatically.
-
-**Recommendation refresh rate — events per hour, last 24 hours:**
-
-```kusto
-['Streaming.Viewer.BehaviorDetected']
-| where ingestion_time() > ago(24h)
-| summarize EventCount = count() by bin(ingestion_time(), 1h)
-| order by ingestion_time() asc
-```
-
-**Most engaged content by interaction type:**
-
-```kusto
-['Streaming.Viewer.BehaviorDetected']
-| where ingestion_time() > ago(7d)
-| where action in ('watch', 'like')
-| summarize Engagements = count() by content_id, action
-| order by Engagements desc
-| take 20
-```
-
-**Viewer session activity — depth of interaction:**
-
-```kusto
-['Streaming.Viewer.BehaviorDetected']
-| where ingestion_time() > ago(1d)
-| summarize
-    Actions = count(),
-    UniqueContent = dcount(content_id)
-  by viewer_id, session_id
-| order by Actions desc
-```
-
-## Step 4: End-to-end test
-
-Invoke `publish_viewer_behavior_event` with the following test values:
-
-| Parameter | Value |
-|---|---|
-| `viewer_id` | `viewer-7712` |
-| `session_id` | `sess-3301` |
-| `content_id` | `content-882` |
-| `action` | `watch` |
-| `occurred_at` | `2024-06-22T09:00:00Z` |
-
-Then confirm the event arrived in Eventhouse:
-
-```kusto
-['Streaming.Viewer.BehaviorDetected']
-| where viewer_id == "viewer-7712"
-| order by ingestion_time() desc
-| take 1
-```
-
-If the row is present and the Activator refresh rule fires, your end-to-end setup is working.
-
-## What happens next
-
-With behavior events flowing, analytics and personalization teams can build independently on the same signal.
+The application shares each interaction as a Business Event. The recommendation response selects watch and like actions, prepares suggestions from the sample catalog and saves the resulting list with its triggering interaction and session.
 
 ```mermaid
-flowchart LR
-    BE([Business Event\n'Streaming.Viewer.BehaviorDetected']) --> ACT[Activator]
-    BE --> EH[(Eventhouse)]
-    ACT --> REC[Recommendation\nrefresh]
-    ACT --> AB[A/B test\nvariant selector]
-    EH --> KQL[Engagement analytics]
-    EH --> ML[Model retraining\nfeature store]
-    EH --> RTD[Real-Time Dashboard\nviewer engagement]
+flowchart TB
+    A["<b>Viewing app</b><br/>Records viewer interactions"]
+    E(["<b>Business Event</b><br/>Viewer interaction"])
+    subgraph VALUE["Improvement: Selected actions lead<br/>to saved recommendation lists"]
+        F["<b>Refresh policy</b><br/>Selects watch<br/>and like actions"]:::businessValue
+        P["<b>Recommendation preparation</b><br/>Ranks catalog candidates"]:::businessValue
+        R[("<b>Saved recommendations</b><br/>Interaction and session context")]:::businessValue
+    end
+    C[("<b>Content catalog</b><br/>Tags and popularity")]
+    A -->|"Share interaction"| E
+    E -->|"Apply refresh policy"| F
+    F -->|"Selected action"| P
+    C -->|"Candidate content"| P
+    P -->|"Save a contextual list"| R
+    classDef businessValue fill:#DFF6DD,stroke:#107C10,color:#000000
+    style VALUE fill:none,stroke:#107C10,stroke-width:1.5px
 ```
 
-| Extension | What it enables |
-|---|---|
-| **Recommendation refresh** | Immediate personalization update triggered by Activator |
-| **A/B test variant selector** | Route viewers to different recommendation algorithms based on behavior |
-| **Engagement analytics** | Query which content and action types drive the most repeat engagement |
-| **Model retraining** | Use the interaction stream as labeled training data for the recommendation model |
-| **Real-Time Dashboard** | Live viewer engagement metrics by hour and content |
+Meaningful actions now lead to a usable next set of suggestions rather than remaining records alone. The product team can change which actions deserve a refresh without embedding recommendation processing in every interaction. Showing those lists and evaluating their effect on discovery or engagement remain separate product responsibilities.
+
+## Event-driven architecture {#architecture}
+
+**Business signal:** `Streaming.Viewer.BehaviorDetected`
+
+**Publisher:** User Data Function | **Consumer(s):** Activator (User Data Function)
+
+```mermaid
+flowchart TB
+    APP["<b>Viewing app</b><br/>Records watches, likes,<br/>clicks, searches and skips"]
+    PUB["<b>Publisher UDF</b><br/>Shares interaction facts"]
+    BE(["<b>Business Event</b><br/>Viewer interaction"])
+    ACT["<b>Activator<br/>(User Data Function)</b><br/>Selects watch<br/>and like actions"]
+    UDF["<b>Response UDF</b><br/>Ranks three<br/>recommendations"]
+    OUT[("<b>Lakehouse Files</b><br/>Recommendation snapshots")]
+    EH[("<b>Eventhouse</b><br/>Interaction history")]
+    APP -->|"Action details"| PUB
+    PUB -->|"Publish"| BE
+    BE -->|"Subscribe"| ACT
+    ACT -->|"Map"| UDF
+    UDF -->|"Persist"| OUT
+    BE -.->|"Analyze in Eventhouse"| EH
+```
+
+1. The publishing User Data Function shares the original interaction details as a Business Event, including actions that will not require a recommendation refresh.
+2. Activator selects watch and like actions. Click, search and skip do not start the response.
+3. The response User Data Function ranks the sample catalog by tag overlap and popularity, then saves a recommendation snapshot in Lakehouse Files with the interaction and session context.
+
+The Workbook checks the saved lists and preserves the session context, including earlier or out-of-order interactions.
+
+Dashed arrows show optional event history and its analysis, separate from the required response. **Analyze in Eventhouse** is a creation-time choice, not a connection enabled by the deployment package or a prerequisite for completing the Workbook.
+
+## Business outcome and boundaries
+
+Turn six viewer interactions into three persisted recommendation snapshots with status `ready_for_serving`. A small synthetic catalog ranks suggestions by tag overlap and then popularity.
+
+**Where the exercise stops:** Click, search and skip create no response execution or recommendation file. This is a transparent sample without a trained model or profile inference. A saved snapshot does not prove that an application displayed it.
+
+## Try the Workbook
+
+The [Workbook](real-time-viewer-recommendations/deployment.md){#deploy-this-scenario} brings preparation, connections, sample inputs, expected results and code reference into one place. Follow that single path to explore the outcome above.
+
+<span id="connect-and-start-the-native-rule"></span>
+<span id="consumer-1-prepare-recommendations-with-activator-user-data-function"></span>
+<span id="consumer-2-analyze-received-interactions-in-eventhouse"></span>
+<span id="prepare-the-catalog-and-response-function"></span>
+<span id="step-1-create-the-business-event"></span>
+<span id="step-2-publisher-user-data-function"></span>
+<span id="step-3-consumers"></span>
+<span id="step-4-end-to-end-test"></span>
+<span id="what-happens-next"></span>

@@ -58,7 +58,7 @@ Each field in the `fields` array has the following properties:
 
 ## Example schema
 
-The following schema defines a `Retail.Sales.VolumeAlert` event with six fields. This JSON represents the schema you define when creating a Business Event in [Real-Time Hub → Business Events](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/create-business-events). During creation, you can paste this directly into the code editor. If you need a new Event Schema Set, you can create one inline as part of the Business Event creation flow, or select an existing one.
+The following schema defines a `Retail.Sales.VolumeAlert` event with six fields. This JSON represents the schema you define when creating a Business Event in [Real-Time Hub → Business Events](https://learn.microsoft.com/fabric/real-time-hub/business-events/create-business-events). During creation, you can paste this directly into the code editor. If you need a new Event Schema Set, you can create one inline as part of the Business Event creation flow, or select an existing one.
 
 ```json
 {
