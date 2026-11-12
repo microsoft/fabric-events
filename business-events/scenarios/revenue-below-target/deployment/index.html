@@ -1,0 +1,3473 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Practical resources for building event-driven solutions with Microsoft Fabric">
+      
+      
+      
+        <link rel="canonical" href="https://microsoft.github.io/fabric-events/business-events/scenarios/revenue-below-target/deployment/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../customer-loyalty-milestone/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Workbook - Fabric Events</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "03c617f3c2ce4e70809697538bd8e52e"}'></script>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#revenue-below-target-workbook" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Fabric Events" class="md-header__button md-logo" aria-label="Fabric Events" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Fabric Events
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Workbook
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/microsoft/fabric-events" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    microsoft/fabric-events
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../home/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../introduction/what-are-business-events/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Business Events
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../fabric-events/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Fabric Events
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../azure-events/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Azure Events
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Fabric Events" class="md-nav__button md-logo" aria-label="Fabric Events" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Fabric Events
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/microsoft/fabric-events" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    microsoft/fabric-events
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../home/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Business Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/what-are-business-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What are Business Events?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/architecture-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/event-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../design-guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/event-driven-architectures/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event-Driven Architectures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/decision-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/structuring-payloads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structuring Payloads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/handling-retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handling Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/schema-versioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Versioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/multi-consumer-fanout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Consumer Fanout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../recipes/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipes
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Recipes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/chain-two-business-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chain Two Business Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/batch-publish-notebook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch Publish from a Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/batch-publish-udf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch Publish from a User Data Function
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenarios
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4" id="__nav_2_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scenarios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../order-history-analysis/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Order History Analysis
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Order History Analysis
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../order-history-analysis/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../sales-volume-alert/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales Volume Alert
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_3" id="__nav_2_4_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sales Volume Alert
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sales-volume-alert/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../low-stock-threshold/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low Stock Threshold
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_4" id="__nav_2_4_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Low Stock Threshold
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../low-stock-threshold/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../real-time-stream-alert/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real-Time Stream Alert
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_5" id="__nav_2_4_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Real-Time Stream Alert
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../real-time-stream-alert/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../discount-approval-routing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discount Approval
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_6" id="__nav_2_4_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Discount Approval
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../discount-approval-routing/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../real-time-viewer-recommendations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real-Time Viewer Recommendations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_7" id="__nav_2_4_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Real-Time Viewer Recommendations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../real-time-viewer-recommendations/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../data-pipeline-failure-follow-up/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Pipeline Failure Follow-up
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_8" id="__nav_2_4_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Pipeline Failure Follow-up
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-pipeline-failure-follow-up/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_9" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Revenue Below Target
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_9" id="__nav_2_4_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Revenue Below Target
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resources-and-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources and coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-configure-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure your environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-deploy-to-fabric" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Deploy to Fabric
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-complete-manual-setup-before-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Complete manual setup before testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Complete manual setup before testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-kql-data-and-real-time-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. KQL data and Real-Time Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-check-the-prepared-event-driven-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Check the prepared event-driven response
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-publisher-rule-check-the-preconfigured-publication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Publisher rule: check the preconfigured publication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-activation-only-after-the-publisher-is-ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Activation: only after the publisher is ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-test-the-flow-from-kql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Test the flow from KQL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Test the flow from KQL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-event-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional event history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../customer-loyalty-milestone/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customer Loyalty Milestone
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_10" id="__nav_2_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Customer Loyalty Milestone
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customer-loyalty-milestone/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../abandoned-cart-recovery/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Abandoned Cart Recovery
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_11" id="__nav_2_4_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Abandoned Cart Recovery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../abandoned-cart-recovery/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_12" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../fraud-response-before-fulfillment/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fraud Response Before Fulfillment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_12" id="__nav_2_4_12_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fraud Response Before Fulfillment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fraud-response-before-fulfillment/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fabric-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fabric Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../azure-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Azure Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resources-and-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources and coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-configure-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure your environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-deploy-to-fabric" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Deploy to Fabric
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-complete-manual-setup-before-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Complete manual setup before testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Complete manual setup before testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-kql-data-and-real-time-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. KQL data and Real-Time Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-check-the-prepared-event-driven-response" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Check the prepared event-driven response
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-publisher-rule-check-the-preconfigured-publication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Publisher rule: check the preconfigured publication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-activation-only-after-the-publisher-is-ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Activation: only after the publisher is ready
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-test-the-flow-from-kql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Test the flow from KQL
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Test the flow from KQL">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-event-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional event history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+
+                  
+
+
+  
+  
+
+
+<h1 id="revenue-below-target-workbook">Revenue Below Target: Workbook</h1>
+<p><a href="../">Business context and architecture</a> | <a href="../../../../assets/downloads/revenue-below-target-cicd.zip">Download package</a></p>
+<p>Help the revenue team investigate when a region falls more than 15% below target. Prepare the monitoring view and an investigation response, then check when a new investigation is needed and when an existing shortfall should not generate another one. Create the Real-Time Dashboard, review the preconfigured publisher and activate it before testing; the <a href="../">Business context</a> holds the canonical architecture.</p>
+<p><span id="deployment-architecture"></span>
+<span id="revenue-below-target-deployment-guide"></span></p>
+<h2 id="resources-and-coverage">Resources and coverage</h2>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Default item names</th>
+<th>What the package prepares</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Business Event and Event Schema Set</td>
+<td><code>RevenueSchema</code>, event <code>Sales.Revenue.BelowTarget</code></td>
+<td>Public preview; creates the six-field v1 schema and delegated Publish/Consume permissions</td>
+</tr>
+<tr>
+<td>Source Eventhouse and KQL database</td>
+<td><code>RevenueData</code>, <code>RevenueSource</code></td>
+<td>Creates the source infrastructure and typed <code>RevenuePerformance</code> snapshot table; source inputs are entered manually</td>
+</tr>
+<tr>
+<td>KQL Queryset</td>
+<td><code>RevenueQueries</code></td>
+<td>Creates Revenue observations and Current revenue tabs over the same source query</td>
+</tr>
+<tr>
+<td>Real-Time Dashboard</td>
+<td><code>RevenueMonitor</code></td>
+<td>Create manually with Pin to dashboard from Current revenue; not created by the package</td>
+</tr>
+<tr>
+<td>Activator (Business Event publication)</td>
+<td><code>RevenuePublisher</code></td>
+<td>Prepares the region-period monitoring rule and six event fields; review and start the rule manually</td>
+</tr>
+<tr>
+<td>Activator (Data Pipeline)</td>
+<td><code>RevenueActions</code>, rule <code>Prepare revenue investigation</code></td>
+<td>Starts the investigation pipeline whenever a new below-target event arrives</td>
+</tr>
+<tr>
+<td>Data Pipeline and Notebook</td>
+<td><code>RevenueInvestigation</code>, <code>RevenueInvestigationNotebook</code></td>
+<td>Passes the six event fields and pipeline run ID to prepare the analysis</td>
+</tr>
+<tr>
+<td>Investigation Lakehouse</td>
+<td><code>RevenueInvestigations</code></td>
+<td>Creates <code>Files/RevenueInvestigations</code> to hold saved analyses ready for review</td>
+</tr>
+<tr>
+<td>Optional Business Event history in Eventhouse</td>
+<td>Not configured by this package</td>
+<td>Independent enrichment; the required source Eventhouse is not Business Event history</td>
+</tr>
+</tbody>
+</table>
+<h2 id="before-you-start">Before you start</h2>
+<p>Use <strong>Python 3.10+</strong>, <strong>Azure CLI</strong> and <strong>PowerShell on Windows</strong>, an active supported Fabric capacity and item-creation permission.</p>
+<h2 id="1-configure-your-environment">1. Configure your environment</h2>
+<p>Download <strong><code>revenue-below-target-cicd.zip</code></strong> or the <a href="https://github.com/microsoft/fabric-events/archive/refs/heads/main.zip">repository ZIP</a>, extract it, and open its <code>cicd\revenue-below-target</code> folder.</p>
+<p>Replace the three placeholders below:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Set-Location</span> <span class="s1">'&lt;extracted-folder&gt;\cicd\revenue-below-target'</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nv">$tenantId</span> <span class="p">=</span> <span class="s1">'&lt;your-tenant-uuid&gt;'</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nv">$workspaceId</span> <span class="p">=</span> <span class="s1">'&lt;your-workspace-uuid&gt;'</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">az</span> <span class="n">login</span> <span class="p">-</span><span class="n">-tenant</span> <span class="nv">$tenantId</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">python</span> <span class="p">.\</span><span class="n">deploy</span><span class="p">.</span><span class="n">py</span> <span class="n">configure</span> <span class="p">-</span><span class="n">-tenant-id</span> <span class="nv">$tenantId</span> <span class="p">-</span><span class="n">-workspace-id</span> <span class="nv">$workspaceId</span> <span class="p">-</span><span class="n">-auth-provider</span> <span class="n">azure_cli</span> <span class="p">-</span><span class="n">-output</span> <span class="p">.\</span><span class="n">config</span><span class="p">.</span><span class="n">local</span><span class="p">.</span><span class="n">json</span>
+</code></pre></div>
+<p>Review the tenant, workspace and unused resource names in <code>config.local.json</code>. <strong><code>accept_preview_apis</code> defaults to <code>true</code></strong>; set it to <code>false</code> to block cloud operations if you do not accept preview APIs.</p>
+<p>The package creates nine items; you create the Dashboard in Step 3 using the tenth configured name. Choose unused names so this exercise stays separate from earlier deployments. Its business outcome is a saved investigation rather than a Teams notification.</p>
+<h2 id="2-deploy-to-fabric">2. Deploy to Fabric</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">.\</span><span class="n">deploy</span><span class="p">.</span><span class="n">bat</span> <span class="p">-</span><span class="n">-config</span> <span class="p">.\</span><span class="n">config</span><span class="p">.</span><span class="n">local</span><span class="p">.</span><span class="n">json</span> <span class="p">-</span><span class="n">-confirm-workspace</span> <span class="nv">$workspaceId</span>
+</code></pre></div>
+<p>After deployment, confirm that the nine Fabric items in the table appear in your workspace. The investigation consumer is enabled, while the revenue publisher remains stopped. <strong>Continue with section 3</strong> to create the Dashboard, review the prepared response and activate the publisher before testing. Deployment does not submit revenue snapshots, publish events or run the pipeline.</p>
+<h2 id="3-complete-manual-setup-before-testing">3. Complete manual setup before testing</h2>
+<p>Use your deployed item names if you changed the defaults.</p>
+<p>In step 3.1, enter <code>region</code>, <code>period_start</code>, <code>revenue</code> and <code>target</code>. The source command timestamps the snapshot with <code>observed_at</code>; the query calculates <code>variance_pct</code> and formats <code>detected_at</code>. You do not enter those two calculated event values yourself.</p>
+<h3 id="31-kql-data-and-real-time-dashboard">3.1. KQL data and Real-Time Dashboard</h3>
+<ol>
+<li>Open <a href="https://app.fabric.microsoft.com">Microsoft Fabric</a>.</li>
+<li>In the left navigation, select <strong>Workspaces</strong>, then open the workspace used in your configuration.</li>
+<li>Open <strong>RevenueQueries</strong>, of type <strong>KQL Queryset</strong>. Confirm that its data source is <strong>RevenueSource</strong>, the KQL database in <strong>RevenueData</strong>.</li>
+<li>
+<p>In a new query tab, paste and run the command from <code>sample-input.kql</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.</span><span class="n">set</span><span class="p">-</span><span class="k">or</span><span class="p">-</span><span class="n">append</span><span class="w"> </span><span class="n">RevenuePerformance</span><span class="w"> </span><span class="p">&lt;|</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">print</span><span class="w"> </span><span class="n">region</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'West'</span><span class="p">,</span><span class="w"> </span><span class="n">period_start</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'2026-11-01'</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">90000.0</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">100000.0</span><span class="p">,</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+</code></pre></div>
+</li>
+<li>
+<p>Run <strong>Revenue observations</strong>. Confirm the six event fields, real <code>observed_at</code>, stable <strong>Composite key</strong> and baseline variance <code>-10</code>, not <code>-0.10</code>. Zero and negative targets produce null variance. This query returns all source states, not only findings.</p>
+</li>
+<li>Run <strong>Current revenue</strong>. It uses the same calculation and selects the most recent snapshot per region and reporting period.</li>
+<li>Select <strong>Pin to dashboard</strong>, choose <strong>In a new dashboard</strong>, enter <strong>RevenueMonitor</strong> and tile name <strong>Current revenue by region</strong>, then select <strong>Create</strong>.</li>
+<li>
+<p>Open <strong>RevenueMonitor</strong> and confirm its baseline values. Enable refresh as appropriate. Its refresh setting controls the operational view, not Activator evaluation.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Expected value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>region</code></td>
+<td><code>West</code></td>
+</tr>
+<tr>
+<td><code>period_start</code></td>
+<td><code>2026-11-01</code></td>
+</tr>
+<tr>
+<td><code>revenue</code></td>
+<td><code>90000</code></td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code>100000</code></td>
+</tr>
+<tr>
+<td><code>variance_pct</code></td>
+<td><code>-10.00</code>, not <code>-0.10</code></td>
+</tr>
+<tr>
+<td><code>detected_at</code></td>
+<td>A UTC snapshot string, for example <code>20261108T185300Z</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ol>
+<p>See <a href="https://learn.microsoft.com/fabric/real-time-intelligence/tutorial-5-create-dashboard">creating a Real-Time Dashboard from a Queryset</a>. The publisher monitors <strong>Revenue observations</strong>, not the current-state Dashboard query: collapsing the source to its most recent row can hide intermediate threshold states.</p>
+<h3 id="32-check-the-prepared-event-driven-response">3.2. Check the prepared event-driven response</h3>
+<ol>
+<li>Return to your workspace and open <strong>RevenueInvestigations</strong>, of type <strong>Lakehouse</strong>.</li>
+<li>Under <strong>Files</strong>, open <strong>RevenueInvestigations</strong>. This folder is empty before the first real event-driven investigation.</li>
+<li>Return to the workspace and open <strong>RevenueInvestigation</strong>, of type <strong>Data pipeline</strong>. Its notebook activity targets <strong>RevenueInvestigationNotebook</strong>.</li>
+<li>Select that activity and inspect its <strong>Settings</strong> and base parameters. The six event fields come from corresponding pipeline parameters; <code>pipeline_run_id</code> comes from <code>@pipeline().RunId</code>, not a supplied event field or a static value.</li>
+<li>Open <strong>RevenueActions</strong>, of type <strong>Activator</strong>, and inspect <strong>Prepare revenue investigation</strong>. It uses <strong>On each value</strong>, with a <strong>Data Pipeline</strong> action targeting <strong>RevenueInvestigation</strong> and dynamic mappings for all six original event fields.</li>
+</ol>
+<p>The response is connected for you. Check its settings without starting the pipeline: a below-target event will start it during the exercise. The analysis uses the event's revenue figures directly, without needing Business Event history.</p>
+<h3 id="33-publisher-rule-check-the-preconfigured-publication">3.3. Publisher rule: check the preconfigured publication</h3>
+<p><code>RevenuePublisher</code> contains the native KQL connection, the <strong>Revenue reporting period</strong> object and the stopped <strong>Revenue below target</strong> rule. The deployment has already configured its condition, Business Event destination and six dynamic mappings. Do not create another alert from the Queryset or Dashboard when using this package.</p>
+<ol>
+<li>Return to the workspace and open the existing <strong>RevenuePublisher</strong> item, of type <strong>Activator</strong>, not <code>RevenueActions</code>.</li>
+<li>Switch Activator to <strong>Edit</strong>. Keep the baseline from section 3.1: revenue <code>90000</code>, target <code>100000</code>, variance <code>-10</code>.</li>
+<li>
+<p>In the left <strong>Explorer</strong>, expand <strong>Revenue native source contract → Revenue reporting period</strong> and select <strong>Revenue below target</strong>, identified by a lightning-bolt icon.</p>
+<p>Select the rule, not <strong>Revenue native source event</strong>, <strong>Revenue period observations</strong> or the <code>variance_pct</code> property. Selecting a source event shows <strong>Live feed</strong>, not the rule editor. Selecting the rule opens its <strong>Definition</strong> pane and rule controls.</p>
+</li>
+<li>
+<p>Confirm that the rule is stopped: <strong>Start</strong> is enabled and <strong>Stop</strong> is disabled. If it is running, select <strong>Stop</strong> before continuing.</p>
+</li>
+<li>In <strong>Definition</strong>, check <strong>Attribute: variance_pct</strong>, <strong>Condition: Decreases below</strong> and <strong>Value: <code>-15</code></strong>, not <code>-0.15</code>. Some editor layouts label the same crossing condition <strong>Becomes → Less than → <code>-15</code></strong>. <strong>Occurrence</strong> is <strong>Every time the condition is met</strong>.</li>
+<li>In <strong>Definition → Action</strong>, confirm <strong>Publish a business event</strong>, with <code>Sales.Revenue.BelowTarget</code> in <code>RevenueSchema</code>.</li>
+<li>
+<p>Select <strong>View action</strong> to open <strong>Edit the action</strong>. If the button is labeled <strong>Edit action</strong>, select that instead. Inspect the six preconfigured dynamic mappings without replacing them:</p>
+<table>
+<thead>
+<tr>
+<th>Event field</th>
+<th>Source value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>region</code></td>
+<td><code>region</code></td>
+</tr>
+<tr>
+<td><code>period_start</code></td>
+<td><code>period_start</code></td>
+</tr>
+<tr>
+<td><code>revenue</code></td>
+<td><code>revenue</code></td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code>target</code></td>
+</tr>
+<tr>
+<td><code>variance_pct</code></td>
+<td><code>variance_pct</code></td>
+</tr>
+<tr>
+<td><code>detected_at</code></td>
+<td><code>detected_at</code></td>
+</tr>
+</tbody>
+</table>
+<p>Do not use fixed sample values or parse the combined <strong>Composite key</strong> to fill the event.</p>
+</li>
+<li>
+<p>Close the action editor without changing the mappings, using its top-right <strong>Close (X)</strong> button, not <strong>Apply</strong>. Leave the publication rule stopped until section 3.4.</p>
+</li>
+</ol>
+<p>See <a href="https://learn.microsoft.com/fabric/real-time-intelligence/data-activator/activator-create-activators">creating Activator rules and properties</a> and <a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/business-events-activator">Activator Business Event publishing</a>.</p>
+<p><strong>Keep the reporting period consistent.</strong> The <strong>Composite key</strong> identifies the region and reporting period as a two-value array; changing revenue must not create a new monitored period. While the rule is stopped, open <strong>Revenue period observations</strong> and append a fresh baseline. Check that the key contains <code>West</code> and <code>2026-11-01</code>, without amounts or timestamps, and that all six observed properties match section 3.1. Use these observations to check received data; <strong>Live feed</strong> shows only arrivals after it was opened.</p>
+<h3 id="34-activation-only-after-the-publisher-is-ready">3.4. Activation: only after the publisher is ready</h3>
+<ol>
+<li>Check the publication rule, six field mappings and region-period key before starting the monitor.</li>
+<li>Open the publication rule in <strong>RevenuePublisher</strong> and select <strong>Start</strong>.</li>
+<li>Append a fresh <code>90000/100000</code> snapshot. Wait until <strong>Revenue period observations</strong> shows the new timestamp and <code>-10</code> baseline before continuing.</li>
+</ol>
+<p><code>RevenueActions</code> is already enabled and bound to <code>RevenueInvestigation</code>. Do not start the pipeline manually.</p>
+<h2 id="4-test-the-flow-from-kql">4. Test the flow from KQL</h2>
+<p><strong>Start with the monitor ready and the region-period key checked.</strong> The exercise follows one reporting period as revenue falls below target, recovers and falls again.</p>
+<ol>
+<li>With <strong>RevenuePublisher</strong> running, check that <strong>Revenue period observations</strong> shows revenue <code>90000</code>, target <code>100000</code> and variance <code>-10</code>.</li>
+<li>Return to <strong>RevenueQueries</strong> and run the snapshot command from section 3.1 for each state below, editing only <code>revenue</code>. Keep target <code>100000</code>, region <code>West</code> and period <code>2026-11-01</code>.</li>
+<li>Add each snapshot separately with <code>observed_at = now()</code>. <strong>Wait until Activator shows that state before moving to the next row.</strong> Keep all snapshots and the unfiltered monitoring query so recovery and repeated shortfalls can be distinguished. A Dashboard refresh or waiting a fixed time is not a substitute for checking Activator.</li>
+</ol>
+<p>Follow this sequence in order:</p>
+<table>
+<thead>
+<tr>
+<th>Source state</th>
+<th>Revenue</th>
+<th>Variance</th>
+<th>Expected new Business Event / pipeline execution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baseline</td>
+<td><code>90000</code></td>
+<td><code>-10</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>Exact boundary</td>
+<td><code>85000</code></td>
+<td><code>-15</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>First crossing below</td>
+<td><code>80000</code></td>
+<td><code>-20</code></td>
+<td>One</td>
+</tr>
+<tr>
+<td>Remaining below</td>
+<td><code>78000</code></td>
+<td><code>-22</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>Recovery above</td>
+<td><code>90000</code></td>
+<td><code>-10</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>Second crossing below</td>
+<td><code>80000</code></td>
+<td><code>-20</code></td>
+<td>One</td>
+</tr>
+</tbody>
+</table>
+<p>Each crossing should publish <code>Sales.Revenue.BelowTarget</code> and automatically prepare an investigation. Allow time for monitoring, delivery and Spark startup. Leave the pipeline to start from the event rather than running it manually.</p>
+<h3 id="evaluation-criteria">Evaluation criteria</h3>
+<p>For each crossing, check the investigation before continuing, using the checks below:</p>
+<ul>
+<li>Only the two crossings below <code>-15</code> should create events and start the pipeline. The exact boundary and a further decline while already below target should not create another investigation.</li>
+<li>Open <strong>RevenueInvestigations → Files → RevenueInvestigations</strong>. Expect two new JSON analyses with status <code>ready_for_review</code>, each linked by <code>pipeline_run_id</code> to its completed pipeline run. Check the six event values and UTC <code>investigated_at</code>. For <code>80000/100000</code>, the analysis should show variance <code>-20%</code>, shortfall <code>20000</code> and required lift <code>25%</code>.</li>
+<li>Each analysis describes the revenue position that triggered it. A retry within the same pipeline run keeps the existing file; a separate pipeline run has its own file, so count incidents by the source events as well as saved files.</li>
+<li>Finally, try zero and negative targets. Expect KQL null variance and no event or pipeline response during two observed active source polls. These are invalid targets, not revenue shortfalls requiring investigation.</li>
+</ul>
+<p>The outcome is analysis ready for the revenue team's review. It is not an approved recovery plan or evidence that revenue has recovered.</p>
+<h2 id="optional-event-history">Optional event history</h2>
+<p>The dashed branch in the business architecture is an extension, not another completion requirement. Choose <strong>Analyze in Eventhouse</strong> and its destination <strong>during Business Event creation</strong> if you are configuring an event natively with managed history. The package does not configure this association. Skip these queries for its deployed event; this Workbook does not provide a supported post-creation association procedure.</p>
+<p>A source Eventhouse, a same-name table or a direct table write is not a managed Business Event subscription. History records received findings, not completed actions. Received-record counts can include repeated publications or deliveries and do not describe the full source population.</p>
+<p>The following queries apply only to that creation-time history destination. Check delivered notifications or saved business outcomes separately. Keep currencies separate when comparing amounts.</p>
+<details class="info">
+<summary>History queries</summary>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">[</span><span class="s">'Sales.Revenue.BelowTarget'</span><span class="p">]</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">|</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">ingestion_time</span><span class="p">()</span><span class="w"> </span><span class="n">desc</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="p">|</span><span class="w"> </span><span class="k">take</span><span class="w"> </span><span class="mi">50</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">[</span><span class="s">'Sales.Revenue.BelowTarget'</span><span class="p">]</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="p">|</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">ingestion_time</span><span class="p">()</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="n">ago</span><span class="p">(</span><span class="mi">30</span><span class="n">d</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">|</span><span class="w"> </span><span class="k">summarize</span><span class="w"> </span><span class="n">ReceivedFindings</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">count</span><span class="p">(),</span><span class="w"> </span><span class="n">WorstVariancePct</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">min</span><span class="p">(</span><span class="n">variance_pct</span><span class="p">)</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">by</span><span class="w"> </span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">period_start</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">|</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">ReceivedFindings</span><span class="w"> </span><span class="n">desc</span><span class="p">,</span><span class="w"> </span><span class="n">WorstVariancePct</span><span class="w"> </span><span class="n">asc</span>
+</code></pre></div>
+</details>
+<p>See <a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/business-events-eventhouse">Business Events and Eventhouse</a>.</p>
+<h2 id="implementation-reference">Implementation reference</h2>
+<p>Expand the details you need to understand or adapt the solution. This is reference, not a second setup tutorial. The package's default schema-set name is <code>RevenueSchema</code>. Standalone examples may use the original illustrative alias; match the connection alias to your configured schema set before reusing code. Event names and payload fields remain unchanged.</p>
+<details class="info">
+<summary>Event contract</summary>
+<p>The shared event fields are unchanged. The package prepares this contract; inspect it rather than creating a second event.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"record"</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sales.Revenue.BelowTarget"</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"region"</span><span class="p">,</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">      </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sales region whose revenue is below target"</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"period_start"</span><span class="p">,</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">      </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Start of the reporting period in ISO 8601 format"</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"revenue"</span><span class="p">,</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"double"</span><span class="p">,</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">      </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Revenue for the reporting period in the source currency"</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"target"</span><span class="p">,</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"double"</span><span class="p">,</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">      </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Positive revenue target for the same reporting period and currency"</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"variance_pct"</span><span class="p">,</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"double"</span><span class="p">,</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">      </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100 * (revenue - target) / target; negative values mean below target"</span>
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"detected_at"</span><span class="p">,</span>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span>
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="w">      </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UTC revenue snapshot from observed_at, ISO 8601 basic format yyyyMMddTHHmmssZ; not Activator ingestion time"</span>
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="p">}</span>
+</code></pre></div>
+</details>
+<details class="info">
+<summary>Source and publisher reference</summary>
+<p>These snippets explain the source and publication logic. Use the prepared publisher for the main exercise; standalone examples are not an additional source run.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">.</span><span class="n">create</span><span class="p">-</span><span class="n">merge</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="n">RevenuePerformance</span><span class="w"> </span><span class="p">(</span><span class="n">region</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">period_start</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">:</span><span class="k">real</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">:</span><span class="k">real</span><span class="p">,</span><span class="w"> </span><span class="n">observed_at</span><span class="p">:</span><span class="k">datetime</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">declare</span><span class="w"> </span><span class="n">query_parameters</span><span class="p">(</span><span class="n">startTime</span><span class="p">:</span><span class="k">datetime</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">-</span><span class="mi">01</span><span class="p">-</span><span class="mi">01</span><span class="p">),</span><span class="w"> </span><span class="n">endTime</span><span class="p">:</span><span class="k">datetime</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">datetime</span><span class="p">(</span><span class="mi">9999</span><span class="p">-</span><span class="mi">12</span><span class="p">-</span><span class="mi">31</span><span class="p">));</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">RevenuePerformance</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="p">|</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="n">startTime</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="p">&lt;=</span><span class="w"> </span><span class="n">endTime</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">|</span><span class="w"> </span><span class="k">extend</span><span class="w"> </span><span class="n">variance_pct</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">iff</span><span class="p">(</span><span class="n">target</span><span class="w"> </span><span class="p">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="p">*</span><span class="w"> </span><span class="p">(</span><span class="n">revenue</span><span class="w"> </span><span class="p">-</span><span class="w"> </span><span class="n">target</span><span class="p">)</span><span class="w"> </span><span class="p">/</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="k">real</span><span class="p">(</span><span class="n">null</span><span class="p">))</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">|</span><span class="w"> </span><span class="k">extend</span><span class="w"> </span><span class="n">detected_at</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="n">format_datetime</span><span class="p">(</span><span class="n">observed_at</span><span class="p">,</span><span class="w"> </span><span class="s">'yyyyMMdd'</span><span class="p">),</span><span class="w"> </span><span class="s">'T'</span><span class="p">,</span><span class="w"> </span><span class="n">format_datetime</span><span class="p">(</span><span class="n">observed_at</span><span class="p">,</span><span class="w"> </span><span class="s">'HHmmss'</span><span class="p">),</span><span class="w"> </span><span class="s">'Z'</span><span class="p">)</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">|</span><span class="w"> </span><span class="k">project</span><span class="w"> </span><span class="n">observed_at</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="s">'Composite key'</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">tostring</span><span class="p">(</span><span class="n">pack_array</span><span class="p">(</span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">period_start</span><span class="p">)),</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">period_start</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="n">variance_pct</span><span class="p">,</span><span class="w"> </span><span class="n">detected_at</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">|</span><span class="w"> </span><span class="k">sort</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="n">asc</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">|</span><span class="w"> </span><span class="k">summarize</span><span class="w"> </span><span class="n">arg_max</span><span class="p">(</span><span class="n">observed_at</span><span class="p">,</span><span class="w"> </span><span class="p">*)</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">period_start</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="p">|</span><span class="w"> </span><span class="k">project</span><span class="w"> </span><span class="n">region</span><span class="p">,</span><span class="w"> </span><span class="n">period_start</span><span class="p">,</span><span class="w"> </span><span class="n">revenue</span><span class="p">,</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"> </span><span class="n">variance_pct</span><span class="p">,</span><span class="w"> </span><span class="n">detected_at</span>
+</code></pre></div>
+</details>
+<details class="info">
+<summary>Response and mapping reference</summary>
+<p>Use these field and response details to understand the prepared resources. Complete only the connections identified in the main steps.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Pipeline type</th>
+<th>Notebook type</th>
+<th>Value in the notebook activity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>region</code></td>
+<td>String</td>
+<td>string</td>
+<td><code>@pipeline().parameters.region</code></td>
+</tr>
+<tr>
+<td><code>period_start</code></td>
+<td>String</td>
+<td>string</td>
+<td><code>@pipeline().parameters.period_start</code></td>
+</tr>
+<tr>
+<td><code>revenue</code></td>
+<td>Float</td>
+<td>float</td>
+<td><code>@pipeline().parameters.revenue</code></td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td>Float</td>
+<td>float</td>
+<td><code>@pipeline().parameters.target</code></td>
+</tr>
+<tr>
+<td><code>variance_pct</code></td>
+<td>Float</td>
+<td>float</td>
+<td><code>@pipeline().parameters.variance_pct</code></td>
+</tr>
+<tr>
+<td><code>detected_at</code></td>
+<td>String</td>
+<td>string</td>
+<td><code>@pipeline().parameters.detected_at</code></td>
+</tr>
+<tr>
+<td><code>pipeline_run_id</code></td>
+<td>Not an event input</td>
+<td>string</td>
+<td><code>@pipeline().RunId</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th>Calculation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shortfall</code></td>
+<td><code>target - revenue</code></td>
+<td>Revenue needed to reach the target, in the source currency</td>
+</tr>
+<tr>
+<td><code>revenue_lift_pct</code></td>
+<td><code>100 * (target - revenue) / revenue</code> when <code>revenue &gt; 0</code>; otherwise null</td>
+<td>Growth from current revenue needed to reach the target, not the original variance percentage</td>
+</tr>
+</tbody>
+</table>
+</details>
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/create-business-events">Real-Time Hub, Business Events, Create</a></li>
+</ul>
+<p><span id="architecture"></span>
+<span id="business-context"></span>
+<span id="configure-the-publisher"></span>
+<span id="consumer-1-prepare-investigation-analysis"></span>
+<span id="deploy-this-scenario"></span>
+<span id="optional-consumer-analyze-shortfalls-in-eventhouse"></span>
+<span id="prepare-the-source-and-dashboard"></span>
+<span id="revenue-below-target"></span>
+<span id="shared-resource-names"></span>
+<span id="step-1-create-the-business-event"></span>
+<span id="step-2-publisher-activator-on-a-kql-query"></span>
+<span id="step-3-consumers-activator-data-pipeline-and-optional-eventhouse"></span>
+<span id="step-4-end-to-end-test"></span>
+<span id="what-happens-next"></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+<section class="community-invitation" aria-labelledby="community-invitation-title">
+  <h2 id="community-invitation-title">What are you building?</h2>
+  <p>Ask a question, share your scenario, or help shape the next developer guide.</p>
+  <a class="md-button md-button--primary" href="https://www.reddit.com/r/MicrosoftFabric/search/?q=flair%3A%22Real-Time+Intelligence%22+%28%5BBusiness+Events%5D+OR+%5BFabric+Events%5D+OR+%5BAzure+Events%5D%29&restrict_sr=1&sort=new" target="_blank" rel="noopener noreferrer">Join the conversation on Reddit &rarr;</a>
+</section>
+
+<!-- Ask in our community floating button -->
+<div style="
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+">
+  <button onclick="document.getElementById('reddit-modal').style.display='flex'" style="
+    background: #FF4500;
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.75rem 1.25rem;
+    font-size: var(--site-text-size);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: Inter, sans-serif;
+  ">
+    💬 Ask in our community
+  </button>
+</div>
+
+<!-- Reddit modal -->
+<div id="reddit-modal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+">
+  <div style="
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 680px;
+    margin: 1rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    font-family: Inter, sans-serif;
+  ">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <h3 style="margin:0; font-size:calc(1.25rem - 1px); color:#111827;">Ask in our community</h3>
+      <button onclick="document.getElementById('reddit-modal').style.display='none'" style="
+        background:none; border:none; cursor:pointer; font-size:var(--site-text-size); color:#6B7280; line-height:1;
+      ">✕</button>
+    </div>
+
+    <p style="font-size:var(--site-text-size); color:#6B7280; margin:0 0 1.25rem 0;">
+      Join developers discussing Microsoft Fabric on Reddit.<br>Not a member yet? <a href="https://www.reddit.com/r/MicrosoftFabric/" target="_blank" style="color:#FF4500; text-decoration:none;">Join r/MicrosoftFabric</a>.
+    </p>
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Topic
+    </label>
+    <select id="reddit-pillar" style="
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.625rem 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      background: white;
+      margin-bottom: 1.25rem;
+      box-sizing: border-box;
+      outline: none;
+    ">
+      <option value="Business Events">Business Events</option>
+      <option value="Fabric Events">Fabric Events</option>
+      <option value="Azure Events">Azure Events</option>
+    </select>
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Title
+    </label>
+    <input id="reddit-title" type="text" placeholder="Brief summary of your question" style="
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.625rem 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      margin-bottom: 1.25rem;
+      box-sizing: border-box;
+      outline: none;
+    ">
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Question
+    </label>
+    <textarea id="reddit-question" placeholder="What would you like to ask?" style="
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      resize: vertical;
+      box-sizing: border-box;
+      outline: none;
+      line-height: 1.5;
+    "></textarea>
+
+    <div style="display:flex; gap:0.75rem; margin-top:1rem; justify-content:flex-end;">
+      <button onclick="document.getElementById('reddit-modal').style.display='none'" style="
+        background:none; border:1px solid #D1D5DB; border-radius:0.5rem;
+        padding:0.5rem 1rem; font-size:var(--site-text-size); cursor:pointer; color:#374151;
+        font-family: Inter, sans-serif;
+      ">Cancel</button>
+      <button onclick="openRedditPost()" style="
+        background:#FF4500; color:white; border:none; border-radius:0.5rem;
+        padding:0.5rem 1rem; font-size:var(--site-text-size); font-weight:600; cursor:pointer;
+        font-family: Inter, sans-serif;
+      ">Post on Reddit →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openRedditPost() {
+  var title = document.getElementById('reddit-title').value.trim();
+  var question = document.getElementById('reddit-question').value.trim();
+  if (!title) { document.getElementById('reddit-title').focus(); return; }
+  if (!question) { document.getElementById('reddit-question').focus(); return; }
+
+  var pillar = document.getElementById('reddit-pillar').value;
+  var fullTitle = '[' + pillar + '] ' + title;
+  var bodyText = question + '\n\n// Asked from the Fabric Events developer site: https://microsoft.github.io/fabric-events';
+
+  var url = 'https://www.reddit.com/r/MicrosoftFabric/submit?flair_id=ecd6bad8-fb22-11ed-bcbb-8e4e63079c0e&title=' + encodeURIComponent(fullTitle) + '&text=' + encodeURIComponent(bodyText);
+  window.open(url, '_blank');
+  document.getElementById('reddit-modal').style.display = 'none';
+  document.getElementById('reddit-title').value = '';
+  document.getElementById('reddit-question').value = '';
+  document.getElementById('reddit-pillar').value = 'Business Events';
+}
+
+document.getElementById('reddit-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+</script>
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Built with <span class="heart">&#10084;</span> by the Fabric Events team
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/microsoft/fabric-events/discussions" target="_blank" rel="noopener" title="Join the discussion on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes", "navigation.top", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate"], "search": "../../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../../../../javascripts/scenario-diagrams.js" type="module"></script>
+      
+    
+  </body>
+</html>

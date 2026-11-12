@@ -1,0 +1,3399 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Practical resources for building event-driven solutions with Microsoft Fabric">
+      
+      
+      
+        <link rel="canonical" href="https://microsoft.github.io/fabric-events/business-events/scenarios/customer-loyalty-milestone/deployment/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../abandoned-cart-recovery/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Workbook - Fabric Events</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "03c617f3c2ce4e70809697538bd8e52e"}'></script>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#customer-loyalty-milestone-workbook" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Fabric Events" class="md-header__button md-logo" aria-label="Fabric Events" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Fabric Events
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Workbook
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/microsoft/fabric-events" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    microsoft/fabric-events
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../home/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../introduction/what-are-business-events/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Business Events
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../fabric-events/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Fabric Events
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../azure-events/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Azure Events
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Fabric Events" class="md-nav__button md-logo" aria-label="Fabric Events" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Fabric Events
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/microsoft/fabric-events" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    microsoft/fabric-events
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../home/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Business Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/what-are-business-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What are Business Events?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/architecture-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/event-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../design-guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/event-driven-architectures/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event-Driven Architectures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/decision-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/structuring-payloads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structuring Payloads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/handling-retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handling Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/schema-versioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Versioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/multi-consumer-fanout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Consumer Fanout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../recipes/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipes
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Recipes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/chain-two-business-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chain Two Business Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/batch-publish-notebook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch Publish from a Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/batch-publish-udf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch Publish from a User Data Function
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenarios
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4" id="__nav_2_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scenarios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../order-history-analysis/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Order History Analysis
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Order History Analysis
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../order-history-analysis/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../sales-volume-alert/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales Volume Alert
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_3" id="__nav_2_4_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sales Volume Alert
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sales-volume-alert/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../low-stock-threshold/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low Stock Threshold
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_4" id="__nav_2_4_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Low Stock Threshold
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../low-stock-threshold/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../real-time-stream-alert/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real-Time Stream Alert
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_5" id="__nav_2_4_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Real-Time Stream Alert
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../real-time-stream-alert/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../discount-approval-routing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discount Approval
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_6" id="__nav_2_4_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Discount Approval
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../discount-approval-routing/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../real-time-viewer-recommendations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real-Time Viewer Recommendations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_7" id="__nav_2_4_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Real-Time Viewer Recommendations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../real-time-viewer-recommendations/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../data-pipeline-failure-follow-up/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Pipeline Failure Follow-up
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_8" id="__nav_2_4_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Pipeline Failure Follow-up
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-pipeline-failure-follow-up/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../revenue-below-target/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Revenue Below Target
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_9" id="__nav_2_4_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Revenue Below Target
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../revenue-below-target/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_10" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customer Loyalty Milestone
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_10" id="__nav_2_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Customer Loyalty Milestone
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resources-and-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources and coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-configure-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure your environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-deploy-to-fabric" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Deploy to Fabric
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-connect-the-milestone-to-campaign-preparation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Connect the milestone to campaign preparation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Connect the milestone to campaign preparation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-make-the-campaign-catalog-available" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Make the campaign catalog available
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-create-the-milestone-publisher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Create the milestone publisher
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-add-campaign-enrichment-and-delta-destinations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Add campaign enrichment and Delta destinations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-run-the-balances-and-inspect-campaign-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Run the balances and inspect campaign results
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Run the balances and inspect campaign results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#establish-the-starting-balances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Establish the starting balances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#introduce-the-new-balances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduce the new balances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confirm-that-continued-spending-is-not-another-crossing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confirm that continued spending is not another crossing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../abandoned-cart-recovery/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Abandoned Cart Recovery
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_11" id="__nav_2_4_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Abandoned Cart Recovery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../abandoned-cart-recovery/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_12" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../fraud-response-before-fulfillment/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fraud Response Before Fulfillment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_12" id="__nav_2_4_12_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fraud Response Before Fulfillment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fraud-response-before-fulfillment/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fabric-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fabric Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../azure-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Azure Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resources-and-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources and coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-configure-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure your environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-deploy-to-fabric" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Deploy to Fabric
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-connect-the-milestone-to-campaign-preparation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Connect the milestone to campaign preparation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Connect the milestone to campaign preparation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-make-the-campaign-catalog-available" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Make the campaign catalog available
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-create-the-milestone-publisher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Create the milestone publisher
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-add-campaign-enrichment-and-delta-destinations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Add campaign enrichment and Delta destinations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-run-the-balances-and-inspect-campaign-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Run the balances and inspect campaign results
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Run the balances and inspect campaign results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#establish-the-starting-balances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Establish the starting balances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#introduce-the-new-balances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduce the new balances
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confirm-that-continued-spending-is-not-another-crossing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confirm that continued spending is not another crossing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+
+                  
+
+
+  
+  
+
+
+<h1 id="customer-loyalty-milestone-workbook">Customer Loyalty Milestone: Workbook</h1>
+<p><a href="../">Business context and architecture</a> | <a href="../../../../assets/downloads/customer-loyalty-milestone.zip">Download package</a> | <a href="https://github.com/microsoft/fabric-events/tree/main/cicd/customer-loyalty-milestone">Implementation</a></p>
+<p>Prepare campaign candidates when a customer crosses the Gold spending threshold. Activator publishes the milestone; Eventstream adds campaign and benefit context, excludes inactive campaigns and saves the useful results as Lakehouse Delta tables. This exercise prepares marketing work, not an issued reward or a delivered message.</p>
+<p><span id="customer-loyalty-milestone-deployment-guide"></span>
+<span id="deployment-architecture"></span></p>
+<h2 id="resources-and-coverage">Resources and coverage</h2>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Default item name</th>
+<th>What the package prepares</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Event Schema Set</td>
+<td><code>RetailCustomers</code></td>
+<td>Six-field <code>Retail.Customer.MilestoneReached</code> event and delegated Publish/Consume permissions</td>
+</tr>
+<tr>
+<td>Source Eventhouse and KQL database</td>
+<td><code>LoyaltyData</code>, <code>LoyaltySource</code></td>
+<td>Empty <code>CustomerSpendSnapshots</code> table for customer-wide balances in USD</td>
+</tr>
+<tr>
+<td>KQL Queryset</td>
+<td><code>LoyaltyQueries</code></td>
+<td>Spend observations and Current customer spend tabs</td>
+</tr>
+<tr>
+<td>Lakehouse</td>
+<td><code>LoyaltyCampaigns</code></td>
+<td>Lakehouse with schemas disabled; campaign catalog and output tables are populated later</td>
+</tr>
+<tr>
+<td>Catalog setup Notebook</td>
+<td><code>LoyaltyCatalogSetup</code></td>
+<td>Prepared catalog and destination; run it once manually before connecting reference data</td>
+</tr>
+<tr>
+<td>Activator publisher</td>
+<td><code>LoyaltyPublisher</code></td>
+<td>Create the customer-keyed threshold rule and Business Event action manually</td>
+</tr>
+<tr>
+<td>Eventstream</td>
+<td><code>LoyaltyCampaignStream</code></td>
+<td>Create the native subscription, reference join, filters and Delta destinations manually</td>
+</tr>
+<tr>
+<td>Independent Business Event history</td>
+<td>Not configured by this package</td>
+<td>The source Eventhouse is not a milestone-history consumer</td>
+</tr>
+</tbody>
+</table>
+<p>The package creates <strong>six Fabric items</strong>. The two configured names for Activator and Eventstream are reserved for your manual setup; those connections are not created by deployment. The <a href="https://learn.microsoft.com/fabric/real-time-hub/consume-events-with-event-stream-rest-api">public Eventstream definition API does not expose Business Events sources</a>.</p>
+<h2 id="before-you-start">Before you start</h2>
+<p>Use <strong>Python 3.10+</strong>, <strong>Azure CLI</strong> and <strong>PowerShell on Windows</strong>, an active supported Fabric capacity, and Contributor or higher access to the workspace. Use that workspace for the schema set and Eventstream so they share the required region. You also need permission to run Spark Notebooks and read and write the Lakehouse.</p>
+<h2 id="1-configure-your-environment">1. Configure your environment</h2>
+<p>Download <strong><code>customer-loyalty-milestone.zip</code></strong> or the <a href="https://github.com/microsoft/fabric-events/archive/refs/heads/main.zip">repository ZIP</a>, extract it, and open its <code>cicd\customer-loyalty-milestone</code> folder.</p>
+<p>Replace the three placeholders below:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Set-Location</span> <span class="s1">'&lt;extracted-folder&gt;\cicd\customer-loyalty-milestone'</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nv">$tenantId</span> <span class="p">=</span> <span class="s1">'&lt;your-tenant-uuid&gt;'</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nv">$workspaceId</span> <span class="p">=</span> <span class="s1">'&lt;your-workspace-uuid&gt;'</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">az</span> <span class="n">login</span> <span class="p">-</span><span class="n">-tenant</span> <span class="nv">$tenantId</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">python</span> <span class="p">.\</span><span class="n">deploy</span><span class="p">.</span><span class="n">py</span> <span class="n">configure</span> <span class="p">-</span><span class="n">-tenant-id</span> <span class="nv">$tenantId</span> <span class="p">-</span><span class="n">-workspace-id</span> <span class="nv">$workspaceId</span> <span class="p">-</span><span class="n">-auth-provider</span> <span class="n">azure_cli</span> <span class="p">-</span><span class="n">-output</span> <span class="p">.\</span><span class="n">config</span><span class="p">.</span><span class="n">local</span><span class="p">.</span><span class="n">json</span>
+</code></pre></div>
+<p>Review the tenant, workspace and unused resource names in <code>config.local.json</code>. <strong><code>accept_preview_apis</code> defaults to <code>true</code></strong>; set it to <code>false</code> to block cloud operations if you do not accept preview APIs.</p>
+<p>Choose unused names for all eight roles. Six belong to the prepared resources; use the other two when creating Activator and Eventstream.</p>
+<h2 id="2-deploy-to-fabric">2. Deploy to Fabric</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">.\</span><span class="n">deploy</span><span class="p">.</span><span class="n">bat</span> <span class="p">-</span><span class="n">-config</span> <span class="p">.\</span><span class="n">config</span><span class="p">.</span><span class="n">local</span><span class="p">.</span><span class="n">json</span> <span class="p">-</span><span class="n">-confirm-workspace</span> <span class="nv">$workspaceId</span>
+</code></pre></div>
+<p>Open the configured workspace and find the six prepared items listed above. Deployment leaves the source table empty and does not run the catalog Notebook, publish milestones, create campaign output records or configure the two manual connections. Continue with Step 3 before testing.</p>
+<h2 id="3-connect-the-milestone-to-campaign-preparation">3. Connect the milestone to campaign preparation</h2>
+<p>Use your configured names wherever they differ from the defaults.</p>
+<h3 id="31-make-the-campaign-catalog-available">3.1. Make the campaign catalog available</h3>
+<ol>
+<li>Open <code>LoyaltyCatalogSetup</code>, of type <strong>Notebook</strong>, in the deployed workspace.</li>
+<li>Attach <code>LoyaltyCampaigns</code> as its default Lakehouse and select <strong>Run all</strong> once.</li>
+<li>In <code>LoyaltyCampaigns → Tables</code>, open <code>LoyaltyCampaignCatalog</code>. Confirm the two rows: Gold at <code>store-west</code> has active campaign <code>gold-west-welcome</code>; Gold at <code>store-east</code> has inactive campaign <code>gold-east-welcome</code>. Both use benefit code <code>GOLD_WELCOME</code>.</li>
+<li>Keep <code>store-north</code> unmapped for this exercise. Each tier/store pair must have exactly one catalog row.</li>
+</ol>
+<p>The Notebook creates only the reference catalog. It does not publish milestones or write candidates. It will not overwrite an existing catalog when rerun.</p>
+<h3 id="32-create-the-milestone-publisher">3.2. Create the milestone publisher</h3>
+<p>Open the prepared <code>LoyaltyQueries</code> Queryset against <code>LoyaltySource</code>. The source table and both query tabs already exist; do not recreate them. Use your configured names wherever they differ from the defaults.</p>
+<ol>
+<li>If the query needs sample rows to expose its fields, run only the <strong>baseline</strong> block in Step 4. Do not run the increased balances yet.</li>
+<li>In <strong>Spend observations</strong>, select <strong>Set alert</strong> and create <code>LoyaltyPublisher</code>. In Activator, use <code>observed_at</code> as the event time and <strong>only <code>customer_id</code> as the object identity</strong>. Store, name, spend and timestamp are changing properties of that customer.</li>
+<li>Monitor <code>total_spend</code>. Choose <strong>Becomes greater than</strong>, or <strong>Increases above</strong> in the rule editor, with value <code>5000</code>. Do not choose a condition that fires for every observation already above <code>5000</code>.</li>
+<li>
+<p>Configure <strong>Publish a business event</strong>, select <code>RetailCustomers</code> and <code>Retail.Customer.MilestoneReached</code>, and map:</p>
+<table>
+<thead>
+<tr>
+<th>Event field</th>
+<th>Source property</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>customer_id</code></td>
+<td><code>customer_id</code></td>
+</tr>
+<tr>
+<td><code>customer_name</code></td>
+<td><code>customer_name</code></td>
+</tr>
+<tr>
+<td><code>milestone_tier</code></td>
+<td><code>milestone_tier</code></td>
+</tr>
+<tr>
+<td><code>total_spend</code></td>
+<td><code>total_spend</code></td>
+</tr>
+<tr>
+<td><code>store_id</code></td>
+<td><code>store_id</code></td>
+</tr>
+<tr>
+<td><code>detected_at</code></td>
+<td><code>detected_at</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>Save the rule. Keep it stopped until the campaign flow below is ready.</p>
+</li>
+</ol>
+<p>Keep balances at or below <code>5000</code> in the source. They allow Activator to recognize a later crossing. A changing store must not create a new object; this is one customer's program-wide milestone.</p>
+<p>See <a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/business-events-activator">publishing Business Events from Activator</a>.</p>
+<h3 id="33-add-campaign-enrichment-and-delta-destinations">3.3. Add campaign enrichment and Delta destinations</h3>
+<ol>
+<li>In <strong>Real-Time Hub</strong>, open <code>Retail.Customer.MilestoneReached</code> under <code>RetailCustomers</code>. Select <strong>Add consumer → Eventstream</strong>, use the same workspace, name it <code>LoyaltyCampaignStream</code> and select <strong>Connect</strong>. Use the native Business Event source, not a custom endpoint.</li>
+<li>Open the Eventstream in <strong>Edit</strong> mode. Add a reference source with <strong>Add source → Reference data sources → Select from OneLake</strong>. Choose <code>LoyaltyCampaigns → Tables → LoyaltyCampaignCatalog</code>, select all five catalog columns and save.</li>
+<li>
+<p>Add a <strong>Join</strong> operation. Use the live Business Event stream on the left and the reference catalog on the right. Choose <strong>Left outer</strong>, with these two field pairs:</p>
+<table>
+<thead>
+<tr>
+<th>Milestone field</th>
+<th>Catalog field</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>milestone_tier</code></td>
+<td><code>catalog_tier</code></td>
+</tr>
+<tr>
+<td><code>store_id</code></td>
+<td><code>catalog_store_id</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>From the joined stream, create the two branches below. Select the milestone's payload properties if a field picker shows them under <code>data</code>; do not use CloudEvents envelope fields. In <strong>Manage Fields</strong>, use the flat output column names shown below and check the resulting fields in preview before adding the destinations.</p>
+<table>
+<thead>
+<tr>
+<th>Branch</th>
+<th>Filter</th>
+<th>Manage Fields: keep only</th>
+<th>Lakehouse table</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Campaign candidates</td>
+<td><code>campaign_id</code> is not null <strong>and</strong> <code>is_active</code> equals boolean <code>true</code></td>
+<td><code>customer_id</code>, <code>milestone_tier</code>, <code>total_spend</code>, <code>store_id</code>, <code>detected_at</code>, <code>campaign_id</code>, <code>benefit_code</code></td>
+<td><code>LoyaltyCampaignCandidates</code></td>
+</tr>
+<tr>
+<td>Campaign mapping review</td>
+<td><code>campaign_id</code> is null</td>
+<td><code>customer_id</code>, <code>milestone_tier</code>, <code>total_spend</code>, <code>store_id</code>, <code>detected_at</code></td>
+<td><code>LoyaltyCampaignReview</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>After each <strong>Manage Fields</strong> operation, select <strong>Add destination → Lakehouse</strong>, choose <code>LoyaltyCampaigns</code>, select <strong>JSON</strong> as the input data format and create the corresponding <strong>Delta table</strong>. For the small demonstration, use <strong>Minimum rows: 1</strong> and <strong>Maximum duration: 1 minute</strong>. These settings favor visible sample results over efficient production-sized files.</p>
+</li>
+<li>Publish the Eventstream. Confirm that the reference catalog is loaded and that both destination branches are running before starting the milestone exercise. Select a reference refresh schedule appropriate to later campaign changes; an edited catalog does not take effect until Eventstream refreshes it.</li>
+</ol>
+<p>An inactive match is intentionally excluded from both outputs: it has a campaign mapping, but that campaign is not accepting candidates. An unmatched milestone goes to review so the team can decide whether to add a mapping. <code>customer_name</code> is not copied into either output because campaign preparation needs the customer ID, not another copy of their name.</p>
+<p>This connection is manual because the <a href="https://learn.microsoft.com/fabric/real-time-hub/consume-events-with-event-stream-rest-api">public Eventstream definition API does not expose Business Events sources</a>. See <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/route-events-based-on-content">Eventstream transformations</a> and <a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/add-destination-lakehouse">Lakehouse destinations</a>.</p>
+<p>Then start the rule in <code>LoyaltyPublisher</code>. No consumer Activator, Power Automate flow or CRM connection is needed.</p>
+<h2 id="4-run-the-balances-and-inspect-campaign-results">4. Run the balances and inspect campaign results</h2>
+<p>Start <code>LoyaltyPublisher</code> only after the Eventstream and both destinations are ready. Run each source block separately, keeping time to observe the results between blocks. Use a fresh prefix instead of <code>loyalty-demo-001</code> throughout all three blocks when repeating the exercise.</p>
+<h3 id="establish-the-starting-balances">Establish the starting balances</h3>
+<p>In <code>LoyaltyQueries</code>, open a new tab connected to <code>LoyaltySource</code> and run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.</span><span class="n">set</span><span class="p">-</span><span class="k">or</span><span class="p">-</span><span class="n">append</span><span class="w"> </span><span class="n">CustomerSpendSnapshots</span><span class="w"> </span><span class="p">&lt;|</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">let</span><span class="w"> </span><span class="n">sample_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'loyalty-demo-001'</span><span class="p">;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">datatable</span><span class="p">(</span><span class="n">customer_suffix</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">total_spend</span><span class="p">:</span><span class="k">real</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">[</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="s">'eligible'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-east'</span><span class="p">,</span><span class="w"> </span><span class="mf">4900.0</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="s">'inactive'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-west'</span><span class="p">,</span><span class="w"> </span><span class="mf">4900.0</span><span class="p">,</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="s">'unmatched'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-west'</span><span class="p">,</span><span class="w"> </span><span class="mf">4900.0</span><span class="p">,</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="s">'boundary'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-west'</span><span class="p">,</span><span class="w"> </span><span class="mf">4900.0</span><span class="p">,</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="s">'below'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-west'</span><span class="p">,</span><span class="w"> </span><span class="mf">4900.0</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="p">]</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">|</span><span class="w"> </span><span class="k">project</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="n">sample_id</span><span class="p">,</span><span class="w"> </span><span class="s">'-'</span><span class="p">,</span><span class="w"> </span><span class="n">customer_suffix</span><span class="p">),</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="n">customer_name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="s">'Sample '</span><span class="p">,</span><span class="w"> </span><span class="n">customer_suffix</span><span class="p">),</span><span class="w"> </span><span class="n">total_spend</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="p">,</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+</code></pre></div>
+<p>In <code>LoyaltyPublisher</code>, select the source event's <strong>Live feed</strong> and the customer object's properties. Wait until Activator has observed <code>4900</code> for all five IDs. Seeing the rows in the KQL database alone does not establish that the rule has seen them. No milestone or campaign candidate should exist for these starting balances.</p>
+<h3 id="introduce-the-new-balances">Introduce the new balances</h3>
+<p>After confirming those starting values in Activator, run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">.</span><span class="n">set</span><span class="p">-</span><span class="k">or</span><span class="p">-</span><span class="n">append</span><span class="w"> </span><span class="n">CustomerSpendSnapshots</span><span class="w"> </span><span class="p">&lt;|</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">let</span><span class="w"> </span><span class="n">sample_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'loyalty-demo-001'</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">datatable</span><span class="p">(</span><span class="n">customer_suffix</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">total_spend</span><span class="p">:</span><span class="k">real</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">[</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="s">'eligible'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-west'</span><span class="p">,</span><span class="w"> </span><span class="mf">5100.0</span><span class="p">,</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="s">'inactive'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-east'</span><span class="p">,</span><span class="w"> </span><span class="mf">5100.0</span><span class="p">,</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="s">'unmatched'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-north'</span><span class="p">,</span><span class="w"> </span><span class="mf">5100.0</span><span class="p">,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="s">'boundary'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-west'</span><span class="p">,</span><span class="w"> </span><span class="mf">5000.0</span><span class="p">,</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="s">'below'</span><span class="p">,</span><span class="w"> </span><span class="s">'store-west'</span><span class="p">,</span><span class="w"> </span><span class="mf">4999.0</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">]</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">|</span><span class="w"> </span><span class="k">project</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="n">sample_id</span><span class="p">,</span><span class="w"> </span><span class="s">'-'</span><span class="p">,</span><span class="w"> </span><span class="n">customer_suffix</span><span class="p">),</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="n">customer_name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="s">'Sample '</span><span class="p">,</span><span class="w"> </span><span class="n">customer_suffix</span><span class="p">),</span><span class="w"> </span><span class="n">total_spend</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="p">,</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Customer suffix</th>
+<th>New balance</th>
+<th>What you should see</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eligible</code></td>
+<td><code>5100</code></td>
+<td>Gold milestone for <code>store-west</code>; candidate with campaign <code>gold-west-welcome</code> and benefit <code>GOLD_WELCOME</code></td>
+</tr>
+<tr>
+<td><code>inactive</code></td>
+<td><code>5100</code></td>
+<td>Gold milestone for <code>store-east</code>; inactive campaign excluded from both output tables</td>
+</tr>
+<tr>
+<td><code>unmatched</code></td>
+<td><code>5100</code></td>
+<td>Gold milestone for <code>store-north</code>; record in <code>LoyaltyCampaignReview</code>, not the candidate table</td>
+</tr>
+<tr>
+<td><code>boundary</code></td>
+<td><code>5000</code></td>
+<td>No milestone and no output; the rule requires spending <strong>above</strong> <code>5000</code></td>
+</tr>
+<tr>
+<td><code>below</code></td>
+<td><code>4999</code></td>
+<td>No milestone and no output</td>
+</tr>
+</tbody>
+</table>
+<p>The first three customers change stores while keeping their original customer IDs. Their balances remain customer-wide. In Business Event <strong>Data preview</strong> and Eventstream, look for those three milestone customer IDs with tier <code>gold</code> and spend <code>5100</code>. In the joined preview, compare the active, inactive and missing catalog results.</p>
+<h3 id="confirm-that-continued-spending-is-not-another-crossing">Confirm that continued spending is not another crossing</h3>
+<p>After observing the eligible customer's <code>5100</code> milestone, run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.</span><span class="n">set</span><span class="p">-</span><span class="k">or</span><span class="p">-</span><span class="n">append</span><span class="w"> </span><span class="n">CustomerSpendSnapshots</span><span class="w"> </span><span class="p">&lt;|</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">let</span><span class="w"> </span><span class="n">sample_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'loyalty-demo-001'</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">print</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="n">sample_id</span><span class="p">,</span><span class="w"> </span><span class="s">'-eligible'</span><span class="p">),</span><span class="w"> </span><span class="n">customer_name</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'Sample eligible'</span><span class="p">,</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="n">total_spend</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mf">5200.0</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'store-west'</span><span class="p">,</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">now</span><span class="p">()</span>
+</code></pre></div>
+<p>Wait until Activator shows <code>5200</code> for that same customer. This observation should not publish another milestone: the customer was already above <code>5000</code>. The campaign candidate still describes the original <code>5100</code> crossing.</p>
+<h3 id="evaluation-criteria">Evaluation criteria</h3>
+<p>Open <code>LoyaltyCampaigns → SQL analytics endpoint</code>. Allow time for Lakehouse ingestion and table visibility, then inspect the two Delta tables for this exercise:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="n">milestone_tier</span><span class="p">,</span><span class="w"> </span><span class="n">total_spend</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="p">,</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">       </span><span class="n">detected_at</span><span class="p">,</span><span class="w"> </span><span class="n">campaign_id</span><span class="p">,</span><span class="w"> </span><span class="n">benefit_code</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">FROM</span><span class="w"> </span><span class="n">dbo</span><span class="p">.</span><span class="n">LoyaltyCampaignCandidates</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'loyalty-demo-001-%'</span><span class="p">;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="n">milestone_tier</span><span class="p">,</span><span class="w"> </span><span class="n">total_spend</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="p">,</span><span class="w"> </span><span class="n">detected_at</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">FROM</span><span class="w"> </span><span class="n">dbo</span><span class="p">.</span><span class="n">LoyaltyCampaignReview</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">'loyalty-demo-001-%'</span><span class="p">;</span>
+</code></pre></div>
+<p>Expect one distinct candidate customer, <code>loyalty-demo-001-eligible</code>, and one distinct review customer, <code>loyalty-demo-001-unmatched</code>. Both retain the <code>gold</code>, <code>5100</code>, store and observation time from their milestone. No inactive, boundary or below-threshold customer belongs in the candidate table. Continued spending at <code>5200</code> should not create a new milestone or replace the original candidate.</p>
+<p>The tables are append outputs, not an exactly-once audience or a reward ledger. Repeated deliveries can create duplicate rows; compare customer IDs and milestone context rather than treating every row as another customer. Before outreach, select one candidate per customer, tier and campaign, check contact permission and confirm benefit eligibility.</p>
+<p>These records do not show reward issuance, membership updates, message delivery or improved retention.</p>
+<h2 id="implementation-reference">Implementation reference</h2>
+<p>Expand the details you need to understand or adapt the solution. This is reference, not a second setup tutorial. The package's default schema-set name is <code>RetailCustomers</code>. Standalone examples may use the original illustrative alias; match the connection alias to your configured schema set before reusing code. Event names and payload fields remain unchanged.</p>
+<details class="info">
+<summary>Event contract</summary>
+<p>The shared event fields are unchanged. The package prepares this contract; inspect it rather than creating a second event.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"record"</span><span class="p">,</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Retail.Customer.MilestoneReached"</span><span class="p">,</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customer_id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unique identifier of the customer"</span><span class="p">},</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"customer_name"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Full name of the customer"</span><span class="p">},</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"milestone_tier"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Loyalty tier reached: silver, gold, or platinum"</span><span class="p">},</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"total_spend"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"float"</span><span class="p">,</span><span class="w"> </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cumulative spend amount that triggered this milestone"</span><span class="p">},</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"store_id"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Identifier of the store where the milestone was reached"</span><span class="p">},</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"detected_at"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nt">"doc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Timestamp when the milestone was detected, ISO 8601 format"</span><span class="p">}</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="p">}</span>
+</code></pre></div>
+</details>
+<details class="info">
+<summary>Source and publisher reference</summary>
+<p>These snippets explain the source and publication logic. Use the prepared publisher for the main exercise; standalone examples are not an additional source run.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">.</span><span class="n">create</span><span class="p">-</span><span class="n">merge</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="n">CustomerSpendSnapshots</span><span class="w"> </span><span class="p">(</span><span class="n">customer_id</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">customer_name</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">total_spend</span><span class="p">:</span><span class="k">real</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="p">:</span><span class="k">string</span><span class="p">,</span><span class="w"> </span><span class="n">observed_at</span><span class="p">:</span><span class="k">datetime</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">declare</span><span class="w"> </span><span class="n">query_parameters</span><span class="p">(</span><span class="n">startTime</span><span class="p">:</span><span class="k">datetime</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">-</span><span class="mi">01</span><span class="p">-</span><span class="mi">01</span><span class="p">),</span><span class="w"> </span><span class="n">endTime</span><span class="p">:</span><span class="k">datetime</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">datetime</span><span class="p">(</span><span class="mi">9999</span><span class="p">-</span><span class="mi">12</span><span class="p">-</span><span class="mi">31</span><span class="p">));</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">CustomerSpendSnapshots</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="p">|</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="p">&gt;=</span><span class="w"> </span><span class="n">startTime</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="p">&lt;=</span><span class="w"> </span><span class="n">endTime</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">|</span><span class="w"> </span><span class="k">extend</span><span class="w"> </span><span class="n">milestone_tier</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">'gold'</span><span class="p">,</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="n">detected_at</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">strcat</span><span class="p">(</span><span class="n">format_datetime</span><span class="p">(</span><span class="n">observed_at</span><span class="p">,</span><span class="w"> </span><span class="s">'yyyy-MM-dd'</span><span class="p">),</span><span class="w"> </span><span class="s">'T'</span><span class="p">,</span><span class="w"> </span><span class="n">format_datetime</span><span class="p">(</span><span class="n">observed_at</span><span class="p">,</span><span class="w"> </span><span class="s">'HH:mm:ss.fff'</span><span class="p">),</span><span class="w"> </span><span class="s">'Z'</span><span class="p">)</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">|</span><span class="w"> </span><span class="k">project</span><span class="w"> </span><span class="n">observed_at</span><span class="p">,</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="n">customer_name</span><span class="p">,</span><span class="w"> </span><span class="n">milestone_tier</span><span class="p">,</span><span class="w"> </span><span class="n">total_spend</span><span class="p">,</span><span class="w"> </span><span class="n">store_id</span><span class="p">,</span><span class="w"> </span><span class="n">detected_at</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="p">|</span><span class="w"> </span><span class="k">sort</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">observed_at</span><span class="w"> </span><span class="n">asc</span>
+</code></pre></div>
+</details>
+<details class="info">
+<summary>Response and mapping reference</summary>
+<p>Use these field and response details to understand the prepared resources. Complete only the connections identified in the main steps.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">catalog_rows</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="p">(</span><span class="s2">"gold"</span><span class="p">,</span> <span class="s2">"store-west"</span><span class="p">,</span> <span class="s2">"gold-west-welcome"</span><span class="p">,</span> <span class="s2">"GOLD_WELCOME"</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="p">(</span><span class="s2">"gold"</span><span class="p">,</span> <span class="s2">"store-east"</span><span class="p">,</span> <span class="s2">"gold-east-welcome"</span><span class="p">,</span> <span class="s2">"GOLD_WELCOME"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">]</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">catalog_schema</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="s2">"catalog_tier string, catalog_store_id string, campaign_id string, "</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="s2">"benefit_code string, is_active boolean"</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="p">)</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="p">(</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">catalog_rows</span><span class="p">,</span> <span class="n">catalog_schema</span><span class="p">)</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"delta"</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">"errorifexists"</span><span class="p">)</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"delta.columnMapping.mode"</span><span class="p">,</span> <span class="s2">"none"</span><span class="p">)</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>    <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"delta.enableDeletionVectors"</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">)</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>    <span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"Tables/LoyaltyCampaignCatalog"</span><span class="p">)</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="p">)</span>
+</code></pre></div>
+</details>
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/business-events-overview">Business Events requirements</a></li>
+<li><a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/create-business-events">creating a Business Event</a></li>
+<li><a href="https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/enrich-events-with-reference-data">Lakehouse reference-data source</a></li>
+</ul>
+<p><span id="architecture"></span>
+<span id="business-context"></span>
+<span id="configure-the-milestone-rule"></span>
+<span id="connect-and-shape-the-campaign-flow"></span>
+<span id="customer-loyalty-milestone"></span>
+<span id="prepare-the-campaign-catalog"></span>
+<span id="prepare-the-spending-view"></span>
+<span id="step-1-define-the-loyalty-milestone"></span>
+<span id="step-2-recognize-the-customer-milestone"></span>
+<span id="step-3-prepare-campaign-candidates-in-eventstream"></span>
+<span id="step-4-observe-which-customers-need-campaign-preparation"></span>
+<span id="why-this-matters"></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+<section class="community-invitation" aria-labelledby="community-invitation-title">
+  <h2 id="community-invitation-title">What are you building?</h2>
+  <p>Ask a question, share your scenario, or help shape the next developer guide.</p>
+  <a class="md-button md-button--primary" href="https://www.reddit.com/r/MicrosoftFabric/search/?q=flair%3A%22Real-Time+Intelligence%22+%28%5BBusiness+Events%5D+OR+%5BFabric+Events%5D+OR+%5BAzure+Events%5D%29&restrict_sr=1&sort=new" target="_blank" rel="noopener noreferrer">Join the conversation on Reddit &rarr;</a>
+</section>
+
+<!-- Ask in our community floating button -->
+<div style="
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+">
+  <button onclick="document.getElementById('reddit-modal').style.display='flex'" style="
+    background: #FF4500;
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.75rem 1.25rem;
+    font-size: var(--site-text-size);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: Inter, sans-serif;
+  ">
+    💬 Ask in our community
+  </button>
+</div>
+
+<!-- Reddit modal -->
+<div id="reddit-modal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+">
+  <div style="
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 680px;
+    margin: 1rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    font-family: Inter, sans-serif;
+  ">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <h3 style="margin:0; font-size:calc(1.25rem - 1px); color:#111827;">Ask in our community</h3>
+      <button onclick="document.getElementById('reddit-modal').style.display='none'" style="
+        background:none; border:none; cursor:pointer; font-size:var(--site-text-size); color:#6B7280; line-height:1;
+      ">✕</button>
+    </div>
+
+    <p style="font-size:var(--site-text-size); color:#6B7280; margin:0 0 1.25rem 0;">
+      Join developers discussing Microsoft Fabric on Reddit.<br>Not a member yet? <a href="https://www.reddit.com/r/MicrosoftFabric/" target="_blank" style="color:#FF4500; text-decoration:none;">Join r/MicrosoftFabric</a>.
+    </p>
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Topic
+    </label>
+    <select id="reddit-pillar" style="
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.625rem 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      background: white;
+      margin-bottom: 1.25rem;
+      box-sizing: border-box;
+      outline: none;
+    ">
+      <option value="Business Events">Business Events</option>
+      <option value="Fabric Events">Fabric Events</option>
+      <option value="Azure Events">Azure Events</option>
+    </select>
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Title
+    </label>
+    <input id="reddit-title" type="text" placeholder="Brief summary of your question" style="
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.625rem 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      margin-bottom: 1.25rem;
+      box-sizing: border-box;
+      outline: none;
+    ">
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Question
+    </label>
+    <textarea id="reddit-question" placeholder="What would you like to ask?" style="
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      resize: vertical;
+      box-sizing: border-box;
+      outline: none;
+      line-height: 1.5;
+    "></textarea>
+
+    <div style="display:flex; gap:0.75rem; margin-top:1rem; justify-content:flex-end;">
+      <button onclick="document.getElementById('reddit-modal').style.display='none'" style="
+        background:none; border:1px solid #D1D5DB; border-radius:0.5rem;
+        padding:0.5rem 1rem; font-size:var(--site-text-size); cursor:pointer; color:#374151;
+        font-family: Inter, sans-serif;
+      ">Cancel</button>
+      <button onclick="openRedditPost()" style="
+        background:#FF4500; color:white; border:none; border-radius:0.5rem;
+        padding:0.5rem 1rem; font-size:var(--site-text-size); font-weight:600; cursor:pointer;
+        font-family: Inter, sans-serif;
+      ">Post on Reddit →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openRedditPost() {
+  var title = document.getElementById('reddit-title').value.trim();
+  var question = document.getElementById('reddit-question').value.trim();
+  if (!title) { document.getElementById('reddit-title').focus(); return; }
+  if (!question) { document.getElementById('reddit-question').focus(); return; }
+
+  var pillar = document.getElementById('reddit-pillar').value;
+  var fullTitle = '[' + pillar + '] ' + title;
+  var bodyText = question + '\n\n// Asked from the Fabric Events developer site: https://microsoft.github.io/fabric-events';
+
+  var url = 'https://www.reddit.com/r/MicrosoftFabric/submit?flair_id=ecd6bad8-fb22-11ed-bcbb-8e4e63079c0e&title=' + encodeURIComponent(fullTitle) + '&text=' + encodeURIComponent(bodyText);
+  window.open(url, '_blank');
+  document.getElementById('reddit-modal').style.display = 'none';
+  document.getElementById('reddit-title').value = '';
+  document.getElementById('reddit-question').value = '';
+  document.getElementById('reddit-pillar').value = 'Business Events';
+}
+
+document.getElementById('reddit-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+</script>
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Built with <span class="heart">&#10084;</span> by the Fabric Events team
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/microsoft/fabric-events/discussions" target="_blank" rel="noopener" title="Join the discussion on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes", "navigation.top", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate"], "search": "../../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../../../../javascripts/scenario-diagrams.js" type="module"></script>
+      
+    
+  </body>
+</html>

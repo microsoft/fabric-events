@@ -1,0 +1,3397 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Practical resources for building event-driven solutions with Microsoft Fabric">
+      
+      
+      
+        <link rel="canonical" href="https://microsoft.github.io/fabric-events/business-events/scenarios/fraud-response-before-fulfillment/deployment/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../../../fabric-events/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
+    
+    
+      
+        <title>Workbook - Fabric Events</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "03c617f3c2ce4e70809697538bd8e52e"}'></script>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fraud-response-before-fulfillment-workbook" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Fabric Events" class="md-header__button md-logo" aria-label="Fabric Events" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Fabric Events
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Workbook
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/microsoft/fabric-events" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    microsoft/fabric-events
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../home/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../introduction/what-are-business-events/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Business Events
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../fabric-events/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Fabric Events
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../azure-events/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Azure Events
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Fabric Events" class="md-nav__button md-logo" aria-label="Fabric Events" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Fabric Events
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/microsoft/fabric-events" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    microsoft/fabric-events
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../home/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Business Events
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Business Events
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Introduction
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/what-are-business-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What are Business Events?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/architecture-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/event-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Schema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../design-guides/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Guides
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/event-driven-architectures/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event-Driven Architectures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../introduction/decision-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/structuring-payloads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structuring Payloads
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/handling-retries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handling Retries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/schema-versioning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Schema Versioning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design-guides/multi-consumer-fanout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Consumer Fanout
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../recipes/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipes
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Recipes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/chain-two-business-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chain Two Business Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/batch-publish-notebook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch Publish from a Notebook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recipes/batch-publish-udf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Batch Publish from a User Data Function
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenarios
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4" id="__nav_2_4_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scenarios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../order-history-analysis/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Order History Analysis
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Order History Analysis
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../order-history-analysis/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../sales-volume-alert/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sales Volume Alert
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_3" id="__nav_2_4_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sales Volume Alert
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sales-volume-alert/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../low-stock-threshold/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Low Stock Threshold
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_4" id="__nav_2_4_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Low Stock Threshold
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../low-stock-threshold/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../real-time-stream-alert/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real-Time Stream Alert
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_5" id="__nav_2_4_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Real-Time Stream Alert
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../real-time-stream-alert/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../discount-approval-routing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Discount Approval
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_6" id="__nav_2_4_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Discount Approval
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../discount-approval-routing/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../real-time-viewer-recommendations/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Real-Time Viewer Recommendations
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_7" id="__nav_2_4_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Real-Time Viewer Recommendations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../real-time-viewer-recommendations/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../data-pipeline-failure-follow-up/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Pipeline Failure Follow-up
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_8" id="__nav_2_4_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data Pipeline Failure Follow-up
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-pipeline-failure-follow-up/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../revenue-below-target/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Revenue Below Target
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_9" id="__nav_2_4_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Revenue Below Target
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../revenue-below-target/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../customer-loyalty-milestone/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Customer Loyalty Milestone
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_10" id="__nav_2_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Customer Loyalty Milestone
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../customer-loyalty-milestone/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../abandoned-cart-recovery/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Abandoned Cart Recovery
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_11" id="__nav_2_4_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Abandoned Cart Recovery
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../abandoned-cart-recovery/deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4_12" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fraud Response Before Fulfillment
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4_12" id="__nav_2_4_12_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_4_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_4_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fraud Response Before Fulfillment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resources-and-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources and coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Before you start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-order-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test order system
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-configure-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure your environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-deploy-to-fabric" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Deploy to Fabric
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-connect-responses-and-prepare-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Connect responses and prepare orders
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-evaluate-orders-and-inspect-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Evaluate orders and inspect enforcement
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Evaluate orders and inspect enforcement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-event-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional event history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../fabric-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fabric Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../azure-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Azure Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#resources-and-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources and coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Before you start
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Before you start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-order-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test order system
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-configure-your-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Configure your environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-deploy-to-fabric" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Deploy to Fabric
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-connect-responses-and-prepare-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Connect responses and prepare orders
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-evaluate-orders-and-inspect-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Evaluate orders and inspect enforcement
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Evaluate orders and inspect enforcement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluation criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-event-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional event history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+
+                  
+
+
+  
+  
+
+
+<h1 id="fraud-response-before-fulfillment-workbook">Fraud Response Before Fulfillment: Workbook</h1>
+<p><a href="../">Business context and architecture</a> | <a href="../../../../assets/downloads/fraud-response-before-fulfillment.zip">Download package</a> | <a href="https://github.com/microsoft/fabric-events/tree/main/cicd/fraud-response-before-fulfillment">Implementation</a></p>
+<p>Apply the order-risk policy and check that fulfillment follows the decision. Connect three operational responses, then use six sample orders to compare releases, review requests and holds.</p>
+<p><span id="deployment-architecture"></span>
+<span id="fraud-response-before-fulfillment-deployment-guide"></span></p>
+<h2 id="resources-and-coverage">Resources and coverage</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Default name</th>
+<th>Package coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Event schema and delegated Publish/Consume permissions</td>
+<td><code>OrderRiskSchema</code></td>
+<td>Public preview; original five-field <code>Ecommerce.Order.FraudDecision</code> contract</td>
+</tr>
+<tr>
+<td>User Data Function publisher</td>
+<td><code>OrderRiskPublisher</code></td>
+<td>Applies policy to the supplied order, customer, score and decision time</td>
+</tr>
+<tr>
+<td>Activator event source</td>
+<td><code>OrderRiskActions</code></td>
+<td>Prepared <code>Order risk decisions</code> view; connect the three responses before testing</td>
+</tr>
+<tr>
+<td>Three decision rules and Power Automate custom actions</td>
+<td>Not configured by this package</td>
+<td>Configure hold, review and release manually in the prepared Activator</td>
+</tr>
+<tr>
+<td>Authenticated synthetic-order system</td>
+<td>Not configured by this package</td>
+<td>Supply an approved isolated test OMS, register the prepared orders and verify actual fulfillment behavior</td>
+</tr>
+<tr>
+<td>Independent managed event history</td>
+<td>Not configured by this package</td>
+<td>Creation-time option; see <a href="#optional-event-history">Optional event history</a></td>
+</tr>
+</tbody>
+</table>
+<p>The package creates three Fabric items and no Azure backend or order system. Connect your three Power Automate responses manually using the <a href="https://learn.microsoft.com/fabric/real-time-intelligence/data-activator/activator-trigger-power-automate-flows">custom-action workflow</a>. The <a href="https://github.com/microsoft/skills-for-fabric/blob/6c11ad58c25992e5d1435ce7cd80d217d5598a31/plugins/fabric-skills/skills/activator-cli/references/authoring/action-types.md">Activator action reference</a> describes the available action definitions.</p>
+<h2 id="before-you-start">Before you start</h2>
+<h3 id="test-order-system">Test order system</h3>
+<p>Use an active Fabric capacity, permission to create Business Events and User Data Functions, and a Power Automate environment with the premium Data Activator connector. Supply an approved, isolated test OMS with authenticated operations for registering synthetic orders, holding, requesting review, releasing and checking fulfillment. This walkthrough does not supply or deploy an OMS.</p>
+<p>Agree on these test-system semantics before connecting the flows:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Required test behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Register an order</td>
+<td>Store a fresh synthetic order as <code>pending</code>, with its customer and supplied risk score</td>
+</tr>
+<tr>
+<td>Hold</td>
+<td>Persist <code>held</code>; fulfillment remains prohibited</td>
+</tr>
+<tr>
+<td>Request manual review</td>
+<td>Persist <code>review_requested</code> and a stable review request ID; <code>review_completed</code> remains <code>false</code></td>
+</tr>
+<tr>
+<td>Release</td>
+<td>Persist <code>released</code>; fulfillment becomes permitted</td>
+</tr>
+<tr>
+<td>Read an order</td>
+<td>Independently return its persisted state and action history</td>
+</tr>
+<tr>
+<td>Attempt fulfillment</td>
+<td>Return HTTP <code>409</code> for held or review-requested orders; allow a released order and persist <code>fulfilled</code></td>
+</tr>
+</tbody>
+</table>
+<p>Use synthetic identifiers only. The OMS must authenticate callers, apply authorization and concurrency controls, make repeated delivery of the same Activation ID idempotent, and reject competing decisions rather than overwriting them.</p>
+<h2 id="1-configure-your-environment">1. Configure your environment</h2>
+<p>Download <strong><code>fraud-response-before-fulfillment.zip</code></strong> or the <a href="https://github.com/microsoft/fabric-events/archive/refs/heads/main.zip">repository ZIP</a>, extract it, and open its <code>cicd\fraud-response-before-fulfillment</code> folder.</p>
+<p>Replace the three placeholders below:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">Set-Location</span> <span class="s1">'&lt;extracted-folder&gt;\cicd\fraud-response-before-fulfillment'</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nv">$tenantId</span> <span class="p">=</span> <span class="s1">'&lt;your-tenant-uuid&gt;'</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nv">$workspaceId</span> <span class="p">=</span> <span class="s1">'&lt;your-workspace-uuid&gt;'</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">az</span> <span class="n">login</span> <span class="p">-</span><span class="n">-tenant</span> <span class="nv">$tenantId</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">python</span> <span class="p">.\</span><span class="n">deploy</span><span class="p">.</span><span class="n">py</span> <span class="n">configure</span> <span class="p">-</span><span class="n">-tenant-id</span> <span class="nv">$tenantId</span> <span class="p">-</span><span class="n">-workspace-id</span> <span class="nv">$workspaceId</span> <span class="p">-</span><span class="n">-auth-provider</span> <span class="n">azure_cli</span> <span class="p">-</span><span class="n">-output</span> <span class="p">.\</span><span class="n">config</span><span class="p">.</span><span class="n">local</span><span class="p">.</span><span class="n">json</span>
+</code></pre></div>
+<p>Review the tenant, workspace and unused resource names in <code>config.local.json</code>. <strong><code>accept_preview_apis</code> defaults to <code>true</code></strong>; setting it to <code>false</code> prevents preview-dependent deployment. Keep the schema name between 3 and 20 characters because it is also the UDF connection alias.</p>
+<p>Use Python 3.10 or later, Azure CLI, a delegated user with an active Fabric capacity, and an approved Power Automate environment with the premium Data Activator connector. Supply an authenticated, isolated test OMS meeting the <a href="#test-order-system">test order system requirements</a>. Configuration does not authenticate, create resources or overwrite an existing local configuration.</p>
+<h2 id="2-deploy-to-fabric">2. Deploy to Fabric</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">.\</span><span class="n">deploy</span><span class="p">.</span><span class="n">bat</span> <span class="p">-</span><span class="n">-config</span> <span class="p">.\</span><span class="n">config</span><span class="p">.</span><span class="n">local</span><span class="p">.</span><span class="n">json</span> <span class="p">-</span><span class="n">-confirm-workspace</span> <span class="nv">$workspaceId</span>
+</code></pre></div>
+<p>Deployment creates the schema, native UDF and Activator source. It does not create flows, register orders or invoke the UDF. The output supplies a fresh <code>source_run_id</code> and six <code>source_orders</code> containing the exact synthetic order IDs, customers and scores to prepare in your test OMS. Keep these values for the same deployment.</p>
+<p>The three operational responses still need your connections. Complete Step 3 before evaluating the prepared orders.</p>
+<h2 id="3-connect-responses-and-prepare-orders">3. Connect responses and prepare orders</h2>
+<ol>
+<li>Open the deployed <code>OrderRiskPublisher</code>. Inspect <code>evaluate_order_risk</code> and its managed connection to the deployed <code>OrderRiskSchema</code>. These are prepared resources, not new items to create.</li>
+<li>Open <code>OrderRiskActions</code>, select the prepared <strong>Order risk decisions</strong> event, and create the three decision rules. Use the conditions, custom actions and mappings below. Do not create another Activator or another Business Event source.</li>
+<li>Monitor <code>decision</code> with <strong>Is equal to</strong> for <code>hold</code>, <code>manual_review</code> and <code>release</code>. Do not use <strong>Becomes equal to</strong>: the two consecutive orders in each outcome must both be handled.</li>
+<li>
+<p>Create each custom action through <strong>Action → Type → New custom action</strong>, copy its own connection information and choose <strong>Open flow builder</strong>. Authenticate the Data Activator connector, connect the approved test OMS operation, save the flow, then return to Activator.</p>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Action</th>
+<th>Exact dynamic input mappings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hold</code></td>
+<td><code>Hold order</code></td>
+<td><code>order_id</code> → <code>order_id</code>; <code>risk_score</code> → <code>risk_score</code></td>
+</tr>
+<tr>
+<td><code>manual_review</code></td>
+<td><code>Request manual review</code></td>
+<td><code>order_id</code> → <code>order_id</code>; <code>customer_id</code> → <code>customer_id</code>; <code>risk_score</code> → <code>risk_score</code></td>
+</tr>
+<tr>
+<td><code>release</code></td>
+<td><code>Release order</code></td>
+<td><code>order_id</code> → <code>order_id</code></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>In each rule, choose its saved custom action, select <strong>Edit action</strong>, map the exact event fields above, save and activate the rule. Use the trigger's <strong>Activation ID</strong> (<code>eventId</code>) for the OMS's <code>x-activation-id</code> idempotency header. Never put a signed connection string in configuration, code or exported evidence.</p>
+</li>
+<li>Using the test OMS's approved registration operation, register all six <code>source_orders</code> returned by deployment as sample <code>pending</code> orders. Keep the supplied IDs and check each saved order's customer and score before running the sample.</li>
+<li>Confirm holds and review requests prohibit fulfillment, releases permit it, repeated Activation IDs are idempotent, and competing decisions cannot overwrite the stored action.</li>
+</ol>
+<p>Before continuing, check that each flow uses the intended test order system and can perform its assigned action. This exercise focuses on fulfillment decisions; optional event history is separate from its completion criteria.</p>
+<h2 id="4-evaluate-orders-and-inspect-enforcement">4. Evaluate orders and inspect enforcement</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.\</span><span class="n">test</span><span class="p">.</span><span class="n">bat</span> <span class="p">-</span><span class="n">-config</span> <span class="p">.\</span><span class="n">config</span><span class="p">.</span><span class="n">local</span><span class="p">.</span><span class="n">json</span> <span class="p">-</span><span class="n">-confirm-workspace</span> <span class="nv">$workspaceId</span>
+</code></pre></div>
+<p>Run the sample once to evaluate the six orders you registered. Expect two releases, two review requests and two holds. The order system should allow fulfillment only for the two released orders.</p>
+<table>
+<thead>
+<tr>
+<th>Sample order</th>
+<th>Supplied score</th>
+<th>Decision</th>
+<th>Expected saved OMS state</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Minimum release</td>
+<td><code>0</code></td>
+<td><code>release</code></td>
+<td><code>released</code></td>
+</tr>
+<tr>
+<td>Below review</td>
+<td><code>0.5499</code></td>
+<td><code>release</code></td>
+<td><code>released</code></td>
+</tr>
+<tr>
+<td>Exact review</td>
+<td><code>0.55</code></td>
+<td><code>manual_review</code></td>
+<td><code>review_requested</code></td>
+</tr>
+<tr>
+<td>Below hold</td>
+<td><code>0.8499</code></td>
+<td><code>manual_review</code></td>
+<td><code>review_requested</code></td>
+</tr>
+<tr>
+<td>Exact hold</td>
+<td><code>0.85</code></td>
+<td><code>hold</code></td>
+<td><code>held</code></td>
+</tr>
+<tr>
+<td>Maximum hold</td>
+<td><code>1</code></td>
+<td><code>hold</code></td>
+<td><code>held</code></td>
+</tr>
+</tbody>
+</table>
+<p>Use the prepared order IDs to check the flows and saved order states below. Allow time for the responses before checking fulfillment.</p>
+<h3 id="evaluation-criteria">Evaluation criteria</h3>
+<ol>
+<li>Use <code>source_run_id</code> and the six prepared order IDs to find this exercise's results. Compare each order's decision with the table.</li>
+<li>Match the six Power Automate responses to their orders using the Activation ID and order ID. Expect two releases, two review requests and two holds, with no competing response for an order.</li>
+<li>In the test OMS, check one saved action per order and the states in the table. The two review requests should have stable request IDs and <code>review_completed = false</code>; they are still awaiting human review.</li>
+<li>Attempt fulfillment through the test OMS. The four held or review-requested orders should return HTTP <code>409</code>. The two released orders should complete fulfillment and show a saved <code>fulfilled</code> state.</li>
+<li>Check that the response used the right order, customer and decision time. Scores use single-precision numbers (float32), so minor display differences are expected; allow <code>1e-6</code> when comparing them without rounding the original score before evaluation.</li>
+</ol>
+<p>The exercise finishes when the two released orders can be fulfilled and the other four remain blocked, with review requests still awaiting human review. See <a href="#optional-event-history">Optional event history</a> for received-event analysis and its creation-time conditions.</p>
+<h2 id="optional-event-history">Optional event history</h2>
+<p>The dashed branch in the business architecture is an extension, not another completion requirement. Choose <strong>Analyze in Eventhouse</strong> and its destination <strong>during Business Event creation</strong> if you are configuring an event natively with managed history. The package does not configure this association. Skip these queries for its deployed event; this Workbook does not provide a supported post-creation association procedure.</p>
+<p>A source Eventhouse, a same-name table or a direct table write is not a managed Business Event subscription. History records received findings, not completed actions. Received-record counts can include repeated publications or deliveries and do not describe the full source population.</p>
+<p>The following queries apply only to that creation-time history destination. Check delivered notifications or saved business outcomes separately. Keep currencies separate when comparing amounts.</p>
+<details class="info">
+<summary>History queries</summary>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">[</span><span class="s">'Ecommerce.Order.FraudDecision'</span><span class="p">]</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">|</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="k">startswith</span><span class="w"> </span><span class="s">"&lt;your-fresh-order-prefix&gt;"</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="p">|</span><span class="w"> </span><span class="k">project</span><span class="w"> </span><span class="n">order_id</span><span class="p">,</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="n">risk_score</span><span class="p">,</span><span class="w"> </span><span class="n">decision</span><span class="p">,</span><span class="w"> </span><span class="n">decided_at</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">|</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">order_id</span><span class="w"> </span><span class="n">asc</span>
+</code></pre></div>
+</details>
+<p>See <a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/business-events-eventhouse">Business Events and Eventhouse</a>.</p>
+<h2 id="implementation-reference">Implementation reference</h2>
+<p>Expand the details you need to understand or adapt the solution. This is reference, not a second setup tutorial. The package's default schema-set name is <code>OrderRiskSchema</code>. Standalone examples may use the original illustrative alias; match the connection alias to your configured schema set before reusing code. Event names and payload fields remain unchanged.</p>
+<details class="info">
+<summary>Event contract</summary>
+<p>The shared event fields are unchanged. The package prepares this contract; inspect it rather than creating a second event.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>order_id</code></td>
+<td><code>string</code></td>
+<td>Order receiving the decision</td>
+</tr>
+<tr>
+<td><code>customer_id</code></td>
+<td><code>string</code></td>
+<td>Customer associated with the order</td>
+</tr>
+<tr>
+<td><code>risk_score</code></td>
+<td><code>float</code></td>
+<td>Supplied score between 0 and 1</td>
+</tr>
+<tr>
+<td><code>decision</code></td>
+<td><code>string</code></td>
+<td><code>hold</code>, <code>manual_review</code> or <code>release</code></td>
+</tr>
+<tr>
+<td><code>decided_at</code></td>
+<td><code>string</code></td>
+<td>Decision time in timezone-aware UTC</td>
+</tr>
+</tbody>
+</table>
+</details>
+<details class="info">
+<summary>Source and publisher reference</summary>
+<p>These snippets explain the source and publication logic. Use the prepared publisher for the main exercise; standalone examples are not an additional source run.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">fabric.functions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fn</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">udf</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">UserDataFunctions</span><span class="p">()</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">required_text</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">maximum</span><span class="p">):</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be a non-empty string"</span><span class="p">)</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maximum</span><span class="p">:</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be at most </span><span class="si">{</span><span class="n">maximum</span><span class="si">}</span><span class="s2"> characters"</span><span class="p">)</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="k">return</span> <span class="n">value</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="nd">@udf</span><span class="o">.</span><span class="n">connection</span><span class="p">(</span><span class="n">argName</span><span class="o">=</span><span class="s2">"businessEventsClient"</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">"OrderRiskSchema"</span><span class="p">)</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="nd">@udf</span><span class="o">.</span><span class="n">function</span><span class="p">()</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">evaluate_order_risk</span><span class="p">(</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="n">businessEventsClient</span><span class="p">:</span> <span class="n">fn</span><span class="o">.</span><span class="n">FabricBusinessEventsClient</span><span class="p">,</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>    <span class="n">orderId</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>    <span class="n">customerId</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    <span class="n">riskScore</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>    <span class="n">decidedAt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>    <span class="n">orderId</span> <span class="o">=</span> <span class="n">required_text</span><span class="p">(</span><span class="n">orderId</span><span class="p">,</span> <span class="s2">"orderId"</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>    <span class="n">customerId</span> <span class="o">=</span> <span class="n">required_text</span><span class="p">(</span><span class="n">customerId</span><span class="p">,</span> <span class="s2">"customerId"</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">riskScore</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">riskScore</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"riskScore must be a number"</span><span class="p">)</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">riskScore</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">riskScore</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"riskScore must be finite and between 0 and 1"</span><span class="p">)</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>    <span class="n">decidedAt</span> <span class="o">=</span> <span class="n">required_text</span><span class="p">(</span><span class="n">decidedAt</span><span class="p">,</span> <span class="s2">"decidedAt"</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>    <span class="n">instant</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">decidedAt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"Z"</span><span class="p">,</span> <span class="s2">"+00:00"</span><span class="p">))</span>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>    <span class="k">if</span> <span class="n">instant</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">instant</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">()</span> <span class="o">!=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"decidedAt must use timezone-aware UTC"</span><span class="p">)</span>
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>    <span class="n">decision</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>        <span class="s2">"hold"</span> <span class="k">if</span> <span class="n">riskScore</span> <span class="o">&gt;=</span> <span class="mf">0.85</span>
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>        <span class="k">else</span> <span class="s2">"manual_review"</span> <span class="k">if</span> <span class="n">riskScore</span> <span class="o">&gt;=</span> <span class="mf">0.55</span>
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>        <span class="k">else</span> <span class="s2">"release"</span>
+<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a>    <span class="p">)</span>
+<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>    <span class="n">businessEventsClient</span><span class="o">.</span><span class="n">PublishEvent</span><span class="p">(</span>
+<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a>        <span class="nb">type</span><span class="o">=</span><span class="s2">"Ecommerce.Order.FraudDecision"</span><span class="p">,</span>
+<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>        <span class="n">event_data</span><span class="o">=</span><span class="p">{</span>
+<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a>            <span class="s2">"order_id"</span><span class="p">:</span> <span class="n">orderId</span><span class="p">,</span>
+<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a>            <span class="s2">"customer_id"</span><span class="p">:</span> <span class="n">customerId</span><span class="p">,</span>
+<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a>            <span class="s2">"risk_score"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">riskScore</span><span class="p">),</span>
+<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a>            <span class="s2">"decision"</span><span class="p">:</span> <span class="n">decision</span><span class="p">,</span>
+<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a>            <span class="s2">"decided_at"</span><span class="p">:</span> <span class="n">instant</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"+00:00"</span><span class="p">,</span> <span class="s2">"Z"</span><span class="p">),</span>
+<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>        <span class="p">},</span>
+<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a>        <span class="n">data_version</span><span class="o">=</span><span class="s2">"v1"</span><span class="p">,</span>
+<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a>    <span class="p">)</span>
+<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">"decision"</span><span class="p">:</span> <span class="n">decision</span><span class="p">,</span> <span class="s2">"event_published"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+</code></pre></div>
+</details>
+<details class="info">
+<summary>Response and mapping reference</summary>
+<p>Use these field and response details to understand the prepared resources. Complete only the connections identified in the main steps.</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Match</th>
+<th>Custom action</th>
+<th>Exact input fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Hold order</code></td>
+<td><code>hold</code></td>
+<td><code>Hold order</code></td>
+<td><code>order_id</code>, <code>risk_score</code></td>
+</tr>
+<tr>
+<td><code>Request manual review</code></td>
+<td><code>manual_review</code></td>
+<td><code>Request manual review</code></td>
+<td><code>order_id</code>, <code>customer_id</code>, <code>risk_score</code></td>
+</tr>
+<tr>
+<td><code>Release order</code></td>
+<td><code>release</code></td>
+<td><code>Release order</code></td>
+<td><code>order_id</code></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Flow</th>
+<th>Example test API operation</th>
+<th>Dynamic body fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hold</td>
+<td><code>POST /orders/{order_id}/hold</code></td>
+<td><code>risk_score</code></td>
+</tr>
+<tr>
+<td>Review</td>
+<td><code>POST /orders/{order_id}/manual_review</code></td>
+<td><code>customer_id</code>, <code>risk_score</code></td>
+</tr>
+<tr>
+<td>Release</td>
+<td><code>POST /orders/{order_id}/release</code></td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</details>
+<details class="info">
+<summary>Payload and inspection reference</summary>
+<p>These individual examples explain payloads and inspection. They are not another test dataset or a second set of expected results; use the complete sample in the main steps.</p>
+<table>
+<thead>
+<tr>
+<th>Score</th>
+<th>Expected decision</th>
+<th>Expected OMS state</th>
+<th>Fulfillment check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td><code>release</code></td>
+<td><code>released</code></td>
+<td>Allowed; subsequently read <code>fulfilled</code></td>
+</tr>
+<tr>
+<td><code>0.5499</code></td>
+<td><code>release</code></td>
+<td><code>released</code></td>
+<td>Allowed; subsequently read <code>fulfilled</code></td>
+</tr>
+<tr>
+<td><code>0.55</code></td>
+<td><code>manual_review</code></td>
+<td><code>review_requested</code></td>
+<td>HTTP <code>409</code></td>
+</tr>
+<tr>
+<td><code>0.8499</code></td>
+<td><code>manual_review</code></td>
+<td><code>review_requested</code></td>
+<td>HTTP <code>409</code></td>
+</tr>
+<tr>
+<td><code>0.85</code></td>
+<td><code>hold</code></td>
+<td><code>held</code></td>
+<td>HTTP <code>409</code></td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td><code>hold</code></td>
+<td><code>held</code></td>
+<td>HTTP <code>409</code></td>
+</tr>
+</tbody>
+</table>
+</details>
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/fabric/real-time-intelligence/data-activator/activator-trigger-power-automate-flows#pass-an-input-field-to-your-flow">documented custom-property expression</a></li>
+</ul>
+<p><span id="architecture"></span>
+<span id="business-context"></span>
+<span id="consumer-1-activator-power-automate"></span>
+<span id="consumer-2-independent-decision-history"></span>
+<span id="deploy-this-scenario"></span>
+<span id="fraud-response-before-fulfillment"></span>
+<span id="step-1-create-the-business-event"></span>
+<span id="step-2-create-the-policy-publisher"></span>
+<span id="step-3-connect-the-operational-responses"></span>
+<span id="step-4-test-from-the-original-source"></span>
+<span id="what-happens-next"></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+
+<section class="community-invitation" aria-labelledby="community-invitation-title">
+  <h2 id="community-invitation-title">What are you building?</h2>
+  <p>Ask a question, share your scenario, or help shape the next developer guide.</p>
+  <a class="md-button md-button--primary" href="https://www.reddit.com/r/MicrosoftFabric/search/?q=flair%3A%22Real-Time+Intelligence%22+%28%5BBusiness+Events%5D+OR+%5BFabric+Events%5D+OR+%5BAzure+Events%5D%29&restrict_sr=1&sort=new" target="_blank" rel="noopener noreferrer">Join the conversation on Reddit &rarr;</a>
+</section>
+
+<!-- Ask in our community floating button -->
+<div style="
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+">
+  <button onclick="document.getElementById('reddit-modal').style.display='flex'" style="
+    background: #FF4500;
+    color: white;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.75rem 1.25rem;
+    font-size: var(--site-text-size);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: Inter, sans-serif;
+  ">
+    💬 Ask in our community
+  </button>
+</div>
+
+<!-- Reddit modal -->
+<div id="reddit-modal" style="
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+">
+  <div style="
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 680px;
+    margin: 1rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    font-family: Inter, sans-serif;
+  ">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+      <h3 style="margin:0; font-size:calc(1.25rem - 1px); color:#111827;">Ask in our community</h3>
+      <button onclick="document.getElementById('reddit-modal').style.display='none'" style="
+        background:none; border:none; cursor:pointer; font-size:var(--site-text-size); color:#6B7280; line-height:1;
+      ">✕</button>
+    </div>
+
+    <p style="font-size:var(--site-text-size); color:#6B7280; margin:0 0 1.25rem 0;">
+      Join developers discussing Microsoft Fabric on Reddit.<br>Not a member yet? <a href="https://www.reddit.com/r/MicrosoftFabric/" target="_blank" style="color:#FF4500; text-decoration:none;">Join r/MicrosoftFabric</a>.
+    </p>
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Topic
+    </label>
+    <select id="reddit-pillar" style="
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.625rem 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      background: white;
+      margin-bottom: 1.25rem;
+      box-sizing: border-box;
+      outline: none;
+    ">
+      <option value="Business Events">Business Events</option>
+      <option value="Fabric Events">Fabric Events</option>
+      <option value="Azure Events">Azure Events</option>
+    </select>
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Title
+    </label>
+    <input id="reddit-title" type="text" placeholder="Brief summary of your question" style="
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.625rem 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      margin-bottom: 1.25rem;
+      box-sizing: border-box;
+      outline: none;
+    ">
+
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
+      Question
+    </label>
+    <textarea id="reddit-question" placeholder="What would you like to ask?" style="
+      width: 100%;
+      min-height: 180px;
+      border: 1px solid #D1D5DB;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-size: var(--site-text-size);
+      font-family: Inter, sans-serif;
+      color: #111827;
+      resize: vertical;
+      box-sizing: border-box;
+      outline: none;
+      line-height: 1.5;
+    "></textarea>
+
+    <div style="display:flex; gap:0.75rem; margin-top:1rem; justify-content:flex-end;">
+      <button onclick="document.getElementById('reddit-modal').style.display='none'" style="
+        background:none; border:1px solid #D1D5DB; border-radius:0.5rem;
+        padding:0.5rem 1rem; font-size:var(--site-text-size); cursor:pointer; color:#374151;
+        font-family: Inter, sans-serif;
+      ">Cancel</button>
+      <button onclick="openRedditPost()" style="
+        background:#FF4500; color:white; border:none; border-radius:0.5rem;
+        padding:0.5rem 1rem; font-size:var(--site-text-size); font-weight:600; cursor:pointer;
+        font-family: Inter, sans-serif;
+      ">Post on Reddit →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openRedditPost() {
+  var title = document.getElementById('reddit-title').value.trim();
+  var question = document.getElementById('reddit-question').value.trim();
+  if (!title) { document.getElementById('reddit-title').focus(); return; }
+  if (!question) { document.getElementById('reddit-question').focus(); return; }
+
+  var pillar = document.getElementById('reddit-pillar').value;
+  var fullTitle = '[' + pillar + '] ' + title;
+  var bodyText = question + '\n\n// Asked from the Fabric Events developer site: https://microsoft.github.io/fabric-events';
+
+  var url = 'https://www.reddit.com/r/MicrosoftFabric/submit?flair_id=ecd6bad8-fb22-11ed-bcbb-8e4e63079c0e&title=' + encodeURIComponent(fullTitle) + '&text=' + encodeURIComponent(bodyText);
+  window.open(url, '_blank');
+  document.getElementById('reddit-modal').style.display = 'none';
+  document.getElementById('reddit-title').value = '';
+  document.getElementById('reddit-question').value = '';
+  document.getElementById('reddit-pillar').value = 'Business Events';
+}
+
+document.getElementById('reddit-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+</script>
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Built with <span class="heart">&#10084;</span> by the Fabric Events team
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/microsoft/fabric-events/discussions" target="_blank" rel="noopener" title="Join the discussion on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes", "navigation.top", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotate"], "search": "../../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+        <script src="../../../../javascripts/scenario-diagrams.js" type="module"></script>
+      
+    
+  </body>
+</html>
