@@ -34,9 +34,9 @@ A separate process that interprets the amount condition again can also select a 
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-The payment flow selects transactions above the sample review threshold and publishes each qualifying finding as a Business Event. The finding starts case preparation with the same transaction, amount and currency that caused it to qualify.
+A qualifying payment starts case preparation with the same transaction, amount and currency that caused it to qualify. The payment flow selects transactions above the sample review threshold and publishes each qualifying finding as a Business Event.
 
 ```mermaid
 flowchart TB

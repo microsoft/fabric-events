@@ -35,9 +35,9 @@ Finance also needs the figures that prompted the concern, not just whatever valu
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-A new crossing into a qualifying shortfall publishes a Business Event containing the region, period, revenue and target context. That moment starts preparation of an investigation from the triggering figures. Continued observations below the threshold do not create more investigations.
+A new crossing into a qualifying shortfall starts preparation of an investigation from the triggering region, period, revenue and target figures. Those facts are shared as a Business Event. Continued observations below the threshold do not create more investigations.
 
 ```mermaid
 flowchart TB

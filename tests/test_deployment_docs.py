@@ -357,10 +357,13 @@ class DeploymentDocumentationTests(unittest.TestCase):
                 workbook = workbook_path(scenario).read_text(encoding="utf-8")
                 headings = re.findall(r"(?m)^## ([^\n]+)", overview)
                 self.assertEqual(headings, [
-                    "Business Context", "Current Problem", "Business Events",
+                    "Business Context", "Current Problem",
+                    "Improved Business Response {#business-events}",
                     "Event-driven architecture {#architecture}",
                     "Business outcome and boundaries", "Try the Workbook",
                 ])
+                rendered = markdown.markdown(overview, extensions=["toc", "attr_list", "pymdownx.superfences"])
+                self.assertIn('<h2 id="business-events">Improved Business Response</h2>', rendered)
                 self.assertIn(f"[Workbook]({scenario}/deployment.md){{#deploy-this-scenario}}", overview)
                 self.assertEqual({language for language, _ in code_blocks(overview)}, {"mermaid"})
                 self.assertIn("Where the exercise stops", overview)
@@ -389,13 +392,14 @@ class DeploymentDocumentationTests(unittest.TestCase):
                 )[0]
                 context_prose = re.sub(r"```.*?```", "", context, flags=re.S)
                 problem = overview.split("## Current Problem\n", 1)[1].split(
-                    "## Business Events", 1,
+                    "## Improved Business Response", 1,
                 )[0]
                 self.assertNotRegex(context_prose + problem, rf"\bBusiness Events?\b|{implementation}")
-                solution = overview.split("## Business Events\n", 1)[1].split(
+                solution = overview.split("## Improved Business Response {#business-events}\n", 1)[1].split(
                     "## Event-driven architecture", 1,
                 )[0].strip()
                 self.assertIn("Business Event", solution)
+                self.assertNotRegex(solution.split(". ", 1)[0], r"\bBusiness Events?\b")
                 solution_content = re.sub(r"(?m)^```(?:mermaid)?[ \t]*\n?", "", solution)
                 self.assertNotRegex(solution_content, implementation)
                 architecture = overview.index("## Event-driven architecture")
@@ -436,7 +440,7 @@ class DeploymentDocumentationTests(unittest.TestCase):
                 workbook = workbook_path(scenario).read_text(encoding="utf-8")
                 diagrams = [body for language, body in code_blocks(overview) if language == "mermaid"]
                 context = overview.split("## Business Context\n", 1)[1].split("## Current Problem", 1)[0]
-                business = overview.split("## Business Events\n", 1)[1].split(
+                business = overview.split("## Improved Business Response {#business-events}\n", 1)[1].split(
                     "## Event-driven architecture", 1,
                 )[0]
                 architecture = overview.split("## Event-driven architecture {#architecture}\n", 1)[1].split(

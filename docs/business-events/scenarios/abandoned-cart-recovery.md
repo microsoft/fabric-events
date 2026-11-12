@@ -34,9 +34,9 @@ The team needs selective outreach and a complete cart-level task register, both 
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
-The storefront's abandonment finding is published as a Business Event and reaches two independent responses. One sends reminders for qualifying cart values; the other registers a follow-up task for every valid cart, keeping different carts from the same customer separate.
+One response sends reminders for qualifying cart values; another registers a follow-up task for every valid cart, keeping different carts from the same customer separate. The storefront's abandonment finding is published as a Business Event and reaches these two independent responses.
 
 ```mermaid
 flowchart TB

@@ -34,7 +34,7 @@ If each follow-up process also interprets the policy separately, the same propos
 <span id="why-business-events"></span>
 <span id="business-value"></span>
 
-## Business Events
+## Improved Business Response {#business-events}
 
 The proposal is evaluated once and the result is returned to the seller. When manager or executive review is required, the same result is shared as a Business Event with the proposal context and reason. Within-policy proposals do not create review notifications.
 
