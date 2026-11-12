@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {connectionPorts, connectorFrames, connectorOrder, connectorPath, graphParts, readingOrder, wrapGraph} from "../docs/javascripts/scenario-diagram-layout.mjs";
+import {connectionPorts, connectorFrames, connectorOrder, connectorPath, frameLabelBays, graphParts, readingOrder, wrapGraph} from "../docs/javascripts/scenario-diagram-layout.mjs";
 
 test("reflow recognizes chains, independent branches, feedback and bidirectional arrows", () => {
   const graph = `flowchart TB
@@ -136,6 +136,24 @@ test("fanout, convergence and parallel connections use separate attachment point
   assert.equal(ports[6].startX, 150);
   assert.deepEqual(connectionPorts([{from: "SOURCE", to: "TARGET"}], 150),
     [{startX: 150, endX: 150}]);
+});
+
+test("internal labels can gain a reading bay without enclosing a neighboring response", () => {
+  const frame = {left: 0, right: 240, top: 200, bottom: 600};
+  const outreach = {left: 260, right: 440, top: 200, bottom: 280};
+  const bays = frameLabelBays(frame, [outreach], {left: 0, right: 440}, 752, 144);
+  assert.ok(bays.some(box => box.left === -64));
+  assert.ok(bays.every(box => box.right < outreach.left - 8));
+  assert.ok(bays.every(box => box.top === frame.top && box.bottom === frame.bottom));
+});
+
+test("frame label space preserves parallel responses only when the content column can contain it", () => {
+  const frame = {left: 0, right: 676, top: 200, bottom: 524};
+  const content = {left: 0, right: 676};
+  const bays = frameLabelBays(frame, [], content, 752, 112);
+  assert.ok(bays.some(box => box.right === 700));
+  assert.ok(bays.every(box => box.right - box.left + 32 <= 752));
+  assert.deepEqual(frameLabelBays(frame, [], content, 390, 112), []);
 });
 
 test("perpendicular routes cross with a visible hop, not a false junction", () => {
