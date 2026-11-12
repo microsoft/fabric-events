@@ -1,0 +1,17 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "real-time-viewer-recommendations",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "Viewer",
+  "event_name": "Streaming.Viewer.BehaviorDetected",
+  "accept_preview_apis": true,
+  "resource_names": {
+    "schema": "ViewerSchema",
+    "publisher": "ViewerPublisher",
+    "activator": "ViewerActions",
+    "record_store": "ViewerRecommendations",
+    "response_function": "ViewerRefresh"
+  }
+}

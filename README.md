@@ -25,8 +25,6 @@ This site grows with the community. If you have a scenario to share, a recipe to
 3. Add or edit content under `docs/`
 4. Open a pull request
 
-See [INSTRUCTIONS.md](INSTRUCTIONS.md) for the full content guide, naming conventions, and deploy commands.
-
 ---
 
 ## Discussions

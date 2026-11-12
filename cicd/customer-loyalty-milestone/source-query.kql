@@ -1,0 +1,7 @@
+declare query_parameters(startTime:datetime = datetime(1970-01-01), endTime:datetime = datetime(9999-12-31));
+CustomerSpendSnapshots
+| where observed_at >= startTime and observed_at <= endTime
+| extend milestone_tier = 'gold',
+    detected_at = strcat(format_datetime(observed_at, 'yyyy-MM-dd'), 'T', format_datetime(observed_at, 'HH:mm:ss.fff'), 'Z')
+| project observed_at, customer_id, customer_name, milestone_tier, total_spend, store_id, detected_at
+| sort by observed_at asc

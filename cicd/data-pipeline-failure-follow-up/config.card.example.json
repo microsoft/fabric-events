@@ -1,0 +1,17 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "data-pipeline-failure-follow-up",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "DataOps",
+  "event_name": "DataOps.Pipeline.RunCompleted",
+  "accept_preview_apis": true,
+  "resource_names": {
+    "schema": "DataOpsSchema",
+    "notebook": "DataOpsPublisher",
+    "activator": "DataOpsActions",
+    "case_store": "DataOpsCases",
+    "response_function": "DataOpsFollowUp"
+  }
+}

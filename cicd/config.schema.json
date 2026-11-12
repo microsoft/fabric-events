@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Public-only Business Events deployment configuration v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "configuration_version", "scenario_id", "tenant_id", "workspace_id", "auth_provider",
+    "resource_prefix", "event_name", "resource_names", "accept_preview_apis"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "configuration_version": {"enum": ["2.0", "2.1", "2.2"]},
+    "teams_recipients": {
+      "type": "array", "minItems": 1, "maxItems": 10, "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^(@me|[^@\\s]+@[^@\\s]+\\.[^@\\s]+)$"}
+    },
+    "teams_chat_id": {
+      "type": ["string", "null"], "pattern": "^[A-Za-z0-9_:@.+-]{1,256}$",
+      "description": "Approved individual Activator chat for Graph E2E readback. Not required for windows_ui."
+    },
+    "teams_verifier": {
+      "enum": ["graph", "windows_ui"],
+      "description": "windows_ui reads actual cards in the signed-in Windows Teams desktop app, without Graph permissions or a chat ID. Legacy configs default to graph."
+    },
+    "scenario_id": {"enum": ["sales-volume-alert", "sales-volume", "real-time-stream-alert", "high-value-payment", "low-stock-threshold", "discount", "inventory", "revenue-below-target", "revenue", "fraud"]},
+    "tenant_id": {"type": ["string", "null"], "format": "uuid"},
+    "workspace_id": {"type": ["string", "null"], "format": "uuid"},
+    "auth_provider": {"enum": ["azure_cli", "fabric_cli"]},
+    "resource_prefix": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]{2,39}$"},
+    "event_name": {"type": "string", "minLength": 3, "maxLength": 80, "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$"},
+    "accept_preview_apis": {"type": "boolean"},
+    "resource_names": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema"],
+      "patternProperties": {
+        "^(schema|publisher|activator|eventstream|eventhouse|database|notebook|source|queryset|dashboard|report|pipeline|record_store|response_notebook|response_pipeline|response_function)$": {
+          "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{2,99}$"
+        }
+      },
+      "description": "Runtime validation additionally requires this scenario's exact reviewed roles and distinct names."
+    }
+  },
+  "allOf": [{
+      "if": {"properties": {"scenario_id": {"enum": ["sales-volume-alert", "sales-volume"]}}, "required": ["scenario_id"]},
+      "then": {"properties": {"configuration_version": {"const": "2.1"}}, "required": ["teams_recipients"]},
+      "else": {
+        "properties": {"configuration_version": {"enum": ["2.0", "2.2"]}},
+        "not": {"anyOf": [{"required": ["teams_recipients"]}, {"required": ["teams_chat_id"]}, {"required": ["teams_verifier"]}]}
+      }
+    }, {
+      "if": {"properties": {"scenario_id": {"enum": ["real-time-stream-alert", "high-value-payment", "low-stock-threshold", "inventory"]}}, "required": ["scenario_id"]},
+      "then": {
+        "properties": {"configuration_version": {"const": "2.2"}, "resource_names": {
+          "required": ["schema", "publisher", "activator", "record_store"]
+        }},
+        "allOf": [{
+          "if": {"properties": {"scenario_id": {"enum": ["low-stock-threshold", "inventory"]}}},
+          "then": {"properties": {"resource_names": {
+            "required": ["response_notebook", "response_pipeline"],
+            "propertyNames": {"enum": ["schema", "publisher", "activator", "record_store", "response_notebook", "response_pipeline"]}
+          }}},
+          "else": {"properties": {"resource_names": {
+            "required": ["response_function"],
+            "propertyNames": {"enum": ["schema", "publisher", "activator", "record_store", "response_function"]}
+          }}}
+        }]
+      },
+      "else": {"properties": {"resource_names": {"required": ["schema", "eventhouse", "database"]}}}
+    }]
+}

@@ -1,211 +1,116 @@
 # Revenue Below Target
 
-**Publisher:** Activator | **Consumers:** Activator, Eventhouse
+## Business Context
 
-## Business context
+Finance and regional leaders monitor revenue against the target for each region and reporting period. A performance view shows the latest revenue, target and variance, while the underlying observations retain how that position has changed. The same region can stay below plan through several updates, recover and then fall behind again.
 
-A sales team tracks revenue against regional targets in a Power BI report. When revenue falls more than 15% below the target for the same reporting period, the business owner needs a notification and refreshed investigation data. Sales operations also needs a history of the detected shortfalls to compare patterns across regions and periods.
-
-**The problem without Business Events:**
-A direct alert can notify the first owner. If each downstream workflow also calculates the variance, the threshold definition and reporting context can drift between teams. Adding historical analysis should not require another detector.
-
-**The solution with Business Events:**
-An Activator publisher monitors the report's revenue-variance measure and publishes `Sales.Revenue.BelowTarget` when the variance crosses below -15%. Independent Activator consumer rules notify the owner and run an investigation-data pipeline. Eventhouse stores the same signal for historical analysis. A stored shortfall is not proof that the owner responded or that revenue recovered.
-
-## Architecture
+In this scenario, a finance analyst decides whether the latest observation warrants a new investigation, then assembles the figures for regional review. That decision requires more than the current percentage: the analyst must distinguish a continuing issue from a renewed decline and retain the values that prompted concern. Otherwise, each refresh can create more work for the same shortfall, or a later decline can be dismissed as something the team is already investigating.
 
 ```mermaid
 flowchart TB
-    PBI[Power BI report\nRevenue and target by region]
-    PUB{Activator publisher\nVariance becomes less than -15%}
-    BE([Business Event\n'Sales.Revenue.BelowTarget'])
-    ALERT[Activator consumer\nTeams notification]
-    PIPE[Activator consumer\nInvestigation data pipeline]
-    EH[(Eventhouse\nShortfall history)]
-    KQL[KQL analysis\nRegion and reporting period]
-
-    PBI --> PUB
-    PUB -->|Publish finding| BE
-    BE --> ALERT
-    BE --> PIPE
-    BE -->|Auto-ingest| EH
-    EH --> KQL
+    S[("<b>Revenue records</b><br/>Region and period<br/>Revenue and target")]
+    C["<b>Performance analysis</b><br/>Compares revenue<br/>against target"]
+    V["<b>Performance view</b><br/>Regional variance"]
+    subgraph GAP["Gap: A shortfall is not yet<br/>a distinct investigation"]
+        A{"Does finance identify<br/>a new shortfall?"}:::businessGap
+        P["<b>Investigation preparation</b><br/>Captures the<br/>triggering figures"]:::businessGap
+    end
+    I[("<b>Investigation worklist</b><br/>Region and period")]
+    S -->|"Read figures"| C
+    C -->|"Show variance"| V
+    V -->|"Review change"| A
+    A -->|"New issue"| P
+    A -->|"Same issue"| V
+    P -->|"Save context"| I
+    classDef businessGap fill:#FFF4CE,stroke:#C88700,color:#000000
+    style GAP fill:none,stroke:#C88700,stroke-width:1.5px
 ```
 
-| Component | Role |
-|---|---|
-| Source | Power BI report backed by a semantic model with revenue and targets for the same period and currency |
-| Publisher | Activator detects a variance crossing below -15% |
-| Consumer 1 | Independent Activator rules notify the owner and run an investigation-data pipeline |
-| Consumer 2 | Eventhouse stores received shortfall signals for analysis |
-| Schema set | `SalesPerformance` |
-| Event type and KQL table | `Sales.Revenue.BelowTarget` |
+## Current Problem
 
-Before starting, prepare a test report and a Data Factory pipeline that refreshes investigation data. The pipeline is a consumer action, not the source of the report's threshold calculation.
+The current revenue position does not, by itself, distinguish a new reason to investigate from another observation of an existing shortfall. Opening work on every refresh creates noise; treating every later decline as the old issue can miss a renewed problem after recovery.
 
-## Step 1: Create the Business Event
+Finance also needs the figures that prompted the concern, not just whatever values happen to be displayed when someone begins the review.
 
-1. Go to [Real-Time Hub, Business Events, Create](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/create-business-events).
-2. Create or select an Event Schema Set named `SalesPerformance`.
-3. Name the event `Sales.Revenue.BelowTarget`.
-4. In the schema editor, paste:
+<span id="why-business-events"></span>
+<span id="business-value"></span>
 
-    ```json
-    {
-      "type": "record",
-      "name": "Sales.Revenue.BelowTarget",
-      "fields": [
-        {
-          "name": "region",
-          "type": "string",
-          "doc": "Sales region whose revenue is below target"
-        },
-        {
-          "name": "period_start",
-          "type": "string",
-          "doc": "Start of the reporting period in ISO 8601 format"
-        },
-        {
-          "name": "revenue",
-          "type": "double",
-          "doc": "Revenue for the reporting period in the report's currency"
-        },
-        {
-          "name": "target",
-          "type": "double",
-          "doc": "Positive revenue target for the same reporting period and currency"
-        },
-        {
-          "name": "variance_pct",
-          "type": "double",
-          "doc": "100 * (revenue - target) / target; negative values mean below target"
-        },
-        {
-          "name": "detected_at",
-          "type": "string",
-          "doc": "Time the publisher detected the shortfall, ISO 8601 UTC format"
-        }
-      ]
-    }
-    ```
+## Business Events
 
-5. Keep **Analyze in Eventhouse** enabled. Create a new Eventhouse or select an existing one in your workspace. Fabric automatically creates the dedicated `Sales.Revenue.BelowTarget` KQL table.
-6. Select **Create**.
+A new crossing into a qualifying shortfall publishes a Business Event containing the region, period, revenue and target context. That moment starts preparation of an investigation from the triggering figures. Continued observations below the threshold do not create more investigations.
 
-## Step 2: Publisher - Activator on a Power BI report
-
-### Prepare the report
-
-Use a test semantic model with a `RevenuePerformance` table containing `region`, `period_start`, `revenue`, and `target`. Keep one reporting period and currency in the test report's filter context. Start with one region, for example `West`, revenue `90000`, and target `100000`.
-
-Create a numeric measure for percentage variance:
-
-```dax
-variance_pct =
-VAR RevenueAmount = SUM(RevenuePerformance[revenue])
-VAR TargetAmount = SUM(RevenuePerformance[target])
-RETURN
-    IF(
-        TargetAmount > 0,
-        100 * DIVIDE(RevenueAmount - TargetAmount, TargetAmount)
-    )
+```mermaid
+flowchart TB
+    S["<b>Regional performance</b><br/>Compares revenue<br/>against target"]
+    D{"Has revenue variance crossed<br/>below -15%?"}
+    E(["<b>Business Event</b><br/>New revenue shortfall"])
+    subgraph VALUE["Improvement: Each new shortfall<br/>keeps its own investigation context"]
+        P["<b>Investigation preparation</b><br/>Uses the triggering<br/>revenue and target"]:::businessValue
+        Q[("<b>Saved investigations</b><br/>Region, period and figures")]:::businessValue
+    end
+    R["<b>Finance and regional leaders</b><br/>Review the shortfall"]
+    S -->|"Observe change"| D
+    D -->|"New crossing"| E
+    E -->|"Start investigation preparation"| P
+    P -->|"Preserve triggering figures"| Q
+    Q -->|"Make context available"| R
+    classDef businessValue fill:#DFF6DD,stroke:#107C10,color:#000000
+    style VALUE fill:none,stroke:#107C10,stroke-width:1.5px
 ```
 
-This measure returns `-10` for the starting values, not `-0.10`. Do not apply percentage formatting that multiplies it by 100 again. Zero or negative targets do not produce a valid variance in this example.
+Finance and regional leadership get a common starting point for discussing the gap, while a renewed decline after recovery can receive fresh attention. The event-driven handoff separates the business decision to investigate from the changing display of current performance.
 
-Create a supported report visual for revenue variance by region. Include the revenue, target, region, and period context needed for parameter mapping. The report's data refresh and the Activator evaluation cadence determine when a change is detected; publishing does not make the semantic model update continuously.
+## Event-driven architecture {#architecture}
 
-### Configure the publisher
+**Business signal:** `Sales.Revenue.BelowTarget`
 
-1. On the report visual, select **Set alert**, then **Open in Activator**.
-2. Monitor `variance_pct` and set the condition to **Becomes less than**, with value `-15`.
-3. In **Action**, select **Publish a business event**.
-4. Select `Sales.Revenue.BelowTarget`.
-5. Map the fields:
+**Publisher:** Activator (Business Event publication) | **Consumer(s):** Activator (Data Pipeline)
 
-    | Schema field | Source |
-    |---|---|
-    | `region` | Region from the monitored visual |
-    | `period_start` | Reporting period from the visual, or a static ISO 8601 value for the single-period test |
-    | `revenue` | Revenue for the monitored region and period |
-    | `target` | Target for the same region and period |
-    | `variance_pct` | The numeric variance measure |
-    | `detected_at` | Dynamic current UTC timestamp |
+```mermaid
+flowchart TB
+    SRC[("<b>Source Eventhouse</b><br/>Revenue snapshots")]
+    Q["<b>KQL query</b><br/>Calculates revenue variance"]
+    DASH["<b>Real-Time Dashboard</b><br/>Shows current<br/>regional performance"]
+    PUB{"Does <b>Activator</b> detect a crossing<br/>below -15%?"}
+    BE(["<b>Business Event</b><br/>Revenue below target"])
+    ACT["<b>Activator<br/>(Data Pipeline)</b><br/>Starts a response<br/>for each new shortfall"]
+    PIPE["<b>Data Pipeline</b><br/>Prepares investigation<br/>in a Notebook"]
+    EH[("<b>Eventhouse</b><br/>Published shortfall history")]
+    OUT[("<b>Lakehouse Files</b><br/>RevenueInvestigations")]
 
-6. Save and activate the publisher rule.
-
-For production data, supply the current period dynamically rather than leaving a static test value. See [Activator as a Business Events publisher](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-activator) for report entry points and field mapping.
-
-## Step 3: Consumers - Activator and Eventhouse
-
-### Consumer 1: Notify the business owner
-
-1. In Real-Time Hub, locate `Sales.Revenue.BelowTarget` under `SalesPerformance`.
-2. Select **Set alert** and name the rule `Revenue Shortfall - Owner Notification`.
-3. In **Monitor**, select **Business events** and connect to this event.
-4. Set **Condition** to `On each event`. The publisher already owns the shortfall threshold.
-5. In **Action**, select **Teams**, then **Channel post**, and choose the test sales-operations channel.
-6. Include `region`, `period_start`, `revenue`, `target`, and `variance_pct` in the context.
-7. Save the consumer rule.
-
-For multiple regional owners, configure the destination or region-specific consumer rules according to your ownership model.
-
-### Consumer 2: Refresh investigation data
-
-Create a second Activator consumer rule on the same Business Event, again using `On each event`. Name it `Revenue Shortfall - Investigation Data`, select the **Data Pipeline** action, and choose the prepared investigation-data pipeline. Configure any parameters required by that pipeline and save the rule.
-
-Keep this consumer separate from the publisher and notification rule. Do not have the investigation pipeline modify the source report's revenue or target values as part of this test.
-
-### Consumer 3: Analyze shortfalls in Eventhouse
-
-Open the Eventhouse KQL database selected in Step 1. No separate ingestion configuration is needed.
-
-**Inspect recent shortfalls:**
-
-```kusto
-['Sales.Revenue.BelowTarget']
-| order by ingestion_time() desc
-| take 50
+    SRC -->|"Read snapshots"| Q
+    Q -->|"Monitor observations"| PUB
+    Q -->|"Visualize current state"| DASH
+    PUB -->|"Publish crossing"| BE
+    BE -->|"Start response"| ACT
+    ACT -->|"Pass six event fields"| PIPE
+    BE -.->|"Analyze in Eventhouse"| EH
+    PIPE -->|"Persist with execution ID"| OUT
 ```
 
-**Compare received findings by region and reporting period:**
+1. The revenue query reads source observations from Eventhouse. The Dashboard shows current regional performance while the publishing Activator monitors the same business condition.
+2. A crossing strictly below -15% publishes a Business Event. Continued shortfall observations do not publish another crossing; recovery allows a later crossing to qualify.
+3. The consuming Activator starts the Data Pipeline with the triggering figures. The pipeline prepares and saves the investigation in Lakehouse Files without reading event history.
 
-```kusto
-['Sales.Revenue.BelowTarget']
-| where ingestion_time() > ago(30d)
-| summarize ReceivedFindings = count(), WorstVariancePct = min(variance_pct)
-    by region, period_start
-| order by ReceivedFindings desc, WorstVariancePct asc
-```
+The source Eventhouse is required for revenue observations. The Dashboard shows current performance; optional event history is a different branch and never supplies the pipeline's inputs.
 
-These are counts of received shortfall records, not unique incidents or lost revenue. Repeated publications or deliveries can increase counts. The table contains only published shortfalls, so measuring overall target attainment also requires the source revenue and target data.
+## Business outcome and boundaries
 
-Save the comparison query to a Real-Time Dashboard for sales operations. See [Eventhouse and Business Events integration](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-eventhouse).
+Prepare a traceable investigation dataset in Lakehouse Files for each new crossing, with status `ready_for_review`. The Workbook follows a shortfall, recovery and second crossing, producing two investigations.
 
-## Step 4: End-to-end test
+**Where the exercise stops:** The exact -15% boundary, continued observations below the threshold and recovery do not start another investigation. Zero or negative targets do not qualify. A saved analysis is not a reviewed recovery plan or proof that revenue improved.
 
-Use the test region and reporting period from Step 2. Allow the report to refresh and the Activator publisher to evaluate after each change.
+## Try the Workbook
 
-1. With revenue `90000` and target `100000`, confirm a variance of `-10`. Let the publisher observe this initial state.
-2. Change revenue to `85000`, refresh the report, and let the publisher evaluate. A variance of exactly `-15` should not publish an event because the condition is strictly less than `-15`.
-3. Change revenue to `80000`, refresh the report, and let the publisher evaluate. Confirm the `-20` shortfall in the Business Event's publisher data preview.
-4. Verify the Teams notification contains the same region, period, and variance.
-5. Verify the investigation-data pipeline run completes in its run history.
-6. In the Eventhouse database, run:
+The [Workbook](revenue-below-target/deployment.md){#deploy-this-scenario} brings preparation, connections, sample inputs, expected results and code reference into one place. Follow that single path to explore the outcome above.
 
-    ```kusto
-    ['Sales.Revenue.BelowTarget']
-    | where ingestion_time() > ago(1h)
-    | where region == "West"
-    | project ReceivedAt = ingestion_time(), region, period_start,
-        revenue, target, variance_pct
-    | order by ReceivedAt desc
-    ```
-
-7. Confirm a row for revenue `80000`, target `100000`, and variance `-20`. The boundary value `-15` should not appear as a newly published shortfall from this test.
-
-The test is complete only when the notification, pipeline run, and Eventhouse row are verified independently. Use a fresh region or isolate the test period when repeating the test so earlier findings are not mistaken for new ones.
-
-## What happens next
-
-Add regional response rules or analytics tiles using the same contract without changing the report's detector. Capture owner acknowledgement and investigation outcomes separately if you need to measure response effectiveness. The Business Event communicates a detected shortfall, not recovery or case completion.
+<span id="configure-the-publisher"></span>
+<span id="consumer-1-prepare-investigation-analysis"></span>
+<span id="optional-consumer-analyze-shortfalls-in-eventhouse"></span>
+<span id="prepare-the-source-and-dashboard"></span>
+<span id="shared-resource-names"></span>
+<span id="step-1-create-the-business-event"></span>
+<span id="step-2-publisher-activator-on-a-kql-query"></span>
+<span id="step-3-consumers-activator-data-pipeline-and-optional-eventhouse"></span>
+<span id="step-4-end-to-end-test"></span>
+<span id="what-happens-next"></span>

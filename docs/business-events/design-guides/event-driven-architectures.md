@@ -1,87 +1,79 @@
 # Event-Driven Architectures in Microsoft Fabric
 
-In a traditional data platform, workloads communicate by **polling or direct calls**: a service checks for changes on a schedule, or one workload calls another and waits for a response. This works, but it creates fragile dependencies and wastes compute on work that may find nothing to process.
+Scheduled checks and direct calls work well when timing and dependencies are explicit. They become less suitable when several teams need to react independently to the same finding, or when work should start after a specific change rather than another scheduled check.
 
-**Event-driven architecture** inverts this model. Instead of asking "has something changed?", workloads signal "something happened" the moment it occurs. Any interested service reacts immediately, independently, and only when there is real work to do.
+**Event-driven architecture** separates the fact from the response. A workload or service emits an event describing what happened. Subscribed workloads apply their own policies and start the relevant action, without the source having to call each recipient.
 
 ## Why it matters for Fabric
 
-Microsoft Fabric is a unified platform where notebooks, pipelines, eventstreams, and analytics workloads run side by side. This creates natural opportunities for event-driven patterns: a notebook that finishes a transformation can signal downstream consumers, a threshold condition in a stream can trigger an alert, a pipeline completion can kick off the next stage automatically.
+In Microsoft Fabric, this can mean bringing a store sales exception to operations, flagging a failed revenue refresh for finance support, or loading a supplier manifest after its arrival in Azure storage.
 
-Without an event model, these interactions require scheduled triggers, hard-coded dependencies, or manual orchestration. With events, each workload stays focused on its own responsibility and reacts to what matters.
+Each design needs an identifiable source, an event with a clear meaning, a policy that selects the relevant cases, and a concrete response. The event family depends on what happened: a business finding, a Fabric platform change, or a change in an Azure resource.
 
 ## The three event pillars
 
-**[Business Events](../introduction/what-are-business-events.md)** are explicitly defined and published by your code. You decide what the event represents, what data it carries, and when it fires.
+### Business Events: investigate a store sales drop
+
+Store operations needs to know which locations have a significant transaction-volume drop, with enough context to begin an investigation. A Notebook compares actual and expected hourly transactions and shares each store finding as a **[Business Event](../introduction/what-are-business-events.md)**. Activator owns the response policy: notify operations only when the deviation is strictly below -30%.
 
 ```mermaid
-flowchart LR
-    subgraph Your Code
-        NB[Notebook]
-        UDF[User Data Function]
-        ES[Eventstream]
-    end
+flowchart TB
+    S[("<b>Source Eventhouse</b><br/>Expected and actual<br/>transactions by store")]
+    NB["<b>Notebook</b><br/>Compares hourly<br/>store sales"]
+    BE(["<b>Business Event</b><br/>Store sales finding"])
+    ACT["<b>Activator</b><br/>Selects deviations<br/>below -30%"]
+    T["<b>Teams</b><br/>Operations receives<br/>the investigation context"]
+    H[("<b>Eventhouse</b><br/>Store finding history")]
 
-    subgraph RTH[Real-Time Hub]
-        BE([Business Event\n'Retail.Sales.VolumeAlert'])
-    end
-
-    subgraph Reactions
-        ACT[Activator\nAlert or action]
-        EH[Eventhouse\nAnalytics]
-    end
-
-    NB -->|you publish| BE
-    UDF -->|you publish| BE
-    ES -->|you publish| BE
-    BE -->|consume| ACT
-    BE -->|consume| EH
+    S -->|"Hourly sales"| NB
+    NB -->|"Store finding"| BE
+    BE -->|"Deviation"| ACT
+    ACT -->|"Sales exception"| T
+    BE -.->|"Optional history"| H
 ```
 
-**[Fabric Events](../../fabric-events/index.md)** are emitted automatically by the platform. You do not write code to publish them. You only decide how to react when they occur.
+The business contract is `Retail.Sales.VolumeAlert`, not "the Notebook finished." The finding can support another response without changing the sales comparison. Optional **Analyze in Eventhouse**, selected when creating the Business Event, records finding history separately from the required source Eventhouse.
+
+The outcome is an investigation prompt, not a diagnosis or evidence that sales recovered. The [Sales Volume Alert Workbook](../scenarios/sales-volume-alert/deployment.md) implements this pattern.
+
+### Fabric Events: flag a failed revenue refresh
+
+Finance support needs to know when the daily revenue-data refresh fails, so a failed load is not mistaken for current reporting. **[Fabric Events](../../fabric-events/index.md)** expose the job lifecycle automatically; the pipeline does not need additional code to describe its own failure.
 
 ```mermaid
-flowchart LR
-    subgraph Microsoft Fabric Platform
-        JOB[Jobs]
-        CAP[Capacity]
-        ITEM[Fabric Item]
-    end
+flowchart TB
+    P["<b>Data Pipeline</b><br/>Runs the daily<br/>revenue-data refresh"]
+    FE(["<b>Fabric job event</b><br/>Revenue refresh failure"])
+    ACT["<b>Activator</b><br/>Matches the monitored<br/>revenue pipeline"]
+    T["<b>Teams</b><br/>Finance support receives<br/>the failed run context"]
 
-    subgraph RTH[Real-Time Hub]
-        FE([Fabric Event\n'Microsoft.Fabric.ItemCreateSucceeded'])
-    end
-
-    subgraph Reactions
-        ACT[Activator\nAlert or action]
-        ES[Eventstream\nStream processing]
-    end
-
-    JOB -->|platform emits| FE
-    CAP -->|platform emits| FE
-    ITEM -->|platform emits| FE
-    FE -->|consume| ACT
-    FE -->|consume| ES
+    P -->|"Failed refresh"| FE
+    FE -->|"Job identifiers"| ACT
+    ACT -->|"Failed run context"| T
 ```
 
-**[Azure Events](../../azure-events/index.md)** connect Fabric workloads to the broader Azure ecosystem. Azure services publish events that Fabric can consume and react to in real time.
+Select `Microsoft.Fabric.ItemJobFailed` and scope the Activator rule to the intended `data.workspaceId` and `data.itemId`. Include `data.jobStatus` and `data.jobInstanceId` in the notification so support can identify the run and its outcome; this event type also covers stuck or canceled jobs. The platform event does not explain the cause, validate the report, or retry the load.
+
+See the [Fabric job event types and payload](https://learn.microsoft.com/fabric/real-time-hub/explore-fabric-job-events). The event source and its Activator item must be in the same region.
+
+### Azure Events: load a supplier delivery manifest
+
+Receiving needs the supplier's delivery manifest available for planning without repeatedly checking a storage folder. **[Azure Events](../../azure-events/index.md)** provide the file-arrival signal from Azure Blob Storage. A matching arrival starts a configured ingestion pipeline rather than a notification that someone still needs to turn into a load.
 
 ```mermaid
-flowchart LR
-    subgraph Azure
-        SA[Storage Accounts]
-    end
+flowchart TB
+    SA[("<b>Azure Blob Storage</b><br/>Supplier delivery<br/>manifest files")]
+    AE(["<b>Azure event</b><br/>Manifest file created<br/>or replaced"])
+    ACT["<b>Activator</b><br/>Selects arrivals in the<br/>manifests container"]
+    P["<b>Data Pipeline</b><br/>Reads and validates<br/>the referenced file"]
+    L[("<b>Lakehouse</b><br/>Delivery manifest rows<br/>for receiving plans")]
 
-    subgraph RTH[Real-Time Hub]
-        AE([Azure Event\n'Microsoft.Storage.BlobCreated'])
-    end
-
-    subgraph Reactions
-        ACT[Activator\nAlert or action]
-        ES[Eventstream\nStream processing]
-    end
-
-    SA -->|cloud emits| AE
-    AE -->|consume| ACT
-    AE -->|consume| ES
+    SA -->|"File available"| AE
+    AE -->|"Blob URL"| ACT
+    ACT -->|"Manifest URL"| P
+    P -->|"Validated rows"| L
 ```
+
+The [Azure Blob Storage event source](https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/add-source-azure-blob-storage) connects the storage account to Fabric. Activator can act on its unstreamed events; conversion to an Eventstream data stream is not required for this route. Filter `Microsoft.Storage.BlobCreated` to the manifests container and pass `data.url` to a pipeline parameter.
+
+The event contains metadata, not the manifest rows. The pipeline reads the file through its configured storage connection, validates it and writes the Lakehouse. Its load logic must handle repeated notifications and file replacements. A stored manifest does not confirm that the physical delivery arrived.

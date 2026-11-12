@@ -28,7 +28,7 @@
     border: none;
     border-radius: 2rem;
     padding: 0.75rem 1.25rem;
-    font-size: 0.875rem;
+    font-size: var(--site-text-size);
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -62,17 +62,17 @@
     font-family: Inter, sans-serif;
   ">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-      <h3 style="margin:0; font-size:1.25rem; color:#111827;">Ask in our community</h3>
+      <h3 style="margin:0; font-size:calc(1.25rem - 1px); color:#111827;">Ask in our community</h3>
       <button onclick="document.getElementById('reddit-modal').style.display='none'" style="
-        background:none; border:none; cursor:pointer; font-size:1.25rem; color:#6B7280; line-height:1;
+        background:none; border:none; cursor:pointer; font-size:var(--site-text-size); color:#6B7280; line-height:1;
       ">✕</button>
     </div>
 
-    <p style="font-size:0.875rem; color:#6B7280; margin:0 0 1.25rem 0;">
+    <p style="font-size:var(--site-text-size); color:#6B7280; margin:0 0 1.25rem 0;">
       Join developers discussing Microsoft Fabric on Reddit.<br>Not a member yet? <a href="https://www.reddit.com/r/MicrosoftFabric/" target="_blank" style="color:#FF4500; text-decoration:none;">Join r/MicrosoftFabric</a>.
     </p>
 
-    <label style="display:block; font-size:0.875rem; font-weight:600; color:#374151; margin-bottom:0.4rem;">
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
       Topic
     </label>
     <select id="reddit-pillar" style="
@@ -80,7 +80,7 @@
       border: 1px solid #D1D5DB;
       border-radius: 0.5rem;
       padding: 0.625rem 0.75rem;
-      font-size: 0.9rem;
+      font-size: var(--site-text-size);
       font-family: Inter, sans-serif;
       color: #111827;
       background: white;
@@ -93,7 +93,7 @@
       <option value="Azure Events">Azure Events</option>
     </select>
 
-    <label style="display:block; font-size:0.875rem; font-weight:600; color:#374151; margin-bottom:0.4rem;">
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
       Title
     </label>
     <input id="reddit-title" type="text" placeholder="Brief summary of your question" style="
@@ -101,7 +101,7 @@
       border: 1px solid #D1D5DB;
       border-radius: 0.5rem;
       padding: 0.625rem 0.75rem;
-      font-size: 0.9rem;
+      font-size: var(--site-text-size);
       font-family: Inter, sans-serif;
       color: #111827;
       margin-bottom: 1.25rem;
@@ -109,7 +109,7 @@
       outline: none;
     ">
 
-    <label style="display:block; font-size:0.875rem; font-weight:600; color:#374151; margin-bottom:0.4rem;">
+    <label style="display:block; font-size:var(--site-text-size); font-weight:600; color:#374151; margin-bottom:0.4rem;">
       Question
     </label>
     <textarea id="reddit-question" placeholder="What would you like to ask?" style="
@@ -118,7 +118,7 @@
       border: 1px solid #D1D5DB;
       border-radius: 0.5rem;
       padding: 0.75rem;
-      font-size: 0.9rem;
+      font-size: var(--site-text-size);
       font-family: Inter, sans-serif;
       color: #111827;
       resize: vertical;
@@ -130,12 +130,12 @@
     <div style="display:flex; gap:0.75rem; margin-top:1rem; justify-content:flex-end;">
       <button onclick="document.getElementById('reddit-modal').style.display='none'" style="
         background:none; border:1px solid #D1D5DB; border-radius:0.5rem;
-        padding:0.5rem 1rem; font-size:0.875rem; cursor:pointer; color:#374151;
+        padding:0.5rem 1rem; font-size:var(--site-text-size); cursor:pointer; color:#374151;
         font-family: Inter, sans-serif;
       ">Cancel</button>
       <button onclick="openRedditPost()" style="
         background:#FF4500; color:white; border:none; border-radius:0.5rem;
-        padding:0.5rem 1rem; font-size:0.875rem; font-weight:600; cursor:pointer;
+        padding:0.5rem 1rem; font-size:var(--site-text-size); font-weight:600; cursor:pointer;
         font-family: Inter, sans-serif;
       ">Post on Reddit →</button>
     </div>

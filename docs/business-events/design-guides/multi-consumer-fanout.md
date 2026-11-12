@@ -5,11 +5,17 @@ Fanout is a pattern where a single Business Event is consumed by multiple indepe
 ## One event, many consumers
 
 ```mermaid
-flowchart LR
-    P[Publisher\nNotebook / UDF / Eventstream] -->|publish| BE[Business Event\n'Retail.Sales.VolumeAlert']
-    BE -->|consume| A[Activator\nSend Teams alert]
-    BE -->|consume| B[Eventhouse\nStore for analytics]
-    BE -->|consume| C[Activator\nTrigger reorder pipeline]
+flowchart TB
+    P["<b>Publisher</b><br/>Notebook / UDF / Eventstream"]
+    BE["<b>Business Event</b><br/>'Retail.Sales.VolumeAlert'"]
+    A["<b>Activator</b><br/>Send Teams alert"]
+    B["<b>Eventhouse</b><br/>Store for analytics"]
+    C["<b>Activator</b><br/>Trigger reorder pipeline"]
+
+    P -->|"publish"| BE
+    BE -->|"consume"| A
+    BE -->|"consume"| B
+    BE -->|"consume"| C
 ```
 
 Each consumer subscribes independently. Adding a new consumer does not require any change to the publisher.
@@ -21,10 +27,15 @@ Each consumer subscribes independently. Adding a new consumer does not require a
 The most common combination — one consumer reacts in real time, another stores for historical analysis.
 
 ```mermaid
-flowchart LR
-    P[Publisher] -->|publish| BE[Business Event\n'Retail.Sales.VolumeAlert']
-    BE -->|consume| ACT[Activator\nReal-time alert]
-    BE -->|consume| EH[Eventhouse\nHistorical analytics]
+flowchart TB
+    P["<b>Publisher</b>"]
+    BE["<b>Business Event</b><br/>'Retail.Sales.VolumeAlert'"]
+    ACT["<b>Activator</b><br/>Real-time alert"]
+    EH["<b>Eventhouse</b><br/>Historical analytics"]
+
+    P -->|"publish"| BE
+    BE -->|"consume"| ACT
+    BE -->|"consume"| EH
 ```
 
 **When to use:** Any event where you need both immediate action and long-term visibility.
@@ -34,10 +45,15 @@ flowchart LR
 Two Activator consumers with different actions — one notifies a human, another triggers an automated workflow.
 
 ```mermaid
-flowchart LR
-    P[Publisher] -->|publish| BE[Business Event\n'Retail.Sales.VolumeAlert']
-    BE -->|consume| A1[Activator Rule 1\nSend email notification]
-    BE -->|consume| A2[Activator Rule 2\nTrigger Power Automate flow]
+flowchart TB
+    P["<b>Publisher</b>"]
+    BE["<b>Business Event</b><br/>'Retail.Sales.VolumeAlert'"]
+    A1["<b>Activator Rule 1</b><br/>Send email notification"]
+    A2["<b>Activator Rule 2</b><br/>Trigger Power Automate flow"]
+
+    P -->|"publish"| BE
+    BE -->|"consume"| A1
+    BE -->|"consume"| A2
 ```
 
 **When to use:** When a signal requires both human awareness and an automated response, and you want to manage them independently.
@@ -47,11 +63,17 @@ flowchart LR
 A single business signal consumed by teams in different domains, each with their own logic.
 
 ```mermaid
-flowchart LR
-    P[Publisher\nRetail workload] -->|publish| BE[Business Event\n'Retail.Customer.MilestoneReached']
-    BE -->|consume| A[Marketing team\nActivator → loyalty email]
-    BE -->|consume| B[Analytics team\nEventhouse → cohort analysis]
-    BE -->|consume| C[Finance team\nActivator → discount approval]
+flowchart TB
+    P["<b>Publisher</b><br/>Retail workload"]
+    BE["<b>Business Event</b><br/>'Retail.Customer.MilestoneReached'"]
+    A["<b>Marketing team</b><br/>Activator → loyalty email"]
+    B["<b>Analytics team</b><br/>Eventhouse → cohort analysis"]
+    C["<b>Finance team</b><br/>Activator → discount approval"]
+
+    P -->|"publish"| BE
+    BE -->|"consume"| A
+    BE -->|"consume"| B
+    BE -->|"consume"| C
 ```
 
 **When to use:** When a business signal has value across multiple teams or domains, and each team should own their consumer independently.

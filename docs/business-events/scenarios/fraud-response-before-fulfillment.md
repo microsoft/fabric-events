@@ -1,342 +1,120 @@
 # Fraud Response Before Fulfillment
 
-**Publisher:** User Data Function | **Consumer:** Activator, Eventhouse
+## Business Context
 
-## Business context
+An online retailer receives orders and scores from an existing risk-scoring process. Its policy uses the supplied score and order context to determine whether an order can be released, needs human review or should be held. The warehouse, however, follows the fulfillment permission saved in the order system rather than the separate risk assessment.
 
-An ecommerce marketplace already evaluates order risk using customer history, payment metadata, and fraud rules. It needs to hold or review high-risk orders before fulfillment while allowing legitimate purchases to proceed.
-
-A User Data Function receives an order webhook, evaluates the risk score against customer history, payment metadata, and fraud rules stored in Fabric, and publishes two Business Events: `Ecommerce.Order.HighRiskDetected` captures the signal, and `Ecommerce.Order.FraudDecision` carries the decision outcome (hold, manual review, or release). Three independent Activator rules act on the decision. Eventhouse stores the full audit trail for compliance and pattern analysis.
-
-**The problem without Business Events:**
-Risk evaluation can already run in a function or application. If each downstream system receives a separate integration or reproduces the decision logic, changes become harder to coordinate and teams may act on different interpretations of the same assessment.
-
-**The solution with Business Events:**
-The function publishes separate contracts for the detected risk and the resulting decision. Activator rules use the decision event for hold, review, or release actions, while Eventhouse supports analysis of received events. New consumers can reuse these contracts; changes to risk policy still belong in the evaluator.
-
-## Architecture
+In the current process described here, order operations must take the recorded policy decision and apply it to the order before the warehouse can rely on it. Risk review and fulfillment can therefore be looking at different records of the same order. A warning that has reached a person is not equivalent to a hold that the warehouse enforces, and requesting a review does not mean that a reviewer has cleared the order for release.
 
 ```mermaid
 flowchart TB
-    subgraph External["Source"]
-        MP["Ecommerce marketplace"]
+    S["<b>Risk input</b><br/>Order and supplied score"]
+    P["<b>Risk policy</b><br/>Selects hold, review<br/>or release"]
+    R[("<b>Risk assessment</b><br/>Score and decision")]
+    subgraph GAP["Gap: Risk decisions are not yet<br/>enforced by the order system"]
+        O["<b>Order operations</b><br/>Applies the risk decision"]:::businessGap
+        OMS[("<b>Order system</b><br/>Order state and<br/>fulfillment permission")]:::businessGap
     end
-
-    subgraph Evaluation["Evaluate risk and decide"]
-        FA[("Fabric Data + AI<br/>Risk context")]
-        UDF["User Data Function<br/>Order risk evaluator"]
-    end
-
-    BE1(["Business Event<br/>High risk detected"])
-    BE2(["Business Event<br/>Fraud decision"])
-
-    ACT1{"Activator<br/>Hold rule"}
-    ACT2{"Activator<br/>Review rule"}
-    ACT3{"Activator<br/>Release rule"}
-    HOLD["Hold order in OMS"]
-    REVIEW["Route to review queue"]
-    REL["Release to fulfillment"]
-
-    EH[("Eventhouse<br/>Fraud audit")]
-
-    MP -->|Order webhook| UDF
-    FA -->|Risk context| UDF
-    UDF -->|Publish signal| BE1
-    UDF -->|Publish decision| BE2
-    BE1 --> EH
-    BE2 --> ACT1
-    BE2 --> ACT2
-    BE2 --> ACT3
-    BE2 --> EH
-    ACT1 --> HOLD
-    ACT2 --> REVIEW
-    ACT3 --> REL
+    W["<b>Warehouse</b><br/>Checks fulfillment<br/>permission"]
+    S -->|"Evaluate"| P
+    P -->|"Record"| R
+    R -->|"Operations action"| O
+    O -->|"Save state"| OMS
+    OMS -->|"Check permission"| W
+    classDef businessGap fill:#FFF4CE,stroke:#C88700,color:#000000
+    style GAP fill:none,stroke:#C88700,stroke-width:1.5px
 ```
 
-Arrows show data flow. Event publication and consumption are asynchronous. The function publishes the risk signal and decision separately; the diagram does not imply that one event triggers the other. The hold, review, and release rules filter the decision outcome rather than executing all three actions for every event.
+## Current Problem
 
-| Component | Contract or responsibility |
-|---|---|
-| Fabric Data + AI | Customer profile, payment history, and fraud rules used by the evaluator |
-| User Data Function | Evaluates risk and publishes the signal and decision |
-| High risk detected | `Ecommerce.Order.HighRiskDetected` |
-| Fraud decision | `Ecommerce.Order.FraudDecision` |
-| Activator rules | Route the decision to hold, manual review, or release workflows |
-| Eventhouse | Stores received signal and decision events for audit analysis |
+A risk decision recorded separately from order operations may leave fulfillment permission unchanged. Sending a warning does not prevent an order from proceeding, and a request for human review must not be mistaken for a completed review.
 
-## Step 1: Create the Business Events
+The missing connection is from the policy decision to an actual order-state change, with distinct handling for hold, review and release.
 
-This scenario uses two Business Events. Create both in Real-Time Hub before writing any function code.
+<span id="why-business-events"></span>
+<span id="business-value"></span>
 
-### Event 1: HighRiskDetected
+## Business Events
 
-1. Go to [Real-Time Hub → Business Events → Create](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/create-business-events).
-2. Create or select an Event Schema Set. Use `EcommerceOrders` as the schema set name.
-3. Name the event `Ecommerce.Order.HighRiskDetected`.
-4. In the schema editor, paste the following JSON:
-
-    ```json
-    {
-      "type": "record",
-      "name": "Ecommerce.Order.HighRiskDetected",
-      "fields": [
-        {
-          "name": "order_id",
-          "type": "string",
-          "doc": "Unique identifier of the order under review"
-        },
-        {
-          "name": "customer_id",
-          "type": "string",
-          "doc": "Identifier of the customer who placed the order"
-        },
-        {
-          "name": "risk_score",
-          "type": "float",
-          "doc": "Computed fraud risk score between 0.0 (low) and 1.0 (high)"
-        },
-        {
-          "name": "amount",
-          "type": "float",
-          "doc": "Total order amount in the store local currency"
-        },
-        {
-          "name": "payment_method",
-          "type": "string",
-          "doc": "Payment method: credit_card, debit_card, or digital_wallet"
-        },
-        {
-          "name": "detected_at",
-          "type": "string",
-          "doc": "ISO 8601 timestamp of when the risk condition was detected"
-        }
-      ]
-    }
-    ```
-
-5. Confirm that **Analyze in Eventhouse** is enabled. Select **Create**.
-
-### Event 2: FraudDecision
-
-1. In the same Event Schema Set (`EcommerceOrders`), select **+ New event**.
-2. Name the event `Ecommerce.Order.FraudDecision`.
-3. In the schema editor, paste the following JSON:
-
-    ```json
-    {
-      "type": "record",
-      "name": "Ecommerce.Order.FraudDecision",
-      "fields": [
-        {
-          "name": "order_id",
-          "type": "string",
-          "doc": "Unique identifier of the order"
-        },
-        {
-          "name": "customer_id",
-          "type": "string",
-          "doc": "Identifier of the customer who placed the order"
-        },
-        {
-          "name": "risk_score",
-          "type": "float",
-          "doc": "Fraud risk score used to make this decision"
-        },
-        {
-          "name": "decision",
-          "type": "string",
-          "doc": "Decision outcome: hold, manual_review, or release"
-        },
-        {
-          "name": "decided_at",
-          "type": "string",
-          "doc": "ISO 8601 timestamp of when the decision was made"
-        }
-      ]
-    }
-    ```
-
-4. Enable **Analyze in Eventhouse** and select **Create**.
-
-## Step 2: Publisher - User Data Function
-
-The User Data Function evaluates each order, makes a risk decision, and publishes both Business Events.
-
-### Create the User Data Function
-
-1. In your Fabric workspace, select **+ New item** and create a **User Data Function** named `EvaluateHighRiskOrder`.
-2. Inside the UDF item, select **New function**.
-
-### Connect to the schema set
-
-3. In the **Home** ribbon, select **Manage connections**.
-4. Select **+ Add connection**, search for `EcommerceOrders`, and select **Connect**.
-5. Note the alias (`EcommerceOrders` by default). Close the pane.
-
-### Function code
-
-```python
-import fabric.functions as fn
-from datetime import datetime, timezone
-import logging
-
-udf = fn.UserDataFunctions()
-
-@udf.connection(argName='businessEventsClient', alias='EcommerceOrders')
-@udf.function()
-def evaluate_high_risk_order(
-    businessEventsClient: fn.FabricBusinessEventsClient,
-    order_id: str,
-    customer_id: str,
-    risk_score: float,
-    amount: float,
-    payment_method: str
-) -> str:
-    logging.info("evaluate_high_risk_order invoked.")
-
-    detected_at = datetime.now(timezone.utc).isoformat()
-
-    # Publish the signal event — consumers can react to the raw detection
-    businessEventsClient.PublishEvent(
-        type='Ecommerce.Order.HighRiskDetected',
-        event_data={
-            'order_id': order_id,
-            'customer_id': customer_id,
-            'risk_score': risk_score,
-            'amount': amount,
-            'payment_method': payment_method,
-            'detected_at': detected_at,
-        },
-        data_version='v1'
-    )
-
-    # Decision logic — thresholds can be loaded from Lakehouse or SQL DB
-    if risk_score >= 0.85:
-        decision = 'hold'
-    elif risk_score >= 0.55:
-        decision = 'manual_review'
-    else:
-        decision = 'release'
-
-    # Publish the decision event — downstream consumers act on this independently
-    businessEventsClient.PublishEvent(
-        type='Ecommerce.Order.FraudDecision',
-        event_data={
-            'order_id': order_id,
-            'customer_id': customer_id,
-            'risk_score': risk_score,
-            'decision': decision,
-            'decided_at': datetime.now(timezone.utc).isoformat(),
-        },
-        data_version='v1'
-    )
-
-    return f"Order {order_id}: decision = {decision}"
-```
-
-For full details on publishing Business Events from User Data Functions, see the [User Data Function publisher documentation](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-user-data-function).
-
-## Step 3: Consumers
-
-### Consumer 1 - Activator: Hold order
-
-1. In Real-Time Hub, locate `Ecommerce.Order.FraudDecision`.
-2. Select **Set alert** and name the rule `Fraud - Hold Order`.
-3. Set **Condition** to `On each event`. Add filter: `decision == hold`.
-4. In **Action**, configure the Power Automate flow or webhook that places the order on hold in your order management system. Add `order_id` and `risk_score` as context fields.
-5. Select **Save**.
-
-### Consumer 2 - Activator: Route to manual review
-
-1. Locate `Ecommerce.Order.FraudDecision` and select **Set alert**.
-2. Name the rule `Fraud - Manual Review`. Add filter: `decision == manual_review`.
-3. In **Action**, configure the workflow that routes the order to the fraud review queue. Add `order_id`, `customer_id`, and `risk_score` as context fields.
-4. Select **Save**.
-
-### Consumer 3 - Activator: Release order
-
-1. Locate `Ecommerce.Order.FraudDecision` and select **Set alert**.
-2. Name the rule `Fraud - Release`. Add filter: `decision == release`.
-3. In **Action**, configure the webhook that resumes order fulfillment. Add `order_id` as context.
-4. Select **Save**.
-
-### Consumer 4 - Eventhouse: Fraud audit trail
-
-Both events are ingested automatically. Use the following queries to monitor decision patterns.
-
-**Decision distribution by payment method — last 30 days:**
-
-```kusto
-['Ecommerce.Order.FraudDecision']
-| where ingestion_time() > ago(30d)
-| summarize Orders = count() by decision, payment_method
-| order by Orders desc
-```
-
-**Risk score distribution over time:**
-
-```kusto
-['Ecommerce.Order.HighRiskDetected']
-| where ingestion_time() > ago(7d)
-| summarize AvgRisk = avg(risk_score), OrderCount = count()
-  by bin(ingestion_time(), 1h)
-| order by ingestion_time() asc
-```
-
-**Hold rate by payment method:**
-
-```kusto
-['Ecommerce.Order.FraudDecision']
-| where ingestion_time() > ago(30d)
-| summarize
-    Total = count(),
-    Held = countif(decision == 'hold')
-  by payment_method
-| extend HoldRate = round(todouble(Held) / Total * 100, 1)
-| order by HoldRate desc
-```
-
-## Step 4: End-to-end test
-
-Invoke `evaluate_high_risk_order` with the following test values:
-
-| Parameter | Value |
-|---|---|
-| `order_id` | `ord-44219` |
-| `customer_id` | `cust-882` |
-| `risk_score` | `0.91` |
-| `amount` | `340.00` |
-| `payment_method` | `credit_card` |
-
-A `risk_score` of `0.91` exceeds the `0.85` threshold, so the expected decision is `hold`. Confirm both events arrived:
-
-```kusto
-['Ecommerce.Order.FraudDecision']
-| where order_id == "ord-44219"
-| project order_id, decision, risk_score, decided_at
-| take 1
-```
-
-If the row shows `decision = hold` and the Hold Order Activator rule fires, your setup is working.
-
-## What happens next
-
-The two-event pattern — signal first, decision second — lets different consumers subscribe at different stages of the pipeline without coupling them together.
+The risk-policy result is published as a Business Event for the order. The relevant connected response applies a hold, requests review or releases the order. The order system saves that result and enforces the corresponding fulfillment permission.
 
 ```mermaid
-flowchart LR
-    BE2([Business Event\n'Ecommerce.Order.FraudDecision']) --> ACT[Activator]
-    BE2 --> EH[(Eventhouse)]
-    ACT --> HOLD[Hold in OMS]
-    ACT --> REVIEW[Review queue]
-    ACT --> REL[Release to fulfillment]
-    EH --> KQL[Fraud audit queries]
-    EH --> ML[Model retraining\nfeature store]
+flowchart TB
+    P["<b>Risk policy</b><br/>Uses the supplied score<br/>and order context"]
+    E(["<b>Business Event</b><br/>Order risk decision"])
+    subgraph VALUE["Improvement: Risk decisions reach<br/>the system that controls fulfillment"]
+        H["<b>Hold response</b><br/>Requests an order hold"]:::businessValue
+        V["<b>Review response</b><br/>Requests human review"]:::businessValue
+        L["<b>Release response</b><br/>Requests order release"]:::businessValue
+        O["<b>Order system</b><br/>Saves the state and enforces<br/>fulfillment permission"]:::businessValue
+    end
+    P -->|"Share policy result"| E
+    E -->|"Hold"| H
+    E -->|"Review"| V
+    E -->|"Release"| L
+    H -->|"Block fulfillment"| O
+    V -->|"Keep blocked pending review"| O
+    L -->|"Permit fulfillment"| O
+    classDef businessValue fill:#DFF6DD,stroke:#107C10,color:#000000
+    style VALUE fill:none,stroke:#107C10,stroke-width:1.5px
 ```
 
-| Extension | What it enables |
-|---|---|
-| **Hold / Review / Release** | Independent Activator rules per decision outcome |
-| **Fraud audit queries** | Full decision history with risk scores and payment context |
-| **Model retraining** | Historical decision events as labeled training data for the fraud model |
-| **Compliance report** | Export the audit trail for regulatory requirements |
+This makes the policy useful at the point where operational behavior changes: released orders can proceed, while held and review-requested orders remain blocked. Business Events carries the decision to that response; it does not replace the connected order system or perform the human review.
+
+## Event-driven architecture {#architecture}
+
+**Business signal:** `Ecommerce.Order.FraudDecision`
+
+**Publisher:** User Data Function | **Consumer(s):** Activator (Power Automate: hold, review and release)
+
+```mermaid
+flowchart TB
+    SOURCE["<b>Risk input</b><br/>Order and supplied score"]
+    UDF["<b>Publisher UDF</b><br/>Applies the risk policy"]
+    BE(["<b>Business Event</b><br/>FraudDecision"])
+    ACT["<b>Activator<br/>(Power Automate)</b><br/>Selects the response<br/>for each decision"]
+    HOLD["<b>Power Automate</b><br/>Requests an order hold"]
+    REVIEW["<b>Power Automate</b><br/>Requests human review"]
+    RELEASE["<b>Power Automate</b><br/>Requests order release"]
+    OMS["<b>Test OMS</b><br/>Saves order state and<br/>enforces fulfillment permission"]
+    EH[("<b>Eventhouse</b><br/>Decision history")]
+
+    SOURCE -->|"Inputs"| UDF
+    UDF -->|"Decision"| BE
+    BE -->|"Subscribe"| ACT
+    ACT -->|"hold"| HOLD
+    ACT -->|"manual_review"| REVIEW
+    ACT -->|"release"| RELEASE
+    HOLD --> OMS
+    REVIEW --> OMS
+    RELEASE --> OMS
+    BE -.->|"Analyze in Eventhouse"| EH
+```
+
+1. The publishing User Data Function applies the risk policy to the supplied score and order context, then publishes the decision as a Business Event.
+2. Activator selects the decision's hold, review or release response and invokes the corresponding Power Automate flow.
+3. The connected test order system persists the requested state and enforces fulfillment permission. A delivered event or flow invocation is not a substitute for this order-system result.
+
+The Workbook checks the saved order states and fulfillment behavior separately from event delivery.
+
+Dashed arrows show optional event history and its analysis, separate from the required response. **Analyze in Eventhouse** is a creation-time choice, not a connection enabled by the deployment package or a prerequisite for completing the Workbook.
+
+## Business outcome and boundaries
+
+Apply six supplied scores to six synthetic orders: two releases, two review requests and two holds. The connected test order system permits fulfillment only for released orders and keeps held or review-requested orders blocked.
+
+**Where the exercise stops:** A supplied score is not proof of fraud. `review_requested` is not `review_completed`. You must supply an authenticated, isolated test order system and connect the three real responses; the package does not deploy an order backend.
+
+## Try the Workbook
+
+The [Workbook](fraud-response-before-fulfillment/deployment.md){#deploy-this-scenario} brings preparation, connections, sample inputs, expected results and code reference into one place. Follow that single path to explore the outcome above.
+
+<span id="before-you-start"></span>
+<span id="consumer-1-activator-power-automate"></span>
+<span id="consumer-2-independent-decision-history"></span>
+<span id="evaluation-criteria"></span>
+<span id="step-1-create-the-business-event"></span>
+<span id="step-2-create-the-policy-publisher"></span>
+<span id="step-3-connect-the-operational-responses"></span>
+<span id="step-4-test-from-the-original-source"></span>
+<span id="what-happens-next"></span>

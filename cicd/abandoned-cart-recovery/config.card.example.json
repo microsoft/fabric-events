@@ -1,0 +1,13 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "abandoned-cart-recovery",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "Cart",
+  "event_name": "Ecommerce.Cart.Abandoned",
+  "accept_preview_apis": true,
+  "test_recipient": null,
+  "resource_names": {"schema": "CartSchema", "publisher": "CartPublisher", "activator": "CartActions",
+                     "task_store": "CartFollowUp"}
+}

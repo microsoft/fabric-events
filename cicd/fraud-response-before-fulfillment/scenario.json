@@ -1,0 +1,36 @@
+{
+  "scenario_name": "Fraud Response Before Fulfillment",
+  "scenario_id": "fraud-response-before-fulfillment",
+  "source_backend": "native_udf",
+  "package_policy": "single_current_package",
+  "resource_roles": ["schema", "publisher", "activator"],
+  "implemented_scope": "public_hybrid_deployment",
+  "full_deployment_status": "manual_power_automate_and_oms_setup_required",
+  "command_behavior": {
+    "deploy": "prepare_schema_native_udf_and_activator_event_source_without_order_registration_or_source_execution",
+    "test": "invoke_six_native_udf_evaluations_after_manual_order_preparation",
+    "test_exit_zero_means": "native_evaluations_succeeded_not_delivery_or_order_enforcement",
+    "verify": "read_owned_definitions_without_republishing_or_exporting_manual_action_credentials"
+  },
+  "business_response": {
+    "target_role": "activator",
+    "action": "manual_power_automate_custom_actions",
+    "business_outcome": "Hold, request review or release an order through an independently configured test order system. A review request is not a completed review."
+  },
+  "event_analysis": {
+    "scope": "excluded",
+    "reason": "The package does not configure managed Business Event history or create unused Eventhouse containers."
+  },
+  "distribution_assets": ["public_consumers.py", "public_udf.py", "fraud_deploy.py", "function_app.py", "fixtures.json"],
+  "public_contract_review": {
+    "status": "local_contract_validation_live_execution_pending",
+    "connection_artifact_type": "EventDefinition",
+    "connection_artifact_id": "public_event_schema_set_id",
+    "publication_api": "FabricBusinessEventsClient.PublishEvent",
+    "policy_owner": "native_udf",
+    "power_automate_custom_actions": "manual_configuration_required",
+    "oms_enforcement": "independent_external_verification_required",
+    "live_deployment_verified": false,
+    "payload_fields": ["order_id", "customer_id", "risk_score", "decision", "decided_at"]
+  }
+}

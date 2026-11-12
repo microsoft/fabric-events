@@ -1,0 +1,8 @@
+[
+  {"store_id": "high", "expected_transactions": 1250, "actual_transactions": 743},
+  {"store_id": "high-zero", "expected_transactions": 100, "actual_transactions": 0},
+  {"store_id": "boundary", "expected_transactions": 100, "actual_transactions": 70},
+  {"store_id": "medium", "expected_transactions": 100, "actual_transactions": 80},
+  {"store_id": "low", "expected_transactions": 100, "actual_transactions": 85},
+  {"store_id": "normal", "expected_transactions": 100, "actual_transactions": 100}
+]

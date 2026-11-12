@@ -1,0 +1,34 @@
+{
+  "scenario_name": "Abandoned Cart Recovery",
+  "scenario_id": "abandoned-cart-recovery",
+  "source_backend": "native_udf",
+  "package_policy": "single_current_package",
+  "resource_roles": ["schema", "publisher", "activator", "task_store"],
+  "implemented_scope": "public_hybrid_deployment",
+  "command_behavior": {
+    "deploy": "prepare_schema_native_udf_activator_source_and_sql_database_without_source_execution",
+    "test": "invoke_six_original_cart_publications_after_sql_schema_and_manual_response_setup",
+    "test_exit_zero_means": "six_native_publication_requests_not_email_delivery_or_sql_tasks",
+    "verify": "read_owned_definitions_without_republishing_or_exporting_manual_action_credentials"
+  },
+  "business_response": {
+    "target_role": "task_store",
+    "action": "manual_power_automate_email_and_sql_actions",
+    "business_outcome": "Send a recovery reminder for cart_value > 30 and persist one follow-up task per cart in Fabric SQL database. The database is a follow-up register, not a complete CRM."
+  },
+  "event_analysis": {
+    "scope": "excluded",
+    "reason": "The package does not configure managed Business Event history or create unused Eventhouse containers."
+  },
+  "distribution_assets": ["public_consumers.py", "public_udf.py", "cart_deploy.py", "function_app.py", "fixtures.json",
+                          "setup.sql", "record-cart-task.sql"],
+  "public_contract_review": {
+    "status": "local_contract_validation_live_execution_pending",
+    "publication_api": "FabricBusinessEventsClient.PublishEvent",
+    "connection_artifact_type": "EventDefinition",
+    "connection_artifact_id": "public_event_schema_set_id",
+    "power_automate_custom_actions": "manual_configuration_required",
+    "live_deployment_verified": false,
+    "payload_fields": ["customer_id", "customer_email", "cart_id", "cart_value", "item_count", "last_activity_at"]
+  }
+}

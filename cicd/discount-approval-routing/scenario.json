@@ -1,0 +1,36 @@
+{
+  "scenario_name": "Discount Approval Evaluation and Event Publication",
+  "scenario_id": "discount-approval-routing",
+  "source_backend": "native_udf",
+  "package_policy": "single_current_package",
+  "resource_roles": ["schema", "publisher", "activator", "eventstream"],
+  "implemented_scope": "public_hybrid_deployment",
+  "full_deployment_status": "manual_eventstream_setup_and_live_validation_required",
+  "command_behavior": {
+    "deploy": "prepare_schema_native_udf_and_teams_consumer_without_source_inputs",
+    "test": "invoke_eight_native_udf_policy_evaluations_without_consumer_verification",
+    "test_exit_zero_means": "native_evaluations_succeeded_not_e2e_verified",
+    "verify": "read_back_owned_definitions_and_saved_source_results_without_republishing"
+  },
+  "business_response": {
+    "target_role": "activator",
+    "action": "Teams",
+    "rule_name": "Notify discount review",
+    "business_outcome": "A review-required notification, not an approver assignment or approval decision."
+  },
+  "event_analysis": {
+    "scope": "excluded",
+    "reason": "The package does not configure managed Business Event history. The independent manual walkthrough uses Analyze in Eventhouse at event creation."
+  },
+  "distribution_assets": ["public_consumers.py", "public_udf.py", "discount_deploy.py", "function_app.py", "fixtures.json"],
+  "public_contract_review": {
+    "status": "local_contract_validation_live_execution_pending",
+    "connection_artifact_type": "EventDefinition",
+    "connection_artifact_id": "public_event_schema_set_id",
+    "publication_api": "FabricBusinessEventsClient.PublishEvent",
+    "policy_owner": "native_udf",
+    "eventstream_business_event_source": "manual_configuration_required",
+    "live_deployment_verified": false,
+    "payload_fields": ["deal_id", "account_name", "region", "deal_value", "requested_discount_percent", "estimated_margin_percent", "approval_level", "approval_reason", "event_time"]
+  }
+}

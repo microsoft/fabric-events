@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Fraud Response Before Fulfillment configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenario_id", "tenant_id", "workspace_id", "auth_provider",
+    "resource_prefix", "event_name", "resource_names", "accept_preview_apis"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "scenario_id": {"enum": ["fraud", "fraud-response-before-fulfillment"]},
+    "tenant_id": {"type": ["string", "null"], "format": "uuid"},
+    "workspace_id": {"type": ["string", "null"], "format": "uuid"},
+    "auth_provider": {"enum": ["azure_cli", "fabric_cli"]},
+    "resource_prefix": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]{2,39}$"},
+    "event_name": {"type": "string", "minLength": 3, "maxLength": 80, "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$"},
+    "accept_preview_apis": {"type": "boolean"},
+    "resource_names": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "publisher", "activator"],
+      "patternProperties": {
+        "^(schema|publisher|activator)$": {
+          "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{2,99}$"
+        }
+      },
+      "description": "Runtime validation additionally requires this scenario's exact reviewed roles and distinct names."
+    }
+  }
+}

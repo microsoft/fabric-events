@@ -1,0 +1,20 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "customer-loyalty-milestone",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "Loyalty",
+  "event_name": "Retail.Customer.MilestoneReached",
+  "accept_preview_apis": true,
+  "resource_names": {
+    "schema": "RetailCustomers",
+    "eventhouse": "LoyaltyData",
+    "source": "LoyaltySource",
+    "queryset": "LoyaltyQueries",
+    "record_store": "LoyaltyCampaigns",
+    "notebook": "LoyaltyCatalogSetup",
+    "publisher": "LoyaltyPublisher",
+    "eventstream": "LoyaltyCampaignStream"
+  }
+}

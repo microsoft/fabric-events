@@ -7,12 +7,17 @@ This means retry handling is **fully managed** — you do not need to implement 
 ## How it works
 
 ```mermaid
-flowchart LR
-    P[Publisher] -->|Publishes event| BE[Business Event\n'Retail.Inventory.LowStockThreshold']
-    BE -->|Delivery attempt| C[Consumer]
-    C -->|Delivery fails| BE
-    BE -->|Retries automatically\nfor up to 24 hours| C
-    BE -->|After 24 hours\nno more retries| X[Event expired]
+flowchart TB
+    P["<b>Publisher</b>"]
+    BE["<b>Business Event</b><br/>'Retail.Inventory.LowStockThreshold'"]
+    C["<b>Consumer</b>"]
+    X["<b>Event expired</b>"]
+
+    P -->|"Publishes event"| BE
+    BE -->|"Delivery attempt"| C
+    C -->|"Delivery fails"| BE
+    BE -->|"Retries automatically<br/>for up to 24 hours"| C
+    BE -->|"After 24 hours<br/>no more retries"| X
 ```
 
 ## What this means for publishers

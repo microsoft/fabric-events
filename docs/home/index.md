@@ -25,9 +25,10 @@ hide:
 .md-typeset .home2 h1,
 .md-typeset .home2 h2 {
   margin: 0 0 .75em;
-  font-size: 2em;
+  font-size: calc(2 * var(--site-heading-base) - 1px);
   line-height: 1.2;
 }
+.md-typeset .home2 h3 { font-size: calc(var(--site-heading-base) - 1px); }
 .md-typeset .home2 h2,
 .md-typeset .home2 h3 { margin: 0 0 .75em; }
 .home2 p { margin: 0 0 1em; }
@@ -98,15 +99,15 @@ hide:
   <section class="h2-hero" aria-labelledby="home2-title">
     <div>
       <h1 id="home2-title">One business signal.<br>Many ways to act.</h1>
-      <p>A sales dip. A delayed shipment. Recognize what matters while there is still time to change the outcome.</p>
+      <p>A sales dip. A newly placed order. Recognize what matters and share the facts teams need to act or analyze.</p>
       <p>Your workloads already detect important business situations. <strong>Business Events</strong> represent those signals through a shared, schema-defined contract, so teams and applications can reuse the same business meaning and respond independently.</p>
       <div class="h2-actions">
-        <a class="md-button md-button--primary" href="../business-events/scenarios/sales-volume-alert/">Build your first event</a>
+        <a class="md-button md-button--primary" href="../business-events/scenarios/order-history-analysis/">Build your first event</a>
         <a href="../business-events/introduction/what-are-business-events/">Understand the basics &rarr;</a>
       </div>
     </div>
     <figure>
-      <img src="../assets/home2/v001/event-to-action.png" width="1200" height="675" fetchpriority="high" alt="Existing sales detection identifies a business signal. A shared Business Event represents that signal for independent notification and analytics consumers.">
+      <img src="../assets/home/event-to-action.png" width="1200" height="675" fetchpriority="high" alt="Existing sales detection identifies a business signal. A shared Business Event represents that signal for independent notification and analytics consumers.">
       <figcaption>Keep your detection. Share the signal. Enable independent responses.</figcaption>
     </figure>
   </section>
@@ -115,22 +116,22 @@ hide:
     <h2 id="home2-scenarios-title">Find a moment<br>worth acting on.</h2>
     <div class="h2-scenes">
       <article class="h2-scene">
-        <img src="../assets/home2/v001/sales-alert.png" width="1200" height="675" loading="lazy" alt="A retail storefront with a chart showing falling sales.">
+        <img src="../assets/home/sales-alert.png" width="1200" height="675" loading="lazy" alt="A retail storefront with a chart showing falling sales.">
         <h3>Alert the team.</h3>
         <p>A Notebook detects a sales dip and publishes a Business Event. Activator sends a Teams alert; other consumers can reuse the same signal without changing the Notebook.</p>
         <a href="../business-events/scenarios/sales-volume-alert/">Build a sales volume alert &rarr;</a>
       </article>
       <article class="h2-scene">
-        <img src="../assets/home2/v001/cart-recovery.png" width="1200" height="675" loading="lazy" alt="A shopping bag and abandoned cart connect to a recovery email.">
+        <img src="../assets/home/cart-recovery.png" width="1200" height="675" loading="lazy" alt="A shopping bag and abandoned cart connect to a recovery email.">
         <h3>Bring a customer back.</h3>
         <p>Share one cart abandonment signal with independent consumers for recovery actions and conversion analytics, instead of integrating each response into the publisher.</p>
         <a href="../business-events/scenarios/abandoned-cart-recovery/">Explore cart recovery &rarr;</a>
       </article>
       <article class="h2-scene">
-        <img src="../assets/home2/v001/shipment-response.png" width="1200" height="675" loading="lazy" alt="A delivery truck follows an alternative route toward a destination marker.">
-        <h3>Respond to a delay.</h3>
-        <p>Share a shipment delay and its context so independent consumers can trigger mitigation actions, notify the customer, and analyze the incident.</p>
-        <a href="../business-events/scenarios/shipment-delay-auto-mitigation/">Explore shipment mitigation &rarr;</a>
+        <img src="../assets/home/event-to-action.png" width="1200" height="675" loading="lazy" alt="One shared business signal connects independent response and analytics consumers.">
+        <h3>Understand the activity.</h3>
+        <p>Publish six synthetic orders from a Notebook, retain their Business Events in Eventhouse and compare order volume and value across two stores with KQL.</p>
+        <a href="../business-events/scenarios/order-history-analysis/">Explore order history analysis &rarr;</a>
       </article>
     </div>
     <p><a href="../business-events/scenarios/">Browse all scenarios &rarr;</a></p>
@@ -177,7 +178,7 @@ hide:
         <a href="../business-events/design-guides/">Explore design guides &rarr;</a>
       </article>
     </div>
-    <p>Need the platform reference? Read the <a href="https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-overview">official documentation</a>.</p>
+    <p>Need the platform reference? Read the <a href="https://learn.microsoft.com/fabric/real-time-hub/business-events/business-events-overview">official documentation</a>.</p>
   </section>
 
 </div>

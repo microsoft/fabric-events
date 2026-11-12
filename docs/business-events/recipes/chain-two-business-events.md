@@ -10,12 +10,20 @@ Use event chaining when a business process has sequential stages and each stage 
 
 ```mermaid
 flowchart TB
-    P1[Publisher\nNotebook] -->|Publishes| E1[Business Event A\nOrder.Processing.Completed]
-    E1 --> ACT[Activator\nMonitors Event A]
-    ACT -->|Condition met| P2[Activator publishes]
-    P2 -->|Publishes| E2[Business Event B\nOrder.Fulfillment.Started]
-    E2 --> C1[Eventhouse\nFulfillment analytics]
-    E2 --> C2[Activator\nNotify warehouse]
+    P1["<b>Publisher</b><br/>Notebook"]
+    E1["<b>Business Event A</b><br/>Order.Processing.Completed"]
+    ACT["<b>Activator</b><br/>Monitors Event A"]
+    P2["<b>Activator</b> publishes"]
+    E2["<b>Business Event B</b><br/>Order.Fulfillment.Started"]
+    C1["<b>Eventhouse</b><br/>Fulfillment analytics"]
+    C2["<b>Activator</b><br/>Notify warehouse"]
+
+    P1 -->|"Publishes"| E1
+    E1 --> ACT
+    ACT -->|"Condition met"| P2
+    P2 -->|"Publishes"| E2
+    E2 --> C1
+    E2 --> C2
 ```
 
 ## Step 1: Publish the first event
@@ -43,7 +51,7 @@ notebookutils.businessEvents.publish(
 1. Go to **Real-Time Hub → Business events**
 2. Find **Order.Processing.Completed** and click **Set alert**
 3. Configure **Monitor**: source = Order.Processing.Completed
-4. Configure **Condition**: On each event
+4. Configure **Condition**: On each value
 5. Configure **Action**: Publish a business event
 6. Select **Order.Fulfillment.Started** as the target event
 7. Map fields from Event A to Event B:

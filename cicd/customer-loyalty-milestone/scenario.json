@@ -1,0 +1,48 @@
+{
+  "scenario_id": "customer-loyalty-milestone",
+  "scenario_name": "Customer Loyalty Milestone",
+  "package_policy": "single_current_package",
+  "source_backend": "native_activator_kql",
+  "resource_roles": ["schema", "eventhouse", "source", "queryset", "record_store", "notebook", "publisher", "eventstream"],
+  "implemented_scope": "public_hybrid_deployment",
+  "command_behavior": {
+    "test": "manual_native_kql_inputs_only",
+    "verify": "check_prepared_resources_without_claiming_manual_connections_or_delivery",
+    "automated_source_trigger_available": false
+  },
+  "distribution_assets": [
+    "loyalty_deploy.py", "loyalty_catalog.py", "public_consumers.py",
+    "DatabaseSchema.kql", "source-query.kql", "sample-input.kql", "catalog.json", "notebook-content.py"
+  ],
+  "event_analysis": {
+    "scope": "excluded",
+    "required_for_response": false,
+    "description": "The source Eventhouse holds spend observations, not managed Business Event history."
+  },
+  "source_architecture": {
+    "source_table": "CustomerSpendSnapshots",
+    "source_event_time": "observed_at",
+    "object_identity": ["customer_id"],
+    "currency": "USD",
+    "crossing_condition": "becomes_greater_than",
+    "crossing_threshold": 5000,
+    "milestone_tier": "gold",
+    "spend_scope": "customer_wide_across_stores_supplied_by_the_loyalty_program",
+    "store_context": "store_of_the_purchase_in_the_balance_observation"
+  },
+  "campaign_preparation": {
+    "catalog_table": "LoyaltyCampaignCatalog",
+    "catalog_key": ["catalog_tier", "catalog_store_id"],
+    "join_type": "left_outer",
+    "join_pairs": [["milestone_tier", "catalog_tier"], ["store_id", "catalog_store_id"]],
+    "candidate_condition": "campaign_id_is_not_null_and_is_active_is_true",
+    "candidate_table": "LoyaltyCampaignCandidates",
+    "candidate_fields": ["customer_id", "milestone_tier", "total_spend", "store_id", "detected_at", "campaign_id", "benefit_code"],
+    "unmatched_condition": "campaign_id_is_null",
+    "unmatched_table": "LoyaltyCampaignReview",
+    "unmatched_fields": ["customer_id", "milestone_tier", "total_spend", "store_id", "detected_at"],
+    "storage": "lakehouse_delta_tables",
+    "delivery_semantics": "append_not_exactly_once",
+    "outreach_requires": ["deduplicate_customer_tier_campaign", "contact_permission", "benefit_eligibility"]
+  }
+}

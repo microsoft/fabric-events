@@ -1,0 +1,8 @@
+[
+  {"id": "failed-load", "operation": "fail", "rows": 12},
+  {"id": "failed-next-run", "operation": "fail", "rows": 3},
+  {"id": "completed", "operation": "complete", "rows": 25},
+  {"id": "empty-completed", "operation": "complete", "rows": 0},
+  {"id": "another-completed", "operation": "complete", "rows": 8},
+  {"id": "skipped", "operation": "skip", "rows": 0}
+]

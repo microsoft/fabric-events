@@ -1,0 +1,5 @@
+[
+  {"id": "keyboard", "productName": "Synthetic Keyboard", "storeId": "synthetic-store-01", "currentStock": 4, "threshold": 10, "supplierId": "synthetic-supplier-01"},
+  {"id": "mouse", "productName": "Synthetic Mouse", "storeId": "synthetic-store-02", "currentStock": 0, "threshold": 5, "supplierId": "synthetic-supplier-02"},
+  {"id": "display", "productName": "Synthetic Display", "storeId": "synthetic-store-03", "currentStock": -2, "threshold": 8, "supplierId": "synthetic-supplier-03"}
+]

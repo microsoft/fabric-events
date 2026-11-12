@@ -18,11 +18,17 @@ To evolve a schema:
 A schema update does **not** propagate automatically to publishers or consumers. Both sides must be updated explicitly.
 
 ```mermaid
-flowchart TD
-    A[Update schema in\nEvent Schema Registry] --> B[Update publisher\nto send new version]
-    A --> C[Create new consumer\nsubscription for new version]
-    B --> D[Publisher sends\ndataVersion v2]
-    C --> E[Consumer receives\nv2 events]
+flowchart TB
+    A["<b>Update schema</b><br/>in Event Schema Registry"]
+    B["<b>Update publisher</b><br/>to send new version"]
+    C["<b>Create new consumer</b><br/>subscription for new version"]
+    D["<b>Publisher</b> sends<br/>dataVersion v2"]
+    E["<b>Consumer</b> receives<br/>v2 events"]
+
+    A --> B
+    A --> C
+    B --> D
+    C --> E
 ```
 
 ### Publisher update
