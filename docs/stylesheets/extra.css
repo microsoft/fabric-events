@@ -2,6 +2,58 @@
   display: none;
 }
 
+/* Ordinary text follows the sidebar; headings and diagram text keep their sizes. */
+:root {
+  --site-text-size: calc(0.7rem - 1px);
+  --site-heading-base: 0.8rem;
+}
+
+body, small, .md-typeset, .md-typeset code, .md-typeset kbd,
+.md-typeset .md-author--more,
+.md-banner__inner, .md-dialog__inner, .md-meta, .md-nav,
+.md-nav__link .md-typeset, .md-nav--primary .md-nav__item,
+.md-nav--primary .md-nav__title, .md-path, .md-profile, .md-tabs__link, .md-top,
+.md-skip, .md-footer__direction, .md-copyright, .md-search-result__meta,
+.md-search-result__more > summary > div, .md-search-result .md-typeset,
+.md-search-result__terms, .md-tooltip__inner,
+[role="dialog"] > .md-tooltip2__inner, .md-typeset .footnote,
+.md-typeset .tabbed-labels > label,
+.md-footer__title, .md-header__title, .md-search__input, .md-search__suggest,
+.md-typeset .md-input, .md-pagination, .md-select__list, .md-version,
+.md-source, .md-source__facts, .md-source-file__fact, .md-typeset .md-tag,
+.md-tooltip--inline .md-tooltip__inner, [role="tooltip"] > .md-tooltip2__inner,
+.md-typeset .md-annotation-list li::before, .md-typeset .footnote-ref,
+.highlight span.filename, .highlighttable .linenos {
+  font-size: var(--site-text-size);
+}
+
+.md-typeset h1 { font-size: calc(2 * var(--site-heading-base) - 1px); }
+.md-typeset h2 { font-size: calc(1.5625 * var(--site-heading-base) - 1px); }
+.md-typeset h3 { font-size: calc(1.25 * var(--site-heading-base) - 1px); }
+.md-typeset h4 { font-size: calc(var(--site-heading-base) - 1px); }
+.md-typeset h5, .md-typeset h6 {
+  font-size: calc(0.8 * var(--site-heading-base) - 1px);
+}
+.md-typeset :is(h1, h2, h3, h4, h5, h6) code {
+  font-size: calc(0.85em - 0.15px);
+}
+.md-typeset :is(h1, h2, h3, h4, h5, h6) kbd {
+  font-size: calc(0.75em - 0.25px);
+}
+.md-typeset :is(h1, h2, h3, h4, h5, h6) small {
+  font-size: calc(0.8em - 0.2px);
+}
+.md-search-result .md-typeset h1 { font-size: calc(0.8rem - 1px); }
+.md-search-result .md-typeset h2 { font-size: calc(0.64rem - 1px); }
+
+@media screen and (max-width: 76.234375em) {
+  :root { --site-text-size: calc(0.8rem - 1px); }
+}
+
+@media print {
+  :root { --site-heading-base: 0.68rem; }
+}
+
 /* Full-width layout */
 .md-grid {
   max-width: 100%;
@@ -27,9 +79,33 @@ article.md-typeset table:not([class]) {
 }
 
 /* Increase indentation for nav subitems */
-.md-nav--secondary .md-nav__item,
-.md-nav__item .md-nav__item {
+.md-nav--secondary .md-nav__item {
   padding-left: 0.75rem;
+}
+
+.md-sidebar--primary .md-nav__item .md-nav__item {
+  padding-left: 0.35rem;
+}
+
+.md-sidebar--primary .md-nav__link {
+  column-gap: 0.35rem;
+}
+
+.md-sidebar--primary .md-nav__container > label.md-nav__link {
+  flex: 0 0 1.2rem;
+  order: -1;
+  margin-inline: 0;
+}
+
+.md-sidebar--primary .md-nav__item > label.md-nav__link > .md-nav__icon {
+  order: -1;
+  margin-inline: 0;
+}
+
+/* Reserve the toggle column without decorating leaf links. */
+.md-sidebar--primary .md-nav__item:not(.md-nav__item--section) > a.md-nav__link::before {
+  content: "";
+  flex: 0 0 1.2rem;
 }
 
 /* Visual separator for section titles */
@@ -39,12 +115,10 @@ article.md-typeset table:not([class]) {
   margin-top: 0.4rem;
 }
 
-/* Subtle icon before leaf nav items */
-.md-nav__item:not(.md-nav__item--section) .md-nav__link::before {
-  content: "›";
-  margin-right: 0.35rem;
-  opacity: 0.4;
-  font-size: 0.85em;
+.md-sidebar--primary .md-nav--lifted > .md-nav__list > .md-nav__item > label[for],
+.md-sidebar--primary .md-nav__item--section > label.md-nav__link,
+.md-sidebar--primary label.md-nav__title {
+  color: var(--md-default-fg-color);
 }
 
 /* Red heart in footer */
@@ -61,7 +135,7 @@ article.md-typeset table:not([class]) {
 .md-typeset .home2 + .community-invitation h2 {
   margin: 0 0 0.75em;
   color: var(--md-default-fg-color);
-  font-size: 2em;
+  font-size: calc(2 * var(--site-heading-base) - 1px);
   font-weight: 700;
   letter-spacing: normal;
   line-height: 1.2;
@@ -69,4 +143,21 @@ article.md-typeset table:not([class]) {
 
 .md-typeset .community-invitation .md-button {
   padding: 0.5em 1em;
+}
+
+.scenario-diagram {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.5rem 0;
+  text-align: center;
+}
+
+.scenario-mermaid[data-measuring] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  visibility: hidden;
+  pointer-events: none;
 }

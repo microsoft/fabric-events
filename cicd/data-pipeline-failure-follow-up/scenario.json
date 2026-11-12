@@ -1,0 +1,26 @@
+{
+  "scenario_name": "Data Pipeline Failure Follow-up",
+  "scenario_id": "data-pipeline-failure-follow-up",
+  "source_backend": "native_notebook",
+  "package_policy": "single_current_package",
+  "resource_roles": ["schema", "notebook", "activator", "case_store", "response_function"],
+  "implemented_scope": "public_hybrid_deployment",
+  "command_behavior": {
+    "deploy": "prepare_notebook_filtered_activator_sql_database_and_native_sql_response",
+    "test": "start_the_original_notebook_without_invoking_the_response",
+    "test_exit_zero_means": "source_job_accepted_not_source_completion_or_case_delivery",
+    "verify": "read_owned_definitions_and_the_saved_source_job_without_republishing"
+  },
+  "business_response": {
+    "target_role": "response_function",
+    "action": "UserDataFunction",
+    "rule_name": "Register failed run",
+    "function_name": "register_pipeline_failure",
+    "business_outcome": "One SQL case pending triage per failed pipeline execution, not an automatic retry or completed repair."
+  },
+  "event_analysis": {"scope": "excluded", "reason": "The response consumes the triggering event directly."},
+  "distribution_assets": [
+    "public_consumers.py", "public_udf.py", "failure_deploy.py", "failure_records.py",
+    "notebook-content.py", "response-function.py", "fixtures.json", "setup.sql", "record-pipeline-failure.sql"
+  ]
+}

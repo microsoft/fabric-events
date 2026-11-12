@@ -1,0 +1,4 @@
+[
+  {"catalog_tier": "gold", "catalog_store_id": "store-west", "campaign_id": "gold-west-welcome", "benefit_code": "GOLD_WELCOME", "is_active": true},
+  {"catalog_tier": "gold", "catalog_store_id": "store-east", "campaign_id": "gold-east-welcome", "benefit_code": "GOLD_WELCOME", "is_active": false}
+]

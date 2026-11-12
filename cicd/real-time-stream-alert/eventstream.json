@@ -1,0 +1,52 @@
+{
+  "sources": [{"name": "PaymentInput", "type": "CustomEndpoint", "properties": {}}],
+  "streams": [{
+    "name": "Payments", "type": "DefaultStream", "properties": {},
+    "inputNodes": [{"name": "PaymentInput"}]
+  }],
+  "operators": [{
+    "name": "HighValueOnly", "type": "Filter",
+    "inputNodes": [{"name": "Payments"}],
+    "properties": {"conditions": [{
+      "column": {"expressionType": "ColumnReference", "node": null, "columnName": "amount", "columnPathSegments": []},
+      "operatorType": "GreaterThan",
+      "value": {"expressionType": "Literal", "dataType": "Float", "value": "5000"}
+    }]},
+    "inputSchemas": [{"name": "Payments", "schema": {"columns": [
+      {"name": "transaction_id", "type": "Nvarchar(max)"},
+      {"name": "payment_method", "type": "Nvarchar(max)"},
+      {"name": "amount", "type": "Float"},
+      {"name": "currency", "type": "Nvarchar(max)"},
+      {"name": "store_id", "type": "Nvarchar(max)"},
+      {"name": "processed_at", "type": "Nvarchar(max)"}
+    ]}}]
+  }, {
+    "name": "BusinessEventFields", "type": "ManageFields",
+    "inputNodes": [{"name": "HighValueOnly"}],
+    "properties": {"columns": [
+      {"type": "Rename", "properties": {"column": {"expressionType": "ColumnReference", "node": null, "columnName": "transaction_id", "columnPathSegments": []}}, "alias": "transaction_id"},
+      {"type": "Rename", "properties": {"column": {"expressionType": "ColumnReference", "node": null, "columnName": "payment_method", "columnPathSegments": []}}, "alias": "payment_method"},
+      {"type": "Rename", "properties": {"column": {"expressionType": "ColumnReference", "node": null, "columnName": "amount", "columnPathSegments": []}}, "alias": "amount"},
+      {"type": "Rename", "properties": {"column": {"expressionType": "ColumnReference", "node": null, "columnName": "currency", "columnPathSegments": []}}, "alias": "currency"},
+      {"type": "Rename", "properties": {"column": {"expressionType": "ColumnReference", "node": null, "columnName": "store_id", "columnPathSegments": []}}, "alias": "store_id"},
+      {"type": "Rename", "properties": {"column": {"expressionType": "ColumnReference", "node": null, "columnName": "processed_at", "columnPathSegments": []}}, "alias": "processed_at"}
+    ]}
+  }],
+  "destinations": [{
+    "name": "HighValueBusinessEvent", "type": "BusinessEvents",
+    "properties": {
+      "workspaceId": "${workspace_id}", "itemId": "${schema_id}", "businessEventTypeId": "${event_name}",
+      "inputSerialization": {"type": "Json", "properties": {"encoding": "UTF8"}}
+    },
+    "inputNodes": [{"name": "BusinessEventFields"}],
+    "inputSchemas": [{"name": "BusinessEventFields", "schema": {"columns": [
+      {"name": "transaction_id", "type": "Nvarchar(max)"},
+      {"name": "payment_method", "type": "Nvarchar(max)"},
+      {"name": "amount", "type": "Float"},
+      {"name": "currency", "type": "Nvarchar(max)"},
+      {"name": "store_id", "type": "Nvarchar(max)"},
+      {"name": "processed_at", "type": "Nvarchar(max)"}
+    ]}}]
+  }],
+  "compatibilityLevel": "1.1"
+}

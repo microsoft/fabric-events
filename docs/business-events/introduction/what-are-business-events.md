@@ -2,55 +2,58 @@
 
 A Business Event is a named, schema-defined representation of a meaningful business occurrence or detected condition. It gives teams a shared contract for communicating situations such as inventory falling below a threshold, a shipment being delayed, or a customer reaching a loyalty milestone.
 
-The business signal is the meaning of that situation. The Business Event is how you represent and share an occurrence of it. Your existing notebooks, queries, rules, and applications can continue detecting the signal; consumers use the published event to support decisions, automation, and analysis.
+The business signal is the meaning of that situation. The Business Event is the shared record of a particular occurrence: which store, shipment or customer, what happened, and when. Existing notebooks, queries, rules and applications keep their detection logic; other workloads use the event to start a response or retain the finding for analysis.
 
 !!! note "Official documentation"
-    For the complete API reference and platform overview, see the [Business Events documentation on learn.microsoft.com](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-overview).
+    For the complete API reference and platform overview, see the [Business Events documentation on learn.microsoft.com](https://learn.microsoft.com/fabric/real-time-hub/business-events/business-events-overview).
 
 ## The core idea
 
-Your team may already detect important conditions and respond through dashboards, alerts, or application integrations. The challenge grows when other teams need the same signal: each implementation may use a different name, interpretation, or payload, and a change to the business definition requires coordination across them.
+Consider store operations monitoring hourly transaction volume. A sales Notebook already compares expected and actual transactions. Operations needs the stores with a significant drop brought to its attention, while analysts need the findings available for later comparison.
 
-Business Events provide a reusable representation of that signal. A **publisher** (a [Notebook](https://learn.microsoft.com/en-us/fabric/data-engineering/how-to-use-notebook), a [User Data Function](https://learn.microsoft.com/en-us/fabric/data-engineering/user-data-functions/user-data-functions-overview), an [Eventstream](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/overview), or [Activator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/activator/activator-introduction)) publishes an occurrence through **[Real-Time Hub](https://learn.microsoft.com/en-us/fabric/real-time-hub/real-time-hub-overview)**. **Consumers**, such as [Activator](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/activator/activator-introduction) and [Eventhouse](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/eventhouse), use that event independently, without the publisher calling each one.
+Instead of adding a Teams integration and a history-writing routine to the Notebook, the sales workload shares a `Retail.Sales.VolumeAlert` Business Event. Each occurrence carries the store, time window, expected transactions, actual transactions and deviation. Activator applies the operations response threshold; optional Eventhouse history retains the same findings independently.
 
-For example, the same low-stock event can support an operations alert and inventory analysis. Adding a consumer that uses the existing contract does not require changing the publisher. Teams still need to agree on the signal's meaning, ownership, and evolution; the schema alone does not establish that agreement.
+The Notebook is the **publisher**: it supplies the business finding. Activator and Eventhouse are **consumers**: they use that finding for different purposes. These are responsibilities in the design, not additional steps that a business user must perform.
 
 ```mermaid
-flowchart LR
-    subgraph Publishers
-        NB[Notebook]
-        UDF[User Data Function]
-        ES[Eventstream]
-        ACT1[Activator]
-    end
+flowchart TB
+    NB["<b>Sales Notebook</b><br/>Compares hourly<br/>store transactions"]
+    BE(["<b>Business Event</b><br/>Store sales finding"])
+    ACT["<b>Activator</b><br/>Selects deviations<br/>below -30%"]
+    T["<b>Teams</b><br/>Operations receives<br/>the investigation context"]
+    EH[("<b>Eventhouse</b><br/>Store finding history")]
 
-    subgraph RTH[Real-Time Hub]
-        BE([Business Event\n'Retail.Sales.VolumeAlert'])
-    end
-
-    subgraph Consumers
-        ACT2[Activator]
-        EH[Eventhouse]
-    end
-
-    NB -->|publish| BE
-    UDF -->|publish| BE
-    ES -->|publish| BE
-    ACT1 -->|publish| BE
-    BE -->|consume| ACT2
-    BE -->|consume| EH
+    NB -->|"Store and sales figures"| BE
+    BE -->|"Deviation"| ACT
+    ACT -->|"Sales exception"| T
+    BE -.->|"Optional history"| EH
 ```
+
+Operations receives an investigation prompt only for deviations strictly below -30%; analysts can examine finding history when **Analyze in Eventhouse** is enabled at Business Event creation. Neither response changes the sales comparison or waits for the other. The event does not establish why sales fell or that anyone resolved the issue.
+
+The [Sales Volume Alert Workbook](../scenarios/sales-volume-alert/deployment.md) implements this example. Other publishers, including User Data Functions, Eventstream and Activator, serve different detection and integration needs; the [Architecture Overview](architecture-overview.md) explains their roles.
+
+## What makes the contract useful
+
+| Contract element | Sales example | Why it matters |
+|---|---|---|
+| Named business meaning | `Retail.Sales.VolumeAlert` | Identifies a store sales finding, not merely a completed Notebook run. |
+| Subject and observation time | `store_id`, `window_start` | Keeps the response tied to the correct location and trading hour. |
+| Facts behind the finding | `expected_transactions`, `actual_transactions`, `deviation_pct` | Gives operations the original comparison rather than another request for an extract. |
+| Response policy | Activator selects deviations below -30% | Separates the sales measurement from the decision to notify operations. |
+
+Teams agree on the meaning, ownership and evolution of the contract. A schema enforces structure; it does not decide which findings deserve an action or make the business decision on a team's behalf.
 
 ## Key concepts
 
 **Schema-first design**
-Every Business Event has a defined schema before publication. The schema uses a record format with typed fields, giving publishers and consumers an explicit data contract. Document what those fields mean and coordinate changes to that contract.
+Define the Business Event in **Real-Time Hub → Business Events** before sending occurrences. Its typed record schema describes the shared facts. For the sales example, the meaning and unit of `deviation_pct` must remain consistent across the Notebook and Activator rule.
 
 **Decoupled architecture**
-Publishers do not call each consumer directly. Consumers depend on the event contract rather than a direct call from a particular publisher. New consumers can reuse that contract without changes to the publishing code.
+The Notebook does not call Teams or wait for historical analysis. A new response can reuse the existing contract without changing the sales calculation. Consumer configuration, permissions and verification are still required.
 
 **Real-time delivery**
-Events reach configured consumers through Microsoft Fabric Real-Time Hub infrastructure. Detection frequency and downstream processing also affect how quickly the business can respond.
+Configured consumers react after a finding is published. An hourly Notebook still detects on its hourly schedule; event delivery does not make that calculation continuous or guarantee that the downstream action completed.
 
 ## Next steps
 

@@ -1,64 +1,65 @@
 # Scenarios
 
-Each scenario is a complete, end-to-end walkthrough of a real business problem solved with Business Events. Every scenario includes a business context, an architecture diagram, an Avro event schema, publisher code or UI setup, and consumer configuration.
-
----
-
-## Detect & Alert
-
-Use this pattern when you want to notify a person or system the moment a condition is met. The publisher detects a condition and emits an event. Activator evaluates a rule and immediately notifies a team or triggers a response. Eventhouse independently stores the same published findings for historical analysis, so these scenarios pair an immediate response with a queryable history.
-
-| Scenario | Industry | Publisher | Consumer(s) | Level |
-|----------|----------|-----------|-------------|-------|
-| [Sales Volume Alert](sales-volume-alert.md) | Retail | Notebook | Activator, Eventhouse | Beginner |
-| [Real-Time Stream Alert](real-time-stream-alert.md) | Finance | Eventstream | Activator, Eventhouse | Intermediate |
-| [Revenue Below Target](revenue-below-target.md) | Sales | Activator | Activator, Eventhouse | Intermediate |
-
-!!! tip "Good first scenario"
-    Start with [Sales Volume Alert](sales-volume-alert.md) if you are new to Business Events. It covers the full publish-subscribe cycle with the minimum number of moving parts.
-
----
-
-## Decide & Act
-
-Use this pattern when you want one event to trigger multiple automated actions across independent systems. The publisher evaluates context — customer history, fraud rules, inventory levels, SLA data — makes a decision, and publishes an event that carries the outcome. Multiple independent consumers act on it simultaneously without knowing about each other. Adding a new action means adding a new subscription, not changing the publisher.
-
-| Scenario | Industry | Publisher | Consumer(s) | Level |
-|----------|----------|-----------|-------------|-------|
-| [Customer Loyalty Milestone](customer-loyalty-milestone.md) | Retail | Activator | Activator, Eventhouse | Intermediate |
-| [Abandoned Cart Recovery](abandoned-cart-recovery.md) | Ecommerce | User Data Function | Activator, Eventhouse | Intermediate |
-| [Discount Approval Evaluation and Event Publication](discount-approval-routing.md) | Sales | User Data Function | Activator, Eventstream, Eventhouse | Intermediate |
-| [Fraud Response Before Fulfillment](fraud-response-before-fulfillment.md) | Finance | User Data Function | Activator, Eventhouse | Advanced |
-| [Real-Time Viewer Recommendations](real-time-viewer-recommendations.md) | Media | User Data Function | Activator, Eventhouse | Advanced |
-| [Shipment Delay Auto-Mitigation](shipment-delay-auto-mitigation.md) | Logistics | User Data Function | Activator, Eventhouse | Advanced |
-
-!!! note "The fan-out advantage"
-    **Fraud Response Before Fulfillment** and **Shipment Delay Auto-Mitigation** each trigger three independent Activator rules from a single event. This is the fan-out pattern: one publisher, many independent consumers, zero coordination overhead.
-
----
-
-## Track & Analyze
-
-Use this pattern when you want published events stored as queryable records. With **Analyze in Eventhouse** enabled during Business Event creation, received events are automatically persisted in a dedicated KQL table. These scenarios use that history for operational dashboards, audit trails, or replenishment planning without custom ingestion code. Low Stock Threshold also includes an Activator notification; Data Lineage Audit focuses on analytical history.
-
-| Scenario | Industry | Publisher | Consumer(s) | Level |
-|----------|----------|-----------|-------------|-------|
-| [Low Stock Threshold](low-stock-threshold.md) | Supply Chain | User Data Function | Activator, Eventhouse | Beginner |
-| [Data Lineage Audit](data-lineage-audit.md) | DataOps | Notebook | Eventhouse | Intermediate |
-
-!!! tip "Combine patterns"
-    **Sales Volume Alert**, **Real-Time Stream Alert**, **Customer Loyalty Milestone**, **Revenue Below Target**, **Low Stock Threshold**, and **Discount Approval Evaluation and Event Publication** all pair Activator responses with Eventhouse history. The same combination appears in **Abandoned Cart Recovery**, **Fraud Response Before Fulfillment**, **Real-Time Viewer Recommendations**, and **Shipment Delay Auto-Mitigation**. Each walkthrough verifies both paths: the immediate response and the stored event.
-
----
+Choose the business outcome you want to explore: bring a finding to someone's attention, prepare work for a team, or understand recurring activity. Open the scenario for its business context and architecture, then use its Workbook for preparation, connections and one complete exercise. Some responses require connections to your own business systems.
 
 ## How to read a scenario
 
-Each scenario follows the same structure:
+Each scenario has two pages with one shared outcome:
 
-1. **Business context** — the real-world problem and why it matters
-2. **Architecture** — Mermaid flow diagram of the full solution
-3. **Step 1: Create the Business Event** — Avro schema definition
-4. **Step 2: Publish from the source workload** — publisher code (Notebook, User Data Function, Eventstream, or Activator)
-5. **Step 3: Configure the consumer** — Activator rule setup and/or KQL queries for Eventhouse
-6. **Step 4: Test end to end** — how to verify the full flow
-7. **What happens next** — extension ideas and related scenarios
+1. **Business context:** how the activity works today, the current problem, what changes with Business Events, and the event-driven architecture with its flows explained. The page also states what the exercise demonstrates and where it stops.
+2. **Workbook:** prerequisites, resource coverage, supported deployment or manual preparation, required connections, one source sample and visible results, including cases that should be ignored.
+
+Schemas, mappings, KQL, SQL and source examples are retained in the Workbook, next to the relevant step or in expandable implementation reference. Optional extensions are separate from completion criteria.
+
+**Level** reflects the Workbook's manual setup and result-checking effort:
+
+- **Beginner:** few setup steps and straightforward result checks.
+- **Intermediate:** some manual setup or guided result checks.
+- **Advanced:** substantial manual setup or coordinated, multi-step checks.
+
+Scenarios are ordered by level within each pattern, with advanced exercises last.
+
+## Explore by outcome
+
+### Track & Analyze
+
+Use this pattern when the primary outcome is understanding received business activity rather than starting an operational response. Order History Analysis compares synthetic orders across two stores.
+
+| Scenario | Industry | Publisher | Consumer(s) | Level | Workbook |
+|----------|----------|-----------|-------------|-------|------------------|
+| [Order History Analysis](order-history-analysis.md) | Retail | Notebook | Eventhouse | Beginner | [Workbook](order-history-analysis/deployment.md) |
+
+With **Analyze in Eventhouse** enabled during Business Event creation, received events are automatically persisted in a dedicated KQL table. This history consumer is **required** for Order History Analysis, whose Workbook guides native setup and one result query; it does not claim automated provisioning. History remains an optional extension in the operational scenarios, and their deployment packages do not configure it. A source Eventhouse is not the same as an event-history destination.
+
+!!! tip "Good first scenario"
+    Start with [Order History Analysis](order-history-analysis.md) for a Beginner publish-and-query exercise. Choose [Sales Volume Alert](sales-volume-alert.md) when you are ready to connect an operational response in Teams.
+
+!!! tip "Combine patterns"
+    Add received-event analysis when it answers a business question, such as recurring sales drops or repeated stock shortages. Plan the history choice when creating the event, and check delivered messages, saved requests or cases separately. A history row does not establish that an operational action completed.
+
+### Detect & Alert
+
+Use this pattern when a finding needs a person's attention. Sales Volume Alert notifies store operations in Teams. Revenue Below Target prepares the figures a revenue team needs for commercial review. Eventhouse can separately retain the findings to help teams identify recurring patterns.
+
+| Scenario | Industry | Publisher | Consumer(s) | Level | Workbook |
+|----------|----------|-----------|-------------|-------|------------------|
+| [Sales Volume Alert](sales-volume-alert.md) | Retail | Notebook | Activator (Teams), optional Eventhouse | Intermediate | [Workbook](sales-volume-alert/deployment.md) |
+| [Revenue Below Target](revenue-below-target.md) | Sales | Activator (Business Event publication) | Activator (Data Pipeline), optional Eventhouse | Advanced | [Workbook](revenue-below-target/deployment.md) |
+
+### Decide & Act
+
+Use this pattern to turn a finding or decision into work. Prepare a replenishment request, register a payment review case, or apply an order hold. Each team owns its response to the shared signal. The scenario makes clear where the work stops: a request still needs approval, and a review case still needs assessment. Add another response without changing the publisher.
+
+| Scenario | Industry | Publisher | Consumer(s) | Level | Workbook |
+|----------|----------|-----------|-------------|-------|------------------|
+| [Low Stock Threshold](low-stock-threshold.md) | Supply Chain | User Data Function | Activator (Data Pipeline), optional Eventhouse | Intermediate | [Workbook](low-stock-threshold/deployment.md) |
+| [Real-Time Stream Alert](real-time-stream-alert.md) | Finance | Eventstream | Activator (User Data Function), optional Eventhouse | Intermediate | [Workbook](real-time-stream-alert/deployment.md) |
+| [Discount Approval Evaluation and Event Publication](discount-approval-routing.md) | Sales | User Data Function | Activator (Teams), Eventstream, optional Eventhouse | Intermediate | [Workbook](discount-approval-routing/deployment.md) |
+| [Real-Time Viewer Recommendations](real-time-viewer-recommendations.md) | Media | User Data Function | Activator (User Data Function), optional Eventhouse | Intermediate | [Workbook](real-time-viewer-recommendations/deployment.md) |
+| [Data Pipeline Failure Follow-up](data-pipeline-failure-follow-up.md) | DataOps | Notebook | Activator (User Data Function), optional Eventhouse | Intermediate | [Workbook](data-pipeline-failure-follow-up/deployment.md) |
+| [Customer Loyalty Milestone](customer-loyalty-milestone.md) | Retail | Activator | Eventstream (campaign enrichment → Lakehouse Delta tables) | Advanced | [Workbook](customer-loyalty-milestone/deployment.md) |
+| [Abandoned Cart Recovery](abandoned-cart-recovery.md) | Ecommerce | User Data Function | Activator (Power Automate: email and SQL follow-up), optional Eventhouse | Advanced | [Workbook](abandoned-cart-recovery/deployment.md) |
+| [Fraud Response Before Fulfillment](fraud-response-before-fulfillment.md) | Finance | User Data Function | Activator (Power Automate), optional Eventhouse | Advanced | [Workbook](fraud-response-before-fulfillment/deployment.md) |
+
+!!! note "The fan-out advantage"
+    **Fraud Response Before Fulfillment** uses one event to support three separate responses. Teams can evolve their workflows without changing the publisher, while still agreeing how competing or overlapping actions should be handled.

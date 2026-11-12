@@ -1,0 +1,8 @@
+[
+  {"id": "high-value", "customer_id": "test-cart-a", "cart_value": 145.50, "item_count": 3, "expected_email": true},
+  {"id": "above-boundary", "customer_id": "test-cart-b", "cart_value": 30.01, "item_count": 1, "expected_email": true},
+  {"id": "large-cart", "customer_id": "test-cart-a", "cart_value": 250.00, "item_count": 5, "expected_email": true},
+  {"id": "boundary", "customer_id": "test-cart-b", "cart_value": 30.00, "item_count": 2, "expected_email": false},
+  {"id": "below-boundary", "customer_id": "test-cart-a", "cart_value": 29.99, "item_count": 1, "expected_email": false},
+  {"id": "zero-value", "customer_id": "test-cart-b", "cart_value": 0.00, "item_count": 1, "expected_email": false}
+]

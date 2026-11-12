@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "Retail.Payment.HighValueTransaction",
+  "fields": [
+    {"name": "transaction_id", "type": "string"},
+    {"name": "payment_method", "type": "string"},
+    {"name": "amount", "type": "float"},
+    {"name": "currency", "type": "string"},
+    {"name": "store_id", "type": "string"},
+    {"name": "processed_at", "type": "string"}
+  ]
+}

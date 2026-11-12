@@ -1,275 +1,111 @@
 # Sales Volume Alert
 
-**Publisher:** Notebook | **Consumers:** Activator, Eventhouse
+## Business Context
 
-## Business context
+Stores produce transaction totals throughout the trading day. Sales analysis compares each location's actual volume with its expected volume for the same hour, giving operations a view of which stores are performing normally and which deserve a closer look.
 
-A retail company runs daily sales processing in Microsoft Fabric. Each store is expected to process a baseline number of transactions per hour based on historical data. If a store's transaction volume drops significantly below its expected baseline, it may indicate a failure in the point-of-sale integration, not a natural slowdown.
-
-The notebook already compares actual volume with the baseline. Operations needs that finding in time to investigate a possible integration failure. Retail analytics needs a history of the same findings to identify stores with recurring volume drops and compare their severity over time.
-
-**The problem without Business Events:**
-If the notebook calls each notification or analytics service directly, adding a response means updating the detection workload. Separate implementations can also interpret the same volume drop differently.
-
-**The solution with Business Events:**
-The notebook keeps its detection logic and publishes a `Retail.Sales.VolumeAlert` event with the store and deviation context. Two independent consumers use that contract: Activator notifies operations for deviations below -30%, while Eventhouse retains every received finding for historical analysis, including findings that do not match the alert rule. The notebook does not call either consumer directly.
-
-## Architecture
+In the operating model described here, an operations lead reviews that comparison, selects a significant drop and prepares the store, trading hour and supporting figures for investigation. The report can be available while nobody has yet taken responsibility for investigating the exception. The business already knows how to measure the change; the delay is in turning that finding into work with enough context for someone to act.
 
 ```mermaid
 flowchart TB
-    subgraph Fabric Notebook
-        A[Detect volume drop\nper store per hour]
+    S[("<b>Store sales records</b><br/>Store, hour and totals")]
+    C["<b>Sales analysis</b><br/>Compares hourly sales"]
+    R["<b>Performance report</b><br/>Expected vs. actual sales"]
+    subgraph GAP["Gap: Sales exceptions still need<br/>to reach the operations team"]
+        O["<b>Operations lead</b><br/>Selects stores that<br/>need investigation"]:::businessGap
+        P["<b>Investigation preparation</b><br/>Captures store, hour<br/>and sales totals"]:::businessGap
     end
-
-    subgraph Real-Time Hub
-        B([Business Event\n'Retail.Sales.VolumeAlert'])
-    end
-
-    subgraph Activator
-        C{Evaluate rule:\ndeviation_pct < -30}
-        D[Send Teams alert\nto ops team]
-    end
-
-    subgraph Eventhouse
-        E[(Volume alert history)]
-        F[KQL analysis\nRecurring drops by store]
-    end
-
-    A -->|Publish event| B
-    B -->|Trigger| C
-    C -->|Threshold met| D
-    B -->|Auto-ingest| E
-    E --> F
+    I[("<b>Investigation worklist</b><br/>Store-specific findings")]
+    S -->|"Sales totals"| C
+    C -->|"Deviation"| R
+    R -->|"Store results"| O
+    O -->|"Select exception"| P
+    P -->|"Record finding"| I
+    classDef businessGap fill:#FFF4CE,stroke:#C88700,color:#000000
+    style GAP fill:none,stroke:#C88700,stroke-width:1.5px
 ```
 
-| Component | Role |
-|---|---|
-| Publisher | Notebook calculates the volume deviation and publishes the finding |
-| Consumer 1 | Activator filters for deviations below -30% and sends a Teams alert |
-| Consumer 2 | Eventhouse stores received findings for recurrence and severity analysis |
-| Schema set | `RetailSales` |
-| Event type and KQL table | `Retail.Sales.VolumeAlert` |
+## Current Problem
 
-## Step 1: Create the Business Event
+A significant drop can sit among routine observations until someone notices and passes it to operations. A notification without the store, expected volume and time window still leaves the recipient assembling the facts before an investigation can begin.
 
-Before publishing any event, you need to define it in Real-Time Hub.
+The team needs a consistent handoff from the sales comparison to operational attention, without treating every fluctuation as an incident or assuming what caused the drop.
 
-1. Go to [Real-Time Hub → Business Events → Create](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/create-business-events).
-2. Create or select an Event Schema Set. Use `RetailSales` as the schema set name. Note the name and workspace. They map directly to `SCHEMA_SET_NAME` and `WORKSPACE_NAME` in the publisher code.
-3. Name the event `Retail.Sales.VolumeAlert`.
-4. In the schema editor, paste the following JSON:
+<span id="why-business-events"></span>
+<span id="business-value"></span>
 
-    ```json
-    {
-      "type": "record",
-      "name": "Retail.Sales.VolumeAlert",
-      "fields": [
-        {
-          "name": "store_id",
-          "type": "string",
-          "doc": "Unique identifier of the store reporting the alert"
-        },
-        {
-          "name": "expected_transactions",
-          "type": "int",
-          "doc": "Expected number of transactions based on historical average"
-        },
-        {
-          "name": "actual_transactions",
-          "type": "int",
-          "doc": "Actual transactions recorded in the current monitoring window"
-        },
-        {
-          "name": "deviation_pct",
-          "type": "float",
-          "doc": "Percentage deviation from expected volume. Negative means below expected."
-        },
-        {
-          "name": "window_start",
-          "type": "string",
-          "doc": "Start of the monitoring window in ISO 8601 format"
-        },
-        {
-          "name": "severity",
-          "type": "string",
-          "doc": "Alert severity level: low, medium, high"
-        }
-      ]
-    }
-    ```
+## Business Events
 
-5. Keep **Analyze in Eventhouse** enabled. Create a new Eventhouse or select an existing one in your workspace. Fabric automatically creates the dedicated `Retail.Sales.VolumeAlert` KQL table.
-6. Select **Create**. No separate ingestion pipeline or direct Notebook-to-Eventhouse write is needed.
-
-## Step 2: Publisher - Notebook
-
-The notebook queries the sales data, calculates the deviation per store, and publishes a Business Event for each store that exceeds the threshold.
-
-### Create the Notebook
-
-1. In your Fabric workspace, select **+ New item** and create a **Notebook**.
-2. Attach it to a Lakehouse that contains your sales data, or use the hardcoded values provided below for testing.
-
-### Notebook code
-
-Replace `WORKSPACE_NAME` with your Fabric workspace name and `SCHEMA_SET_NAME` with the name of the Event Schema Set associated with the Business Event you created in [Real-Time Hub → Business Events](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/create-business-events).
-
-```python
-# Publish a Retail.Sales.VolumeAlert Business Event from a Fabric Notebook
-# notebookutils reference: https://learn.microsoft.com/en-us/fabric/data-engineering/microsoft-spark-utilities
-
-WORKSPACE_NAME = "<your-workspace-name>"
-SCHEMA_SET_NAME = "<your-schema-set-name>"
-EVENT_NAME = 'Retail.Sales.VolumeAlert'
-
-# Calculate deviation for a store
-store_id = "store-mx-042"
-expected = 1250
-actual = 743
-deviation_pct = round(((actual - expected) / expected) * 100, 2)
-severity = 'high' if deviation_pct < -30 else 'medium' if deviation_pct < -15 else 'low'
-
-# Build the event payload
-payload = {
-    'store_id': store_id,
-    'expected_transactions': expected,
-    'actual_transactions': actual,
-    'deviation_pct': deviation_pct,
-    'window_start': "2024-06-22T09:00:00Z",
-    'severity': severity
-}
-
-# Publish to Business Events
-notebookutils.businessEvents.publish(
-    eventSchemaSetWorkspace=WORKSPACE_NAME,
-    eventSchemaSet=SCHEMA_SET_NAME,
-    eventTypeName=EVENT_NAME,
-    eventData=payload,
-    dataVersion='v1'
-)
-```
-
-## Step 3: Consumers - Activator and Eventhouse
-
-### Consumer 1: Notify operations with Activator
-
-When the `Retail.Sales.VolumeAlert` Business Event is published to Real-Time Hub, Activator can subscribe to it and trigger an action when the rule condition is met.
-
-#### Set up the alert rule
-
-1. In Microsoft Fabric, navigate to **Real-Time** on the left navigation bar.
-2. Select **Business events** in Real-Time Hub.
-3. Locate the `Retail.Sales.VolumeAlert` event under your schema set.
-4. Select **Set alert** from the event options.
-
-#### Configure the rule
-
-**Details section**
-
-Enter a name for the rule, for example: `Sales Volume Drop Alert`.
-
-**Monitor section**
-
-1. In the **Source** field, select **Business events**.
-2. In the **Connect data source** wizard, select the `Retail.Sales.VolumeAlert` event type.
-3. Select **+ Filter** and configure the following filter:
-    - Field: `deviation_pct`
-    - Operator: `Less than`
-    - Value: `-30`
-4. Select **Next**, review the settings, and select **Save**.
-
-**Condition section**
-
-Set **Check** to `On each event`.
-
-**Action section**
-
-1. For **Select action**, choose `Teams` then `Channel post`.
-2. Configure the Teams channel to notify the operations team.
-3. In **Context**, add `store_id`, `actual_transactions`, and `deviation_pct` so the alert includes the relevant details.
-4. Save and activate the rule.
-
-### Consumer 2: Analyze recurring drops in Eventhouse
-
-Eventhouse integration was enabled in Step 1. Open the selected Eventhouse KQL database and query the automatically created table. The table name preserves dots, so use bracket syntax. Ingestion does not depend on the Activator filter or on Teams delivery.
-
-**Inspect the latest findings:**
-
-```kusto
-['Retail.Sales.VolumeAlert']
-| order by ingestion_time() desc
-| take 50
-```
-
-**Find stores with repeated high-severity findings received in the last 7 days:**
-
-```kusto
-['Retail.Sales.VolumeAlert']
-| where ingestion_time() > ago(7d)
-| where deviation_pct < -30
-| summarize HighSeverityFindings = count(),
-    WorstDeviationPct = min(deviation_pct) by store_id
-| order by HighSeverityFindings desc, WorstDeviationPct asc
-```
-
-**Compare the severity mix of received findings over time:**
-
-```kusto
-['Retail.Sales.VolumeAlert']
-| where ingestion_time() > ago(7d)
-| summarize Findings = count() by severity, ReceivedHour = bin(ingestion_time(), 1h)
-| order by ReceivedHour asc
-```
-
-These queries count received event records, not confirmed incidents or distinct monitoring windows. Repeated publications or deliveries can increase the counts. A volume drop still needs investigation; the history does not prove a point-of-sale failure.
-
-Use the recurrence query as a tile in a Real-Time Dashboard for operations reviews. See [Eventhouse and Business Events integration](https://learn.microsoft.com/en-us/fabric/real-time-hub/business-events/business-events-eventhouse) for querying and dashboard setup.
-
-## Step 4: End-to-end test
-
-Verify both consumers with two publications from the same notebook:
-
-1. Run the notebook as-is. The values for `store-mx-042` produce a `deviation_pct` of `-40.56` and `severity` of `high`.
-2. Confirm that the Teams alert includes the store and deviation.
-3. Change `actual` to `1000`, leaving `expected` at `1250`, and run the notebook again. This publishes a `-20.0` deviation with `medium` severity. This event should be retained in Eventhouse but should not match the Activator filter.
-4. In the Eventhouse KQL database, run:
-
-    ```kusto
-    ['Retail.Sales.VolumeAlert']
-    | where ingestion_time() > ago(1h)
-    | where store_id == "store-mx-042"
-    | project ReceivedAt = ingestion_time(), store_id,
-        expected_transactions, actual_transactions, deviation_pct, severity
-    | order by ReceivedAt desc
-    ```
-
-5. Confirm that records for both `actual_transactions` values, `743` and `1000`, appear. Only the `-40.56` finding should match the Teams alert rule.
-
-The test is complete when the high-severity finding reaches Teams and both findings are queryable in Eventhouse. Data preview or a successful publish call alone does not verify both consumers. The queries filter on receipt time because the hardcoded `window_start` is a sample timestamp. Replace the sample values with real sales windows when connecting the notebook to production data.
-
-## What happens next
-
-The scenario now pairs an immediate response with a queryable history. Activator can add other actions, while analytics can build dashboards from the existing Eventhouse table. Neither extension requires adding consumer-specific logic to the notebook.
+The sales comparison publishes each store finding as a Business Event. Operations applies its agreed response threshold and receives an investigation prompt for the qualifying stores, with the original comparison and time window.
 
 ```mermaid
-flowchart LR
-    BE([Business Event\n'Retail.Sales.VolumeAlert']) -->|rule match| ACT[Activator]
-    BE --> EH[(Eventhouse\nFinding history)]
-    EH --> KQL[Recurrence and severity analysis]
-    ACT --> TEAMS[Teams / Email alert]
-    ACT --> PA[Power Automate flow]
-    ACT --> NB[Notebook]
-    ACT --> DP[Data Pipeline]
-    ACT --> UDF[User Data Function]
+flowchart TB
+    S["<b>Sales analysis</b><br/>Compares hourly<br/>store performance"]
+    E(["<b>Business Event</b><br/>Store sales finding"])
+    subgraph VALUE["Improvement: Qualifying findings<br/>reach operations with context"]
+        F["<b>Sales exception policy</b><br/>Selects deviations<br/>below -30%"]:::businessValue
+        P["<b>Investigation prompt</b><br/>Store, hour and<br/>sales comparison"]:::businessValue
+    end
+    O["<b>Operations team</b><br/>Receives the<br/>investigation context"]
+    S -->|"Share finding"| E
+    E -->|"Apply response policy"| F
+    F -->|"Qualifying store"| P
+    P -->|"Bring finding to attention"| O
+    classDef businessValue fill:#DFF6DD,stroke:#107C10,color:#000000
+    style VALUE fill:none,stroke:#107C10,stroke-width:1.5px
 ```
 
-| Action | When to use |
-|---|---|
-| **Teams / Email alert** | Notify a team or individual immediately when the condition is met |
-| **Power Automate flow** | Trigger a business process or approval workflow outside Fabric |
-| **Notebook** | Run a remediation or deeper analysis in response to the event |
-| **Data Pipeline** | Kick off a downstream data processing job |
-| **User Data Function** | Call custom logic or an external API |
+This changes the handoff from someone having to notice a report to a recognized condition starting the response. Operations can begin with the finding rather than request another extract. Another team can use the same finding without asking sales to build a different detector.
 
-For full details on configuring each action type, see the [Activator documentation](https://learn.microsoft.com/fabric/real-time-intelligence/activator/activator-introduction).
+## Event-driven architecture {#architecture}
+
+**Business signal:** `Retail.Sales.VolumeAlert`
+
+**Publisher:** Notebook | **Consumer(s):** Activator (Teams)
+
+```mermaid
+flowchart TB
+    S[("<b>Source Eventhouse</b><br/>Sales data in KQL tables")]
+    N["<b>Notebook</b><br/>Compares hourly<br/>sales volumes"]
+    B(["<b>Business Event</b><br/>Store sales finding"])
+    A["<b>Activator (Teams)</b><br/>Selects deviations<br/>below -30%"]
+    T["<b>Teams</b><br/>Notifies operations of<br/>the store and deviation"]
+
+    S -->|"Read sales"| N
+    N -->|"Publish"| B
+    B -->|"Evaluate"| A
+    A -->|"Rule matches"| T
+    H[("<b>Eventhouse</b><br/>Sales finding history")]
+    B -.->|"Analyze in Eventhouse"| H
+```
+
+1. The Notebook reads sales from the source Eventhouse and compares actual and expected hourly transactions for each store.
+2. The store finding is published as a Business Event. Activator selects deviations strictly below -30%.
+3. Teams delivers the selected store's context to operations, ready for investigation.
+
+The source Eventhouse supplies sales inputs to the Notebook and is required. It is separate from the optional Eventhouse history branch.
+
+Dashed arrows show optional event history and its analysis, separate from the required response. **Analyze in Eventhouse** is a creation-time choice, not a connection enabled by the deployment package or a prerequisite for completing the Workbook.
+
+## Business outcome and boundaries
+
+Give operations a store-specific Teams alert when transaction volume falls more than 30% below expectation. The Workbook compares six stores and produces two alerts ready for investigation.
+
+**Where the exercise stops:** An alert does not explain the cause or show that sales recovered. The exact -30% boundary and less severe findings do not produce a Teams alert.
+
+## Try the Workbook
+
+The [Workbook](sales-volume-alert/deployment.md){#deploy-this-scenario} brings preparation, connections, sample inputs, expected results and code reference into one place. Follow that single path to explore the outcome above.
+
+<span id="configure-the-rule"></span>
+<span id="consumer-1-notify-operations-with-activator-teams"></span>
+<span id="consumer-2-analyze-recurring-drops-in-eventhouse"></span>
+<span id="create-the-notebook"></span>
+<span id="notebook-code"></span>
+<span id="set-up-the-alert-rule"></span>
+<span id="step-1-create-the-business-event"></span>
+<span id="step-2-publisher-notebook"></span>
+<span id="step-3-consumers-activator-teams-and-eventhouse"></span>
+<span id="step-4-end-to-end-test"></span>
+<span id="what-happens-next"></span>
+<span id="what-you-will-explore"></span>

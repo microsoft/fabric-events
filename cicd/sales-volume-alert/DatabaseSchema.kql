@@ -1,0 +1,3 @@
+.create-merge table cicd_store_baselines (run_id:guid, store_id:string, expected_transactions:int, window_start:datetime, seeded_at:datetime)
+
+.create-merge table cicd_pos_transactions (run_id:guid, store_id:string, transaction_id:string, occurred_at:datetime, amount_cents:int, currency:string)

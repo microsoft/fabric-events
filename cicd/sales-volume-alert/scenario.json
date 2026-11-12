@@ -1,0 +1,116 @@
+{
+  "scenario_name": "Sales Volume Alert",
+  "scenario_id": "sales-volume-alert",
+  "package_policy": "single_current_package",
+  "source_backend": "native_kql_tables",
+  "resource_roles": ["schema", "notebook", "activator", "eventhouse", "database"],
+  "implemented_scope": "public_full_deployment",
+  "command_behavior": {
+    "test": "submit_native_notebook_job_without_teams_readback",
+    "verify": "check_existing_source_job_and_teams_using_configured_ui_or_graph",
+    "test_exit_zero_means": "source_job_accepted_not_e2e_verified"
+  },
+  "full_deployment_status": "live_reference_e2e_verified",
+  "distribution_assets": ["sales_deploy.py", "public_consumers.py", "notebook-content.py", "DatabaseSchema.kql", "fixtures.json", "teams_ui.py", "teams_ui.ps1"],
+  "event_analysis": {
+    "scope": "excluded",
+    "reason": "This CI/CD variant covers source KQL, Notebook publication and Activator/Teams, not managed Business Event history.",
+    "service_setting": "No undocumented create-time analysis setting is sent; service defaults are not asserted."
+  },
+  "eventhouse_usage": {
+    "purpose": "operational_kql_source",
+    "required_by": "notebook",
+    "source_tables": ["cicd_store_baselines", "cicd_pos_transactions"],
+    "implementation_status": "source_definition_and_notebook_binding_implemented",
+    "source_binding_verified": false,
+    "reason": "The Sales Notebook reads baselines and POS transaction counts from KQL. These source tables are not the Business Event history table."
+  },
+  "public_contract_review": {
+    "checked_on": "2026-11-08",
+    "status": "live_reference_e2e_verified",
+    "review_kind": "published_documentation_and_live_reference_verification",
+    "live_deployment_verified": true,
+    "reference_verification": {
+      "provisioning_verified": true,
+      "source_binding_verified": true,
+      "source_execution_verified": true,
+      "source_baselines": 6,
+      "source_transactions": 1078,
+      "accepted_publications": 6,
+      "expected_teams_notifications": 2,
+      "consumer_execution_verified": true,
+      "teams_delivery_verified": true,
+      "teams_verifier": "public_windows_ui_automation",
+      "teams_recipient_independently_verified": true,
+      "graph_readback_live_verified": false,
+      "observation_seconds": 300,
+      "non_matching_notifications_observed": 0,
+      "e2e_verified": true,
+      "resources_retained": false,
+      "test_workspace_cleanup_verified": true
+    },
+    "components": {
+      "schema_security_and_source_containers": {
+        "implementation_status": "public_foundations_implemented",
+        "history_subscription_configured": false,
+        "reference": "https://learn.microsoft.com/fabric/real-time-hub/create-business-events-rest-api"
+      },
+      "notebook_publisher": {
+        "contract_status": "documented",
+        "implementation_status": "live_reference_verified",
+        "publishing_api": "notebookutils.businessEvents.publish",
+        "reference": "https://learn.microsoft.com/fabric/real-time-hub/publish-business-events"
+      },
+      "activator_business_event_source": {
+        "contract_status": "documented",
+        "implementation_status": "live_reference_verified",
+        "reference": "https://learn.microsoft.com/fabric/real-time-hub/consume-events-activator-rest-api"
+      },
+      "activator_individual_teams_notification": {
+        "contract_status": "documented_authoring_reference",
+        "implementation_status": "live_reference_verified",
+        "reference": "https://github.com/microsoft/skills-for-fabric/blob/6c11ad58c25992e5d1435ce7cd80d217d5598a31/plugins/fabric-skills/skills/activator-cli/references/authoring/action-types.md#teamsmessage"
+      }
+    },
+    "excluded_operation": {
+      "id": "managed_business_event_eventhouse_association",
+      "scope": "excluded_from_cicd_and_e2e",
+      "contract_status": "no_verified_public_contract",
+      "required_target": "The exact child KQL database and Business Event type, not merely the parent Eventhouse.",
+      "required_documentation": [
+        "Public create or update association endpoint and request schema.",
+        "Required authentication audience, identities, permissions and regional constraints.",
+        "Public readback of the actual event source, target database, enabled subscription and payload mapping."
+      ],
+      "evidence": [
+        {
+          "reference": "https://learn.microsoft.com/fabric/real-time-hub/business-events/business-events-eventhouse",
+          "finding": "Describes the Analyze in Eventhouse option during Real-Time Hub creation; does not document a REST association request."
+        },
+        {
+          "reference": "https://learn.microsoft.com/rest/api/fabric/toc.json",
+          "finding": "The reviewed EventSchemaSet, Eventhouse and KQLDatabase inventory contains item CRUD/definition operations and KQL table shortcuts. No managed Business Event history association operation was found."
+        },
+        {
+          "reference": "https://learn.microsoft.com/rest/api/fabric/articles/item-management/definitions/eventschemaset-definition",
+          "finding": "Documents event types and payload schemas, not an Eventhouse history association."
+        },
+        {
+          "reference": "https://learn.microsoft.com/rest/api/fabric/articles/item-management/definitions/eventhouse-definition",
+          "finding": "The documented EventhouseProperties.json payload is empty; no Business Event binding is described."
+        },
+        {
+          "reference": "https://learn.microsoft.com/rest/api/fabric/articles/item-management/definitions/kql-database-definition",
+          "finding": "Documents database properties and database schema commands, but no exact managed Business Event subscription command or request."
+        }
+      ]
+    },
+    "scope_constraints": [
+      "Preserve the KQL-input Notebook backend and original six-field v1 event contract.",
+      "Retain Eventhouse and its child KQL database for the two operational source tables read by the Notebook.",
+      "Activator/Teams is the required response; managed Business Event analysis/history is outside this CI/CD variant and its E2E gate.",
+      "Do not provision a second, unused history Eventhouse or replace the omitted history consumer with Notebook dual-write or portal automation.",
+      "Provisioning readback is not E2E: separately execute the Notebook and independently observe same-run Teams messages, including non-matching test cases."
+    ]
+  }
+}

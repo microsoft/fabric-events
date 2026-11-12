@@ -1,0 +1,8 @@
+[
+  {"id": "minimum-release", "input": {"customer_id": "test-customer-01", "risk_score": 0.0}, "expected": {"decision": "release"}},
+  {"id": "below-review", "input": {"customer_id": "test-customer-02", "risk_score": 0.5499}, "expected": {"decision": "release"}},
+  {"id": "exact-review", "input": {"customer_id": "test-customer-03", "risk_score": 0.55}, "expected": {"decision": "manual_review"}},
+  {"id": "below-hold", "input": {"customer_id": "test-customer-04", "risk_score": 0.8499}, "expected": {"decision": "manual_review"}},
+  {"id": "exact-hold", "input": {"customer_id": "test-customer-05", "risk_score": 0.85}, "expected": {"decision": "hold"}},
+  {"id": "maximum-hold", "input": {"customer_id": "test-customer-06", "risk_score": 1.0}, "expected": {"decision": "hold"}}
+]

@@ -1,0 +1,15 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "fraud-response-before-fulfillment",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "OrderRisk",
+  "event_name": "Ecommerce.Order.FraudDecision",
+  "accept_preview_apis": true,
+  "resource_names": {
+    "schema": "OrderRiskSchema",
+    "publisher": "OrderRiskPublisher",
+    "activator": "OrderRiskActions"
+  }
+}

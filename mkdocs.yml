@@ -27,7 +27,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.sections
-    - navigation.expand
+    - navigation.indexes
     - navigation.top
     - search.highlight
     - search.suggest
@@ -67,8 +67,25 @@ copyright: 'Built with <span class="heart">&#10084;</span> by the Fabric Events 
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - path: javascripts/scenario-diagrams.js
+    type: module
+
 plugins:
   - search
+
+exclude_docs: |
+  business-events/scenarios/shipment-delay-auto-mitigation.md
+  business-events/scenarios/shipment-delay-auto-mitigation/
+  business-events/scenarios/shipment-delay-escalation.md
+  business-events/scenarios/shipment-delay-escalation/
+  assets/downloads/shipment-delay-auto-mitigation.zip
+  assets/downloads/shipment-delay-escalation.zip
+  assets/home2/v001/
+
+hooks:
+  - overrides/navigation.py
+  - overrides/scenario_diagrams.py
 
 nav:
   - Home: home/index.md
@@ -91,20 +108,39 @@ nav:
       - Batch Publish from a Notebook: business-events/recipes/batch-publish-notebook.md
       - Batch Publish from a User Data Function: business-events/recipes/batch-publish-udf.md
     - Scenarios:
-      - Overview: business-events/scenarios/index.md
-      - Detect & Alert:
-        - Sales Volume Alert: business-events/scenarios/sales-volume-alert.md
-        - Real-Time Stream Alert: business-events/scenarios/real-time-stream-alert.md
-        - Revenue Below Target: business-events/scenarios/revenue-below-target.md
-      - Decide & Act:
-        - Customer Loyalty Milestone: business-events/scenarios/customer-loyalty-milestone.md
-        - Abandoned Cart Recovery: business-events/scenarios/abandoned-cart-recovery.md
-        - Discount Approval Evaluation and Event Publication: business-events/scenarios/discount-approval-routing.md
-        - Fraud Response Before Fulfillment: business-events/scenarios/fraud-response-before-fulfillment.md
-        - Real-Time Viewer Recommendations: business-events/scenarios/real-time-viewer-recommendations.md
-        - Shipment Delay Auto-Mitigation: business-events/scenarios/shipment-delay-auto-mitigation.md
-      - Track & Analyze:
-        - Low Stock Threshold: business-events/scenarios/low-stock-threshold.md
-        - Data Lineage Audit: business-events/scenarios/data-lineage-audit.md
+      - business-events/scenarios/index.md
+      - Order History Analysis:
+        - business-events/scenarios/order-history-analysis.md
+        - Workbook: business-events/scenarios/order-history-analysis/deployment.md
+      - Sales Volume Alert:
+        - business-events/scenarios/sales-volume-alert.md
+        - Workbook: business-events/scenarios/sales-volume-alert/deployment.md
+      - Low Stock Threshold:
+        - business-events/scenarios/low-stock-threshold.md
+        - Workbook: business-events/scenarios/low-stock-threshold/deployment.md
+      - Real-Time Stream Alert:
+        - business-events/scenarios/real-time-stream-alert.md
+        - Workbook: business-events/scenarios/real-time-stream-alert/deployment.md
+      - Discount Approval:
+        - business-events/scenarios/discount-approval-routing.md
+        - Workbook: business-events/scenarios/discount-approval-routing/deployment.md
+      - Real-Time Viewer Recommendations:
+        - business-events/scenarios/real-time-viewer-recommendations.md
+        - Workbook: business-events/scenarios/real-time-viewer-recommendations/deployment.md
+      - Data Pipeline Failure Follow-up:
+        - business-events/scenarios/data-pipeline-failure-follow-up.md
+        - Workbook: business-events/scenarios/data-pipeline-failure-follow-up/deployment.md
+      - Revenue Below Target:
+        - business-events/scenarios/revenue-below-target.md
+        - Workbook: business-events/scenarios/revenue-below-target/deployment.md
+      - Customer Loyalty Milestone:
+        - business-events/scenarios/customer-loyalty-milestone.md
+        - Workbook: business-events/scenarios/customer-loyalty-milestone/deployment.md
+      - Abandoned Cart Recovery:
+        - business-events/scenarios/abandoned-cart-recovery.md
+        - Workbook: business-events/scenarios/abandoned-cart-recovery/deployment.md
+      - Fraud Response Before Fulfillment:
+        - business-events/scenarios/fraud-response-before-fulfillment.md
+        - Workbook: business-events/scenarios/fraud-response-before-fulfillment/deployment.md
   - Fabric Events: fabric-events/index.md
   - Azure Events: azure-events/index.md

@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Sales.Deals.DiscountApprovalRequired",
+  "fields": [
+    {"name": "deal_id", "type": "string"},
+    {"name": "account_name", "type": "string"},
+    {"name": "region", "type": "string"},
+    {"name": "deal_value", "type": "double"},
+    {"name": "requested_discount_percent", "type": "double"},
+    {"name": "estimated_margin_percent", "type": "double"},
+    {"name": "approval_level", "type": "string"},
+    {"name": "approval_reason", "type": "string"},
+    {"name": "event_time", "type": "string"}
+  ]
+}

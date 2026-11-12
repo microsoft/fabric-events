@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Customer Loyalty Milestone deployment configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scenario_id", "tenant_id", "workspace_id", "auth_provider", "resource_prefix", "event_name", "resource_names", "accept_preview_apis"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "scenario_id": {"const": "customer-loyalty-milestone"},
+    "tenant_id": {"type": ["string", "null"], "format": "uuid"},
+    "workspace_id": {"type": ["string", "null"], "format": "uuid"},
+    "auth_provider": {"enum": ["azure_cli", "fabric_cli"]},
+    "resource_prefix": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]{2,39}$"},
+    "event_name": {"type": "string", "minLength": 3, "maxLength": 80, "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$"},
+    "accept_preview_apis": {"type": "boolean"},
+    "resource_names": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "eventhouse", "source", "queryset", "record_store", "notebook", "publisher", "eventstream"],
+      "properties": {
+        "schema": {"$ref": "#/$defs/itemName"},
+        "eventhouse": {"$ref": "#/$defs/itemName"},
+        "source": {"$ref": "#/$defs/itemName"},
+        "queryset": {"$ref": "#/$defs/itemName"},
+        "record_store": {"$ref": "#/$defs/itemName"},
+        "notebook": {"$ref": "#/$defs/itemName"},
+        "publisher": {"$ref": "#/$defs/itemName"},
+        "eventstream": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]{2,99}$"}
+      }
+    }
+  },
+  "$defs": {
+    "itemName": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{2,99}$"}
+  }
+}

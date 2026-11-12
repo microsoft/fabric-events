@@ -1,0 +1,18 @@
+{
+  "$schema": "./config.schema.json",
+  "scenario_id": "low-stock-threshold",
+  "tenant_id": null,
+  "workspace_id": null,
+  "auth_provider": "azure_cli",
+  "resource_prefix": "LowStock",
+  "event_name": "Retail.Inventory.LowStockThreshold",
+  "accept_preview_apis": true,
+  "resource_names": {
+    "schema": "LowStockSchema",
+    "publisher": "LowStockPublisher",
+    "activator": "LowStockActions",
+    "record_store": "LowStockRequests",
+    "response_notebook": "LowStockRequestWorker",
+    "response_pipeline": "PrepareReplenishmentRequest"
+  }
+}
